@@ -96,7 +96,7 @@
                                             @forelse($demandes as $demande)
                                                 <tr>
                                                     <td>
-                                                        <div class="d-flex align-items-center" style="gap:10px;">
+                                                        {{-- <div class="d-flex align-items-center" style="gap:10px;">
                                                             @if ($demande->candidat->avatar)
                                                                 <img src="{{ Storage::url($demande->candidat->avatar) }}"
                                                                     style="width:38px; height:38px; border-radius:50%; object-fit:cover;">
@@ -113,6 +113,27 @@
                                                                     {{ $demande->candidat->name }}</p>
                                                                 <small
                                                                     class="text-muted">{{ $demande->candidat->email }}</small>
+                                                            </div>
+                                                        </div> --}}
+                                                        <div class="d-flex align-items-center" style="gap:10px;">
+                                                            @if ($demande->candidat?->avatar)
+                                                                <img src="{{ Storage::url($demande->candidat->avatar) }}"
+                                                                    style="width:38px; height:38px; border-radius:50%; object-fit:cover;">
+                                                            @else
+                                                                <div
+                                                                    style="width:38px; height:38px; border-radius:50%;
+                background:#006b08; display:flex;
+                align-items:center; justify-content:center;">
+                                                                    <i class="fas fa-user text-white"></i>
+                                                                </div>
+                                                            @endif
+                                                            <div>
+                                                                <p class="mb-0 font-weight-bold">
+                                                                    {{ $demande->candidat?->name ?? 'Candidat supprimé' }}
+                                                                </p>
+                                                                <small class="text-muted">
+                                                                    {{ $demande->candidat?->email ?? '—' }}
+                                                                </small>
                                                             </div>
                                                         </div>
                                                     </td>

@@ -1,8 +1,8 @@
 {{-- resources/views/layouts/partials/sidebar.blade.php --}}
 
 <!-- sidebar -->
-<div class="nk-sidebar">
-    <div class="nk-nav-scroll">
+<div class="nk-sidebar" style="width: 270px !important">
+    <div class="nk-nav-scroll" >
         <ul class="metismenu" id="menu">
 
             {{-- =============================== --}}
@@ -36,8 +36,7 @@
                 </li>
 
                 {{-- Coachs --}}
-                <li
-                    class="{{ request()->routeIs('admin.coachs.*') ? 'active' : '' }}">
+                <li class="{{ request()->routeIs('admin.coachs.*') ? 'active' : '' }}">
                     <a class="has-arrow" href="#" aria-expanded="false">
                         <i class="fas fa-chalkboard-teacher"></i>
                         <span class="nav-text">Coachs</span>
@@ -91,23 +90,34 @@
                         </li>
                     </ul>
                 </li>
-                <li
-                    class="{{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
+                <li class="{{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
                     <a class="has-arrow" href="#" aria-expanded="false">
                         <i class="fas fa-chalkboard-user"></i>
                         <span class="nav-text">Utilsateurs</span>
                     </a>
                     <ul aria-expanded="false">
-                        <li class="{{ request()->routeIs('admin.users.index') ? 'active' : '' }}">
-                            <a href="{{ route('admin.users.index') }}">
-                                <i class="fas fa-list"></i> Liste des utilisateur
-                            </a>
-                        </li>
                         <li class="{{ request()->routeIs('admin.users.create') ? 'active' : '' }}">
                             <a href="{{ route('admin.users.create') }}">
                                 <i class="fas fa-user-plus"></i> Créer un utilisateur
                             </a>
                         </li>
+                        <li class="{{ request()->routeIs('admin.users.index') ? 'active' : '' }}">
+                            <a href="{{ route('admin.users.index') }}">
+                                <i class="fas fa-list"></i> Liste des utilisateur
+                            </a>
+                        </li>
+                        {{-- <li class="{{ request()->routeIs('admin.users.trashed') ? 'active' : '' }}">
+                            <a href="{{ route('admin.users.trashed') }}">
+                                <i class="fas fa-archive mr-1"></i> Utilisateurs archivés
+                                @php
+                                    $trashedCount = \App\Models\User::onlyTrashed()->count();
+                                @endphp
+                                @if ($trashedCount > 0)
+                                    <span class="badge badge-danger ml-1">{{ $trashedCount }}</span>
+                                @endif
+                            </a>
+                        </li> --}}
+
                     </ul>
                 </li>
 

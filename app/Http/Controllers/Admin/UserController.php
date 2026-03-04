@@ -94,11 +94,57 @@ class UserController extends Controller
             ->with('success', ucfirst($request->role) . ' créé avec succès. Les identifiants ont été envoyés par email.');
     }
 
+    // public function destroy(User $user)
+    // {
+    //     $user->delete();
+
+    //     return redirect()->route('admin.users.index')
+    //         ->with('success', 'Utilisateur supprimé.');
+    // }
     public function destroy(User $user)
     {
-        $user->delete();
+        $user->delete(); // Avec SoftDeletes, c'est automatiquement une suppression douce
+
+        $role = $user->role === 'coach' ? 'Coach' : 'Candidat';
 
         return redirect()->route('admin.users.index')
-            ->with('success', 'Utilisateur supprimé.');
+            ->with('success', $role . ' supprimé avec succès.');
+    }
+
+    public function trashed()
+    {
+        $coachs = User::onlyTrashed()
+            ->where('role', 'coach')
+            ->with('coachProfile')
+            ->latest('deleted_at')
+            ->get();
+
+        $candidats = User::onlyTrashed()
+            ->where('role', 'candidat')
+            ->with('candidatProfile')
+            ->latest('deleted_at')
+            ->get();
+
+        return view('admin.users.trashed', compact('coachs', 'candidats'));
+    }
+
+    public function restore($id)
+    {
+        $user = User::onlyTrashed()->findOrFail($id);
+        $user->restore();
+
+        $role = $user->role === 'coach' ? 'Coach' : 'Candidat';
+
+        return redirect()->route('admin.users.trashed')
+            ->with('success', $role . ' ' . $user->name . ' restauré avec succès.');
+    }
+
+    public function forceDelete($id)
+    {
+        $user = User::onlyTrashed()->findOrFail($id);
+        $user->forceDelete(); // Suppression définitive
+
+        return redirect()->route('admin.users.trashed')
+            ->with('success', 'Utilisateur supprimé définitivement.');
     }
 }

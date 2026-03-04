@@ -116,7 +116,7 @@
                                             'icon' => 'fa-calendar-check',
                                             'color' => 'success',
                                             'message' => 'Entretien programmé le ' . $dateTime->format('d/m/Y à H:i'),
-                                            'link' => route('candidat.appointments.show', $rdv->id),
+                                            'link' => route('candidat.dashboard'),
                                             'time' => $rdv->created_at->diffForHumans()
                                         ];
                                     }

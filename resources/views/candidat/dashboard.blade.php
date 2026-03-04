@@ -373,7 +373,7 @@
                                                 </p>
                                                 <p class="mb-0">
                                                     <i class="fas fa-chalkboard-teacher mr-2 text-muted"></i>
-                                                    Avec
+                                                    Avec Coach
                                                     <strong>{{ $candidat->candidatAssignment?->coach?->name ?? 'votre coach' }}</strong>
                                                 </p>
                                             </div>
@@ -387,13 +387,23 @@
                                             @endphp
                                             @if ($jours >= 0)
                                                 <div style="font-size:36px; font-weight:bold; color:#006b08;">
-                                                    {{ $jours === 0 ? "Aujourd'hui" : "J-{$jours}" }}
+                                                    @if ($jours === 0)
+                                                        {{ \Carbon\Carbon::parse($entretien->date_heure)->format('H:i') }}
+                                                    @else
+                                                        J-{{ $jours }}
+                                                    @endif
                                                 </div>
-                                                <small class="text-muted">avant l'entretien</small>
+                                                <small class="text-muted">
+                                                    @if ($jours === 0)
+                                                        Entretien prévu aujourd'hui
+                                                    @else
+                                                        avant l'entretien
+                                                    @endif
+                                                </small>
                                             @endif
                                         </div>
                                     </div>
-                                {{-- @elseif($interview) --}}
+                                    {{-- @elseif($interview) --}}
                                     {{-- Entretien passé avec notes --}}
                                     {{-- <div class="row">
                                         <div class="col-md-3 text-center">
@@ -515,7 +525,8 @@
 
                                         {{-- Cercle score --}}
                                         <div class="col-md-3 text-center">
-                                            <div style="width:100px; height:100px; border-radius:50%; margin:0 auto;   background:{{ $scoreColor }}; display:flex; flex-direction:column;  align-items:center; justify-content:center;">
+                                            <div
+                                                style="width:100px; height:100px; border-radius:50%; margin:0 auto;   background:{{ $scoreColor }}; display:flex; flex-direction:column;  align-items:center; justify-content:center;">
                                                 <span
                                                     style="color:#fff; font-size:22px; font-weight:bold; line-height:1.1;">
                                                     {{ $noteFinale }}/20

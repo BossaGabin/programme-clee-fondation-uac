@@ -81,10 +81,15 @@ Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(f
     // Rapport d'evaluation dans la liste des candidats
     Route::get('/candidats/{candidat}/rapport', [InterviewController::class, 'reportByCandidat'])->name('candidats.rapport');
 
-     // Profil admin
+    // Profil admin
     Route::get('/profile',          [\App\Http\Controllers\ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile',          [\App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
     Route::put('/profile/password', [\App\Http\Controllers\ProfileController::class, 'updatePassword'])->name('profile.password');
+
+    // Les routes pour voir les users supprimés et les restaurer
+    Route::get('/users/trashed', [UserController::class, 'trashed'])->name('users.trashed');
+    Route::post('/users/{id}/restore', [UserController::class, 'restore'])->name('users.restore');
+    Route::delete('/users/{id}/force-delete', [UserController::class, 'forceDelete'])->name('users.forceDelete');
 });
 
 // =============================================
@@ -126,14 +131,13 @@ Route::middleware(['auth', 'isCoach'])->prefix('coach')->name('coach.')->group(f
     Route::get('/candidats/{candidat}', [CandidatController::class, 'show'])->name('candidats.show');
     Route::get('/candidats/{candidat}/rapport', [InterviewController::class, 'reportByCandidat'])->name('interviews.report.candidat');
 
-      // Profil coach
+    // Profil coach
     Route::get('/profile',          [\App\Http\Controllers\ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile',          [\App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
     Route::put('/profile/password', [\App\Http\Controllers\ProfileController::class, 'updatePassword'])->name('profile.password');
 
-        //Export la fiche du candidat
+    //Export la fiche du candidat
     Route::get('/candidats/{candidat}/pdf', [AdminCandidatController::class, 'exportPdf'])->name('candidats.pdf');
-
 });
 
 // =============================================

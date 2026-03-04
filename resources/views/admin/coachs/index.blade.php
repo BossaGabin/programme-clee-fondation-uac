@@ -124,7 +124,7 @@
                                                             class="btn btn-sm btn-primary mr-1">
                                                             <i class="fas fa-eye"></i>
                                                         </a>
-                                                        <form method="POST" style="display:inline;"
+                                                        {{-- <form method="POST" style="display:inline;"
                                                             action="{{ route('admin.coachs.destroy', $coach) }}"
                                                             onsubmit="return confirm('Supprimer ce coach ?')">
                                                             @csrf
@@ -132,7 +132,7 @@
                                                             <button type="submit" class="btn btn-sm btn-danger">
                                                                 <i class="fas fa-trash"></i>
                                                             </button>
-                                                        </form>
+                                                        </form> --}}
                                                     </td>
                                                 </tr>
                                             @empty
