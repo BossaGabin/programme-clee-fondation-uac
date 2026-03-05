@@ -28,14 +28,80 @@ class InterviewController extends Controller
         return view('coach.interviews.start', compact('appointment', 'interview', 'competences'));
     }
 
+    // public function store(Request $request, Appointment $appointment)
+    // {
+    //     abort_if($appointment->coachAssignment->coach_id !== auth()->id(), 403);
+
+    //     $request->validate([
+    //         'blocs'        => 'required|array',
+    //         'strengths'    => 'required|string',
+    //         'weaknesses'   => 'required|string',
+    //         'coach_summary' => 'nullable|string',
+    //     ]);
+
+    //     $interview = $appointment->interview;
+
+    //     // Calculer le score de chaque bloc et enregistrer
+    //     $totalGeneral = 0;
+
+    //     foreach ($request->blocs as $blocKey => $questions) {
+    //         $competenceId = $request->bloc_ids[$blocKey] ?? null;
+    //         if (!$competenceId) continue;
+
+    //         // Sommer les réponses du bloc
+    //         $scoreBloc = array_sum(array_map('intval', $questions));
+
+    //         // S'assurer que le score ne dépasse pas 20
+    //         $scoreBloc = min($scoreBloc, 20);
+    //         $totalGeneral += $scoreBloc;
+
+    //         $interview->scores()->updateOrCreate(
+    //             ['competence_id' => $competenceId],
+    //             [
+    //                 'note'    => $scoreBloc,
+    //                 'comment' => null,
+    //             ]
+    //         );
+    //     }
+
+    //     // Note finale = total / 5
+    //     $noteFinale = round($totalGeneral / 5);
+
+    //     // Orientation automatique
+    //     $orientation = match (true) {
+    //         $noteFinale <= 7  => 'Renforcement compétences (formation de base)',
+    //         $noteFinale <= 11 => 'Stage / immersion professionnelle',
+    //         $noteFinale <= 15 => 'Insertion emploi accompagnée',
+    //         default           => 'Insertion rapide / autonomie',
+    //     };
+
+    //     $interview->update([
+    //         'status'        => 'completed',
+    //         'total_score'   => $totalGeneral,
+    //         'strengths'     => $request->strengths,
+    //         'weaknesses'    => $request->weaknesses,
+    //         'coach_summary' => $request->coach_summary ?? $orientation,
+    //         'completed_at'  => now(),
+    //     ]);
+
+    //     $appointment->update(['status' => 'completed']);
+
+    //     // return redirect()->route('coach.interviews.report', $interview)
+    //     //     ->with('success', 'Entretien terminé. Voici le rapport.');
+
+    //     $candidat = $appointment->coachAssignment->candidat;
+
+    //     return redirect()->route('coach.needs.create', $candidat)
+    //         ->with('success', 'Entretien terminé. Assignez maintenant l\'orientation du candidat.');
+    // }
     public function store(Request $request, Appointment $appointment)
     {
         abort_if($appointment->coachAssignment->coach_id !== auth()->id(), 403);
 
         $request->validate([
-            'blocs'        => 'required|array',
-            'strengths'    => 'required|string',
-            'weaknesses'   => 'required|string',
+            'blocs'         => 'required|array',
+            'strengths'     => 'required|string',
+            'weaknesses'    => 'required|string',
             'coach_summary' => 'nullable|string',
         ]);
 
@@ -48,31 +114,32 @@ class InterviewController extends Controller
             $competenceId = $request->bloc_ids[$blocKey] ?? null;
             if (!$competenceId) continue;
 
-            // Sommer les réponses du bloc
             $scoreBloc = array_sum(array_map('intval', $questions));
-
-            // S'assurer que le score ne dépasse pas 20
             $scoreBloc = min($scoreBloc, 20);
             $totalGeneral += $scoreBloc;
 
             $interview->scores()->updateOrCreate(
                 ['competence_id' => $competenceId],
-                [
-                    'note'    => $scoreBloc,
-                    'comment' => null,
-                ]
+                ['note' => $scoreBloc, 'comment' => null]
             );
         }
 
         // Note finale = total / 5
         $noteFinale = round($totalGeneral / 5);
 
-        // Orientation automatique
-        $orientation = match (true) {
-            $noteFinale <= 7  => 'Renforcement compétences (formation de base)',
-            $noteFinale <= 11 => 'Stage / immersion professionnelle',
-            $noteFinale <= 15 => 'Insertion emploi accompagnée',
-            default           => 'Insertion rapide / autonomie',
+        // Orientation automatique selon le score
+        $orientationType = match (true) {
+            $noteFinale <= 7  => 'formation',
+            $noteFinale <= 11 => 'stage',
+            $noteFinale <= 15 => 'insertion_emploi',
+            default           => 'auto_emploi',
+        };
+
+        $orientationLabel = match ($orientationType) {
+            'formation'       => 'Renforcement compétences (formation de base)',
+            'stage'           => 'Stage / immersion professionnelle',
+            'insertion_emploi' => 'Insertion emploi accompagnée',
+            'auto_emploi'     => 'Insertion rapide / autonomie',
         };
 
         $interview->update([
@@ -80,14 +147,29 @@ class InterviewController extends Controller
             'total_score'   => $totalGeneral,
             'strengths'     => $request->strengths,
             'weaknesses'    => $request->weaknesses,
-            'coach_summary' => $request->coach_summary ?? $orientation,
+            'coach_summary' => $request->coach_summary ?? $orientationLabel,
             'completed_at'  => now(),
         ]);
 
         $appointment->update(['status' => 'completed']);
 
+        $candidat = $appointment->coachAssignment->candidat;
+
+        // Enregistrement automatique de l'orientation dans NeedAssignment
+        \App\Models\NeedAssignment::updateOrCreate(
+            [
+                'candidat_id' => $candidat->id,
+                'interview_id' => $interview->id,
+            ],
+            [
+                'coach_id'    => auth()->id(),
+                'type'        => $orientationType,
+                'description' => $orientationLabel,
+            ]
+        );
+
         return redirect()->route('coach.interviews.report', $interview)
-            ->with('success', 'Entretien terminé. Voici le rapport.');
+            ->with('success', 'Entretien terminé. L\'orientation a été assignée automatiquement.');
     }
 
     public function report(Interview $interview)

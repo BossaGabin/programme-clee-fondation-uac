@@ -36,7 +36,7 @@ class ProfessionalProjectController extends Controller
             'objectif_long_terme'   => $request->objectif_long_terme,
         ]);
 
-        return redirect()->route('coach.candidat.show', $candidat)
+        return redirect()->route('coach.candidats.show', $candidat)
             ->with('success', 'Projet professionnel enregistré.');
     }
 

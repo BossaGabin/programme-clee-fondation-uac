@@ -1,7 +1,7 @@
 {{-- resources/views/layouts/partials/sidebar.blade.php --}}
 
 <!-- sidebar -->
-<div class="nk-sidebar" style="width: 270px !important">
+<div class="nk-sidebar">
     <div class="nk-nav-scroll" >
         <ul class="metismenu" id="menu">
 

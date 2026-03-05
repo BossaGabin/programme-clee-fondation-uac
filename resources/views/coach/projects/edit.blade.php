@@ -8,7 +8,8 @@
     <div id="preloader">
         <div class="loader">
             <svg class="circular" viewBox="25 25 50 50">
-                <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="3" stroke-miterlimit="10" />
+                <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="3"
+                    stroke-miterlimit="10" />
             </svg>
         </div>
     </div>
@@ -27,24 +28,32 @@
                     </div>
                     <div class="col-md-7 align-self-center text-right">
                         <a href="{{ route('coach.candidats.show', $candidat) }}"
-                           class="btn btn-sm btn-outline-secondary">
+                            class="btn btn-sm btn-outline-secondary">
                             <i class="fas fa-arrow-left mr-1"></i> Retour
                         </a>
                     </div>
                 </div>
+                @if (session('error'))
+                    <div class="alert alert-danger alert-dismissible fade show">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                aria-hidden="true">×</span>
+                        </button> <strong>Erreur!</strong> {{ session('error') }}
+                    </div>
+                @endif
 
                 {{-- Bannière candidat --}}
                 <div class="row mb-3">
                     <div class="col-12">
                         <div class="card" style="border-left:4px solid #f4a900;">
                             <div class="card-body d-flex align-items-center justify-content-between"
-                                 style="gap:15px; padding:12px 20px;">
+                                style="gap:15px; padding:12px 20px;">
                                 <div class="d-flex align-items-center" style="gap:12px;">
-                                    @if($candidat->avatar)
+                                    @if ($candidat->avatar)
                                         <img src="{{ Storage::url($candidat->avatar) }}"
-                                             style="width:45px;height:45px;border-radius:50%;object-fit:cover;">
+                                            style="width:45px;height:45px;border-radius:50%;object-fit:cover;">
                                     @else
-                                        <div style="width:45px;height:45px;border-radius:50%;background:#006b08;
+                                        <div
+                                            style="width:45px;height:45px;border-radius:50%;background:#006b08;
                                                     display:flex;align-items:center;justify-content:center;">
                                             <i class="fas fa-user text-white"></i>
                                         </div>
@@ -83,9 +92,9 @@
                                                     Titre du projet <span class="text-danger">*</span>
                                                 </label>
                                                 <input type="text" name="titre_projet"
-                                                       class="form-control @error('titre_projet') is-invalid @enderror"
-                                                       placeholder="Ex: Développeur web freelance..."
-                                                       value="{{ old('titre_projet', $project->titre_projet) }}">
+                                                    class="form-control @error('titre_projet') is-invalid @enderror"
+                                                    placeholder="Ex: Développeur web freelance..."
+                                                    value="{{ old('titre_projet', $project->titre_projet) }}">
                                                 @error('titre_projet')
                                                     <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
@@ -98,9 +107,9 @@
                                                     Secteur cible <span class="text-danger">*</span>
                                                 </label>
                                                 <input type="text" name="secteur_cible"
-                                                       class="form-control @error('secteur_cible') is-invalid @enderror"
-                                                       placeholder="Ex: Informatique, Finance..."
-                                                       value="{{ old('secteur_cible', $project->secteur_cible) }}">
+                                                    class="form-control @error('secteur_cible') is-invalid @enderror"
+                                                    placeholder="Ex: Informatique, Finance..."
+                                                    value="{{ old('secteur_cible', $project->secteur_cible) }}">
                                                 @error('secteur_cible')
                                                     <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
@@ -113,9 +122,9 @@
                                                     Poste visé <span class="text-danger">*</span>
                                                 </label>
                                                 <input type="text" name="poste_vise"
-                                                       class="form-control @error('poste_vise') is-invalid @enderror"
-                                                       placeholder="Ex: Comptable junior..."
-                                                       value="{{ old('poste_vise', $project->poste_vise) }}">
+                                                    class="form-control @error('poste_vise') is-invalid @enderror"
+                                                    placeholder="Ex: Comptable junior..."
+                                                    value="{{ old('poste_vise', $project->poste_vise) }}">
                                                 @error('poste_vise')
                                                     <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
@@ -125,9 +134,7 @@
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <label class="font-weight-bold">Description du projet</label>
-                                                <textarea name="description"
-                                                          class="form-control" rows="4"
-                                                          placeholder="Décrivez le projet professionnel...">{{ old('description', $project->description) }}</textarea>
+                                                <textarea name="description" class="form-control" rows="4" placeholder="Décrivez le projet professionnel...">{{ old('description', $project->description) }}</textarea>
                                             </div>
                                         </div>
 
@@ -137,9 +144,7 @@
                                                     <i class="fas fa-flag mr-1 text-warning"></i>
                                                     Objectif court terme
                                                 </label>
-                                                <textarea name="objectif_court_terme"
-                                                          class="form-control" rows="3"
-                                                          placeholder="Objectif à 3-6 mois...">{{ old('objectif_court_terme', $project->objectif_court_terme) }}</textarea>
+                                                <textarea name="objectif_court_terme" class="form-control" rows="3" placeholder="Objectif à 3-6 mois...">{{ old('objectif_court_terme', $project->objectif_court_terme) }}</textarea>
                                             </div>
                                         </div>
 
@@ -149,16 +154,14 @@
                                                     <i class="fas fa-flag-checkered mr-1 text-success"></i>
                                                     Objectif long terme
                                                 </label>
-                                                <textarea name="objectif_long_terme"
-                                                          class="form-control" rows="3"
-                                                          placeholder="Vision à 1 an et plus...">{{ old('objectif_long_terme', $project->objectif_long_terme) }}</textarea>
+                                                <textarea name="objectif_long_terme" class="form-control" rows="3" placeholder="Vision à 1 an et plus...">{{ old('objectif_long_terme', $project->objectif_long_terme) }}</textarea>
                                             </div>
                                         </div>
                                     </div>
 
                                     <div class="text-right mt-2">
                                         <a href="{{ route('coach.candidats.show', $candidat) }}"
-                                           class="btn btn-outline-secondary mr-2">
+                                            class="btn btn-outline-secondary mr-2">
                                             Annuler
                                         </a>
                                         <button type="submit" class="btn btn-warning">
@@ -177,4 +180,5 @@
     </div>
     @include('section.foot')
 </body>
+
 </html>

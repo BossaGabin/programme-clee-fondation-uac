@@ -34,22 +34,30 @@
                             </button> <strong>Bravo!</strong> {{ session('success') }}
                         </div>
                     @endif
+                    @if (session('error'))
+                        <div class="alert alert-danger alert-dismissible fade show">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                    aria-hidden="true">×</span>
+                            </button> <strong>Erreur!</strong> {{ session('error') }}
+                        </div>
+                    @endif
                 </div>
                 <div class="card">
                     <div class="card-body d-flex justify-content-between">
                         {{-- <div class="col-md-7 align-self-center text-right"> --}}
-                            <div class="">
-                                <a href="{{ route('admin.candidats.index') }}" class="btn btn-sm btn-outline-secondary mr-2">
-                                    <i class="fas fa-arrow-left mr-1"></i> Retour
-                                </a>
+                        <div class="">
+                            <a href="{{ route('admin.candidats.index') }}"
+                                class="btn btn-sm btn-outline-secondary mr-2">
+                                <i class="fas fa-arrow-left mr-1"></i> Retour
+                            </a>
 
-                            </div>
-                            <div class="">
-                                <a href="{{ route('admin.candidats.pdf', $candidat) }}" class="btn btn-sm btn-danger"
-                                    target="_blank">
-                                    <i class="fas fa-file-pdf mr-1"></i> Exporter en PDF
-                                </a>
-                            </div>
+                        </div>
+                        <div class="">
+                            <a href="{{ route('admin.candidats.pdf', $candidat) }}" class="btn btn-sm btn-danger"
+                                target="_blank">
+                                <i class="fas fa-file-pdf mr-1"></i> Exporter en PDF
+                            </a>
+                        </div>
                         {{-- </div> --}}
 
                     </div>

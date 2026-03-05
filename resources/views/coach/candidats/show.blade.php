@@ -35,6 +35,13 @@
                         </button> <strong>Bravo!</strong> {{ session('success') }}
                     </div>
                 @endif
+                @if (session('error'))
+                    <div class="alert alert-danger alert-dismissible fade show">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                aria-hidden="true">×</span>
+                        </button> <strong>Erreur!</strong> {{ session('error') }}
+                    </div>
+                @endif
                 <div class="card">
                     <div class="card-body">
                         <div class="row">
@@ -47,10 +54,11 @@
                                     </a>
                                 @endif
                             </div>
-    
+
                             <div class="col-md-4 mb-2">
                                 @if ($candidat->professionalProject)
-                                    <a href="{{ route('coach.projects.edit', $candidat) }}" class="btn btn-sm btn-warning">
+                                    <a href="{{ route('coach.projects.edit', $candidat) }}"
+                                        class="btn btn-sm btn-warning">
                                         <i class="fas fa-edit mr-1"></i> Modifier le projet professionnel
                                     </a>
                                 @else

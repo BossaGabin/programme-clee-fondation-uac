@@ -63,35 +63,38 @@
                 @endphp
                 <div class="row">
                     <div class="card col-md-12 text-end">
-                        <div class="card-body d-flex justify-content-between">
-                            <div class="">
+                        <div class="card-body d-flex justify-content-between align-items-center">
+
+                            {{-- Bouton Retour --}}
+                            <div>
                                 <a href="{{ route('coach.dashboard') }}" class="btn btn-sm btn-outline-secondary mr-2">
                                     <i class="fas fa-arrow-left mr-1"></i> Retour
                                 </a>
                             </div>
+
+                            {{-- Bouton Orientation (coach uniquement) --}}
                             @if (Auth::user()->role == 'coach')
-                                
-                            <div class="">
-                                {{-- BOUTON ASSIGNER BESOIN --}}
                                 @php $candidat = $interview->appointment->coachAssignment->candidat; @endphp
-                                @if (!$candidat->needAssignment)
-                                    <a href="{{ route('coach.needs.create', $candidat) }}"
-                                        class="btn btn-sm btn-success">
-                                        <i class="fas fa-bullseye mr-1"></i> Assigner l'orientation
-                                    </a>
-                                @else
-                                    <span class="badge badge-success" style="font-size:12px; padding:6px 12px;">
-                                        <i class="fas fa-check mr-1"></i> Orientation déjà assigné
-                                    </span>
-                                @endif
-                            </div>
+                                <div>
+                                    @if (!$candidat->needAssignment)
+                                        <a href="{{ route('coach.needs.create', $candidat) }}"
+                                            class="btn btn-sm btn-success">
+                                            <i class="fas fa-bullseye mr-1"></i> Assigner l'orientation
+                                        </a>
+                                    @else
+                                        <span class="badge badge-success" style="font-size:12px; padding:6px 12px;">
+                                            <i class="fas fa-check mr-1"></i> Orientation déjà assigné
+                                        </span>
+                                    @endif
+                                </div>
                             @endif
-                            <div>
+
+                            {{-- Bouton PDF — masqué sur mobile --}}
+                            <div class="d-none d-md-block">
                                 <a href="{{ route('coach.interviews.pdf', $interview) }}" class="btn btn-sm btn-danger"
                                     target="_blank">
                                     <i class="fas fa-file-pdf mr-1"></i> Exporter PDF
                                 </a>
-
                             </div>
 
                         </div>

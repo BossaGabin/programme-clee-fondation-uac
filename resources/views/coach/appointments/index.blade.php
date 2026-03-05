@@ -27,14 +27,21 @@
                             <i class="fas fa-calendar-check mr-2"></i> Entretiens programmés
                         </h4>
                     </div>
-                    @if (session('success'))
-                        <div class="alert alert-success alert-dismissible fade show">
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-                                    aria-hidden="true">×</span>
-                            </button> <strong>Bravo!</strong> {{ session('success') }}
-                        </div>
-                    @endif
                 </div>
+                @if (session('success'))
+                    <div class="alert alert-success alert-dismissible fade show">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                aria-hidden="true">×</span>
+                        </button> <strong>Bravo!</strong> {{ session('success') }}
+                    </div>
+                @endif
+                @if (session('error'))
+                    <div class="alert alert-danger alert-dismissible fade show">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                aria-hidden="true">×</span>
+                        </button> <strong>Erreur!</strong> {{ session('error') }}
+                    </div>
+                @endif
 
                 <div class="row">
                     <div class="col-12">
@@ -126,15 +133,22 @@
                                                             @endif
                                                         </td>
                                                         <td>
+                                                            {{-- Reporter --}}
+                                                            <a href="{{ route('coach.appointments.report', $appointment) }}"
+                                                                class="btn btn-sm btn-warning mr-1" title="Reporter">
+                                                                <i class="fas fa-calendar-alt mr-1"></i> Reporter
+                                                            </a>
+
+                                                            {{-- Annuler --}}
                                                             <form method="POST"
                                                                 action="{{ route('coach.appointments.destroy', $appointment) }}"
-                                                                onsubmit="return confirm('Annuler cet entretien ?')"
-                                                                style="display:inline;">
+                                                                class="form-annuler d-inline">
                                                                 @csrf
                                                                 @method('DELETE')
-                                                                <button type="submit" class="btn btn-sm btn-danger"
-                                                                    title="Annuler">
-                                                                    <i class="fas fa-times"></i>
+                                                                <button type="button"
+                                                                    class="btn btn-sm btn-danger btn-annuler"
+                                                                    data-name="{{ $appointment->coachAssignment->candidat->name }}">
+                                                                    <i class="fas fa-times mr-1"></i> Annuler
                                                                 </button>
                                                             </form>
                                                         </td>
@@ -153,6 +167,29 @@
         </div>
     </div>
     @include('section.footer')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.querySelectorAll('.btn-annuler').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                const name = this.getAttribute('data-name');
+                const form = this.closest('.form-annuler');
+
+                Swal.fire({
+                    title: 'Annuler l\'entretien ?',
+                    html: `Le candidat <strong>${name}</strong> sera informé par email.`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: '<i class="fas fa-times"></i> Oui, annuler',
+                    cancelButtonText: 'Retour',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) form.submit();
+                });
+            });
+        });
+    </script>
     @include('section.foot')
 </body>
 

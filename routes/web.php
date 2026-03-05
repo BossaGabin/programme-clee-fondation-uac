@@ -138,6 +138,10 @@ Route::middleware(['auth', 'isCoach'])->prefix('coach')->name('coach.')->group(f
 
     //Export la fiche du candidat
     Route::get('/candidats/{candidat}/pdf', [AdminCandidatController::class, 'exportPdf'])->name('candidats.pdf');
+
+    // Annuler ou reporter un entretien 
+Route::get('/appointments/{appointment}/report', [AppointmentController::class, 'editReport'])->name('appointments.report');
+Route::put('/appointments/{appointment}/report', [AppointmentController::class, 'report'])->name('appointments.update.report');
 });
 
 // =============================================

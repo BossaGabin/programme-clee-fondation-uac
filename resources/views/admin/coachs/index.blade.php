@@ -21,7 +21,7 @@
         <div class="content-body">
             <div class="container-fluid">
 
-                <div class="row page-titles">
+                <div class="row mb-3">
                     <div class="col-md-5 align-self-center">
                         <h4 class="text-themecolor">
                             <i class="fas fa-chalkboard-teacher mr-2"></i> Liste des coachs
@@ -32,6 +32,13 @@
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
                                     aria-hidden="true">×</span>
                             </button> <strong>Bravo!</strong> {{ session('success') }}
+                        </div>
+                    @endif
+                    @if (session('error'))
+                        <div class="alert alert-danger alert-dismissible fade show">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                    aria-hidden="true">×</span>
+                            </button> <strong>Erreur!</strong> {{ session('error') }}
                         </div>
                     @endif
                     <div class="col-md-7 align-self-center text-right">

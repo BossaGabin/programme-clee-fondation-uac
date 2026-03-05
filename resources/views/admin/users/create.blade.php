@@ -137,11 +137,11 @@
                                                    value="{{ old('speciality') }}">
                                         </div>
 
-                                        <div class="form-group">
+                                        {{-- <div class="form-group">
                                             <label for="bio">Biographie</label>
                                             <textarea id="bio" name="bio" class="form-control" rows="3"
                                                       placeholder="Présentation du coach..." style="min-height: 100px">{{ old('bio') }}</textarea>
-                                        </div>
+                                        </div> --}}
                                     </div>
 
                                     <div class="text-right mt-4">

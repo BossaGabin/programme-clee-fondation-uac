@@ -56,6 +56,13 @@
                         </button> <strong>Bravo!</strong> {{ session('success') }}
                     </div>
                 @endif
+                @if (session('error'))
+                    <div class="alert alert-danger alert-dismissible fade show">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                aria-hidden="true">×</span>
+                        </button> <strong>Erreur!</strong> {{ session('error') }}
+                    </div>
+                @endif
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
@@ -175,9 +182,11 @@
     {{ old('parcours_professionnel') }}
 </textarea>
                                                                 @error('parcours_professionnel')
-                                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                                    <div class="invalid-feedback">{{ $message }}
+                                                                    </div>
                                                                 @enderror
-                                                                <small class="text-muted">Minimum 50 caractères.</small>
+                                                                <small class="text-muted">Minimum 50
+                                                                    caractères.</small>
                                                             </div>
                                                         </div>
 
@@ -342,7 +351,7 @@
                                 @elseif($entretien && !$interview)
                                     {{-- Entretien programmé mais pas encore passé --}}
                                     <div class="row align-items-center">
-                                        <div class="col-md-8">
+                                        <div class="col-md-12">
                                             <div
                                                 style="background:#f0f9f0; border-left:4px solid #006b08;
                                         border-radius:4px; padding:15px 20px;">
@@ -374,11 +383,16 @@
                                                 <p class="mb-0">
                                                     <i class="fas fa-chalkboard-teacher mr-2 text-muted"></i>
                                                     Avec Coach
-                                                    <strong>{{ $candidat->candidatAssignment?->coach?->name ?? 'votre coach' }}</strong>
+                                                    <strong>{{ $candidat->candidatAssignment?->coach?->name ?? 'votre coach' }}</strong> 
+                                                    <p>
+                                                        <small>{{$candidat->candidatAssignment?->coach?->phone ?? 'Aucun numéro renseigné'}} / </small>
+                                                        <small>{{$candidat->candidatAssignment?->coach?->email ?? 'Aucun email renseigné'}}</small>
+
+                                                    </p>
                                                 </p>
                                             </div>
                                         </div>
-                                        <div class="col-md-4 text-center">
+                                        {{-- <div class="col-md-4 text-center">
                                             @php
                                                 $jours = \Carbon\Carbon::now()->diffInDays(
                                                     \Carbon\Carbon::parse($entretien->scheduled_date),
@@ -401,7 +415,7 @@
                                                     @endif
                                                 </small>
                                             @endif
-                                        </div>
+                                        </div> --}}
                                     </div>
                                     {{-- @elseif($interview) --}}
                                     {{-- Entretien passé avec notes --}}

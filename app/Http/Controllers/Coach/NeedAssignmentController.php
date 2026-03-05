@@ -15,7 +15,7 @@ class NeedAssignmentController extends Controller
         $interview = Interview::whereHas('appointment.coachAssignment', function ($q) use ($candidat) {
             $q->where('candidat_id', $candidat->id);
         })->where('status', 'completed')->latest()->first();
-        
+
         return view('coach.needs.create', compact('candidat', 'interview'));
     }
 
@@ -45,7 +45,9 @@ class NeedAssignmentController extends Controller
             'program_end_date'   => $request->program_end_date,
         ]);
 
-        return redirect()->route('coach.candidats.show', $candidat)
-            ->with('success', 'Besoin enregistré. Vous pouvez maintenant commencer le suivi.');
+        // return redirect()->route('coach.candidats.show', $candidat)
+        //     ->with('success', 'Besoin enregistré. Vous pouvez maintenant commencer le suivi.');
+        return redirect()->route('coach.interviews.report', $interview)
+            ->with('success', 'Orientation assignée. Vous pouvez consulter et exporter le rapport PDF.');
     }
 }

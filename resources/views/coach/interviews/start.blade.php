@@ -71,6 +71,13 @@
                             </button> <strong>Bravo!</strong> {{ session('success') }}
                         </div>
                     @endif
+                    @if (session('error'))
+                        <div class="alert alert-danger alert-dismissible fade show">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                    aria-hidden="true">×</span>
+                            </button> <strong>Erreur!</strong> {{ session('error') }}
+                        </div>
+                    @endif
                     <div class="col-md-6 align-self-center text-right">
                         <small class="text-muted">
                             Candidat : <strong>{{ $appointment->coachAssignment->candidat->name }}</strong>
