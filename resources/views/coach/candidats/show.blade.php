@@ -21,11 +21,24 @@
         <div class="content-body">
             <div class="container-fluid">
 
-                <div class="row page-titles">
+                <div class="row mb-3">
                     <div class="col-md-5 align-self-center">
                         <h4 class="text-themecolor">
                             <i class="fas fa-user mr-2"></i> Fiche candidat
                         </h4>
+                    </div>
+                    <div class="col-md-7 align-self-center text-right">
+
+                        {{-- @if (!$candidat->professionalProject)
+                            <a href="{{ route('coach.projects.create', $candidat) }}" class="btn btn-sm btn-success">
+                                <i class="fas fa-plus mr-1"></i> Définir le projet professionnel
+                            </a>
+                        @endif --}}
+
+                        <a href="{{ route('coach.candidats.pdf', $candidat) }}" class="btn btn-sm btn-danger"
+                            target="_blank">
+                            <i class="fas fa-file-pdf mr-1"></i> Exporter la fiche candidat en PDF
+                        </a>
                     </div>
                 </div>
                 @if (session('success'))
@@ -42,41 +55,6 @@
                         </button> <strong>Erreur!</strong> {{ session('error') }}
                     </div>
                 @endif
-                <div class="card">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-4 mb-2">
-                                {{-- Programmer entretien --}}
-                                @if ($assignment && !$interview)
-                                    <a href="{{ route('coach.appointments.create', $assignment) }}"
-                                        class="btn btn-sm btn-primary">
-                                        <i class="fas fa-calendar-plus mr-1"></i> Programmer un entretien
-                                    </a>
-                                @endif
-                            </div>
-
-                            <div class="col-md-4 mb-2">
-                                @if ($candidat->professionalProject)
-                                    <a href="{{ route('coach.projects.edit', $candidat) }}"
-                                        class="btn btn-sm btn-warning">
-                                        <i class="fas fa-edit mr-1"></i> Modifier le projet professionnel
-                                    </a>
-                                @else
-                                    <a href="{{ route('coach.projects.create', $candidat) }}"
-                                        class="btn btn-sm btn-success">
-                                        <i class="fas fa-plus mr-1"></i> Définir le projet professionnel
-                                    </a>
-                                @endif
-                            </div>
-                            <div class="col-md-4 mb-2">
-                                <a href="{{ route('coach.candidats.pdf', $candidat) }}" class="btn btn-sm btn-danger"
-                                    target="_blank">
-                                    <i class="fas fa-file-pdf mr-1"></i> Exporter en PDF
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
                 <div class="row">
 
@@ -349,12 +327,84 @@
                         @endif
 
                         {{-- Projet professionnel --}}
-                        @if ($candidat->professionalProject)
-                            <div class="card">
-                                <div class="card-header">
+                        {{-- @if ($candidat->professionalProject)
+                            <div class="row card">
+                                <div class="card-header col-md-5">
                                     <h6 class="mb-0 font-weight-bold">
                                         <i class="fas fa-project-diagram mr-2 text-info"></i> Projet professionnel
                                     </h6>
+                                    <div class="col-md-7 align-self-center text-right">
+
+                                            <a href="{{ route('coach.projects.edit', $candidat) }}"
+                                                class="btn btn-sm btn-warning">
+                                                <i class="fas fa-edit mr-1"></i> Modifier
+                                            </a>
+
+                                        <a href="{{ route('coach.candidats.pdf', $candidat) }}"
+                                            class="btn btn-sm btn-danger" target="_blank">
+                                            <i class="fas fa-file-pdf mr-1"></i> Exporter en PDF
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    @php $projet = $candidat->professionalProject; @endphp
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <small class="text-muted">Titre du projet</small>
+                                            <p class="font-weight-bold mb-2">{{ $projet->titre_projet }}</p>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <small class="text-muted">Secteur cible</small>
+                                            <p class="font-weight-bold mb-2">{{ $projet->secteur_cible ?? '—' }}</p>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <small class="text-muted">Poste visé</small>
+                                            <p class="font-weight-bold mb-2">{{ $projet->poste_vise ?? '—' }}</p>
+                                        </div>
+                                        @if ($projet->description)
+                                            <div class="col-md-12">
+                                                <small class="text-muted">Description</small>
+                                                <p class="mb-2">{{ $projet->description }}</p>
+                                            </div>
+                                        @endif
+                                        @if ($projet->objectif_court_terme)
+                                            <div class="col-md-6">
+                                                <small class="text-muted">
+                                                    <i class="fas fa-flag text-warning mr-1"></i> Objectif court terme
+                                                </small>
+                                                <p class="mb-0">{{ $projet->objectif_court_terme }}</p>
+                                            </div>
+                                        @endif
+                                        @if ($projet->objectif_long_terme)
+                                            <div class="col-md-6">
+                                                <small class="text-muted">
+                                                    <i class="fas fa-flag-checkered text-success mr-1"></i> Objectif
+                                                    long terme
+                                                </small>
+                                                <p class="mb-0">{{ $projet->objectif_long_terme }}</p>
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                        @endif --}}
+                        {{-- Projet professionnel --}}
+                        @if ($candidat->professionalProject)
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h6 class="mb-0 font-weight-bold">
+                                        <i class="fas fa-project-diagram mr-2 text-info"></i> Projet professionnel
+                                    </h6>
+                                    <div>
+                                        <a href="{{ route('coach.projects.edit', $candidat) }}"
+                                            class="btn btn-sm btn-warning mr-1">
+                                            <i class="fas fa-edit mr-1"></i> Modifier
+                                        </a>
+                                        <a href="{{ route('coach.projects.pdf', $candidat) }}"
+                                            class="btn btn-sm btn-danger d-none d-md-inline-block" target="_blank">
+                                            <i class="fas fa-file-pdf mr-1"></i> Exporter en PDF
+                                        </a>
+                                    </div>
                                 </div>
                                 <div class="card-body">
                                     @php $projet = $candidat->professionalProject; @endphp
@@ -402,10 +452,16 @@
                         {{-- Résultats entretien --}}
                         @if ($interview)
                             <div class="card">
-                                <div class="card-header">
+                                <div class="card-header d-flex justify-content-between align-items-center">
                                     <h6 class="mb-0 font-weight-bold">
                                         <i class="fas fa-star mr-2 text-warning"></i> Résultats de l'entretien
                                     </h6>
+                                    <div>
+                                        <a href="{{ route('coach.interviews.pdf', $interview) }}"
+                                            class="btn btn-sm btn-danger d-none d-md-inline-block" target="_blank">
+                                            <i class="fas fa-file-pdf mr-1"></i> Exporter en PDF
+                                        </a>
+                                    </div>
                                 </div>
                                 <div class="card-body">
                                     <div class="row">

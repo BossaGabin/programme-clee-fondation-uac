@@ -78,8 +78,13 @@ Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(f
     Route::get('/utilisateurs',        [UserController::class, 'index'])->name('users.index');
     Route::delete('/utilisateurs/{user}', [UserController::class, 'destroy'])->name('users.destroy');
 
-    // Rapport d'evaluation dans la liste des candidats
+    // Rapport d'evaluation dans la liste des candidats et exporter en pdf
     Route::get('/candidats/{candidat}/rapport', [InterviewController::class, 'reportByCandidat'])->name('candidats.rapport');
+    Route::get('/entretiens/{interview}/pdf',          [InterviewController::class, 'exportPdf'])->name('interviews.pdf');
+
+    //exporter en pdf le projet professionnel d'un candidat dans le show
+    Route::get('/candidats/{candidat}/project/pdf', [ProfessionalProjectController::class, 'exportPdf'])->name('projects.pdf');
+
 
     // Profil admin
     Route::get('/profile',          [\App\Http\Controllers\ProfileController::class, 'edit'])->name('profile.edit');
@@ -117,6 +122,8 @@ Route::middleware(['auth', 'isCoach'])->prefix('coach')->name('coach.')->group(f
     Route::post('/candidats/{candidat}/projet',      [ProfessionalProjectController::class, 'store'])->name('projects.store');
     Route::get('/candidats/{candidat}/projet/edit',  [ProfessionalProjectController::class, 'edit'])->name('projects.edit');
     Route::put('/candidats/{candidat}/projet',       [ProfessionalProjectController::class, 'update'])->name('projects.update');
+    Route::get('/candidats/{candidat}/project', [ProfessionalProjectController::class, 'show'])->name('projects.show');
+    Route::get('/candidats/{candidat}/project/pdf', [ProfessionalProjectController::class, 'exportPdf'])->name('projects.pdf');
 
     // Affectation du besoin
     Route::get('/candidats/{candidat}/besoin',       [NeedAssignmentController::class, 'create'])->name('needs.create');
@@ -140,8 +147,8 @@ Route::middleware(['auth', 'isCoach'])->prefix('coach')->name('coach.')->group(f
     Route::get('/candidats/{candidat}/pdf', [AdminCandidatController::class, 'exportPdf'])->name('candidats.pdf');
 
     // Annuler ou reporter un entretien 
-Route::get('/appointments/{appointment}/report', [AppointmentController::class, 'editReport'])->name('appointments.report');
-Route::put('/appointments/{appointment}/report', [AppointmentController::class, 'report'])->name('appointments.update.report');
+    Route::get('/appointments/{appointment}/report', [AppointmentController::class, 'editReport'])->name('appointments.report');
+    Route::put('/appointments/{appointment}/report', [AppointmentController::class, 'report'])->name('appointments.update.report');
 });
 
 // =============================================
@@ -166,6 +173,9 @@ Route::middleware(['auth', 'isCandidat'])->prefix('candidat')->name('candidat.')
 
     // Demande de diagnostic
     Route::post('/demande-diagnostic', [CandidatDiagnosticController::class, 'store'])->name('diagnostic.store');
+
+    // Exporter son projet professionnel
+    Route::get('/project/pdf', [CandidatDashboard::class, 'exportPdfCandidat'])->name('projects.pdf');
 });
 
 Route::get('/', function () {

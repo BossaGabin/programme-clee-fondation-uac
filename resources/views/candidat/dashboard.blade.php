@@ -1,27 +1,7 @@
-{{-- <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Dashboard') }}
-        </h2>
-    </x-slot>
-
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    {{ __("You're logged in!") }}
-                </div>
-            </div>
-        </div>
-    </div>
-</x-app-layout> --}}
-
 <!DOCTYPE html>
 <html lang="en">
-
 <title>CLEE - Tableau de bord</title>
 @include('section.head')
-
 
 <body class="v-light vertical-nav fix-header fix-sidebar">
     <div id="preloader">
@@ -35,7 +15,6 @@
     <div id="main-wrapper">
         @include('section.header')
         @include('section.sidebar')
-
         <!-- content body -->
         <div class="content-body">
             <div class="container">
@@ -43,11 +22,6 @@
                     <div class="col p-0">
                         <h4>Salut, <span>{{ Auth::user()->name }}</span></h4>
                     </div>
-                    {{-- <div class="col-md-7 align-self-center text-right">
-                        <strong class="text-muted">
-                            {{ \Carbon\Carbon::now('Africa/Porto-Novo')->locale('fr')->isoFormat('dddd D MMMM YYYY HH[h]mm') }}
-                        </strong>
-                    </div> --}}
                 </div>
                 @if (session('success'))
                     <div class="alert alert-success alert-dismissible fade show">
@@ -86,19 +60,17 @@
                                         <small class="text-muted">Profil complété</small>
                                     </div>
                                 </div>
-
                                 <div class="progress" style="height: 10px; border-radius: 10px;">
                                     <div class="progress-bar
-                                @if (($profile->profile_completion ?? 0) < 50) bg-danger
-                                @elseif(($profile->profile_completion ?? 0) < 100) bg-warning
-                                @else bg-success @endif"
+                                 @if (($profile->profile_completion ?? 0) < 50) bg-danger
+                                 @elseif(($profile->profile_completion ?? 0) < 100) bg-warning
+                                 @else bg-success @endif"
                                         role="progressbar"
                                         style="width: {{ $profile->profile_completion ?? 0 }}%; border-radius: 10px;"
                                         aria-valuenow="{{ $profile->profile_completion ?? 0 }}" aria-valuemin="0"
                                         aria-valuemax="100">
                                     </div>
                                 </div>
-
                                 @if (($profile->profile_completion ?? 0) < 100)
                                     <div class="mt-2 d-flex align-items-center justify-content-between">
                                         <small class="text-danger">
@@ -122,7 +94,6 @@
                     </div>
                 </div>
                 <div class="row">
-
                     {{-- Statut de la demande de diagnostic --}}
                     <div class="col-md-4">
                         <div class="card">
@@ -131,7 +102,6 @@
                                     <i class="fas fa-clipboard-list text-primary mr-2"></i>
                                     Demande de diagnostic
                                 </h5>
-
                             </div>
                             <div class="card-body text-center">
                                 @if (!$demande)
@@ -143,7 +113,6 @@
                                             data-target="#modalDiagnostic">
                                             <i class="fas fa-paper-plane mr-1"></i> Faire une demande
                                         </button>
-
                                         {{-- Modal --}}
                                         <div class="modal fade" id="modalDiagnostic">
                                             <div class="modal-dialog modal-dialog-centered" role="document">
@@ -157,7 +126,6 @@
                                                             <span>&times;</span>
                                                         </button>
                                                     </div>
-
                                                     <form method="POST"
                                                         action="{{ route('candidat.diagnostic.store') }}">
                                                         @csrf
@@ -178,9 +146,7 @@
                                                                 </label>
                                                                 <textarea id="parcours_professionnel" name="parcours_professionnel"
                                                                     class="form-control @error('parcours_professionnel') is-invalid @enderror" rows="15" style="min-height: 150px;"
-                                                                    placeholder="Décrivez votre formation, vos expériences, vos compétences et vos objectifs professionnels...">
-    {{ old('parcours_professionnel') }}
-</textarea>
+                                                                    placeholder="Décrivez votre formation, vos expériences, vos compétences et vos objectifs professionnels...">  {{ old('parcours_professionnel') }} </textarea>
                                                                 @error('parcours_professionnel')
                                                                     <div class="invalid-feedback">{{ $message }}
                                                                     </div>
@@ -189,7 +155,6 @@
                                                                     caractères.</small>
                                                             </div>
                                                         </div>
-
                                                         <div class="modal-footer">
                                                             <button type="button" class="btn btn-danger"
                                                                 data-dismiss="modal">
@@ -201,7 +166,6 @@
                                                             </button>
                                                         </div>
                                                     </form>
-
                                                 </div>
                                             </div>
                                         </div>
@@ -229,7 +193,6 @@
                             </div>
                         </div>
                     </div>
-
                     {{-- Informations du coach assigné --}}
                     <div class="col-md-4">
                         <div class="card">
@@ -264,7 +227,6 @@
                             </div>
                         </div>
                     </div>
-
                     {{-- Besoin professionnel --}}
                     <div class="col-md-4">
                         <div class="card">
@@ -330,7 +292,6 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
                 {{-- ===== BLOC ENTRETIEN ===== --}}
                 <div class="row">
@@ -342,7 +303,6 @@
                                 </h5>
                             </div>
                             <div class="card-body">
-
                                 @if (!$entretien && !$interview)
                                     <div class="text-center py-3">
                                         <i class="fas fa-calendar fa-2x text-muted mb-2 d-block"></i>
@@ -354,7 +314,7 @@
                                         <div class="col-md-12">
                                             <div
                                                 style="background:#f0f9f0; border-left:4px solid #006b08;
-                                        border-radius:4px; padding:15px 20px;">
+                                    border-radius:4px; padding:15px 20px;">
                                                 <p class="mb-2 font-weight-bold">
                                                     <i class="fas fa-calendar-check text-success mr-2"></i>
                                                     Entretien programmé
@@ -383,130 +343,16 @@
                                                 <p class="mb-0">
                                                     <i class="fas fa-chalkboard-teacher mr-2 text-muted"></i>
                                                     Avec Coach
-                                                    <strong>{{ $candidat->candidatAssignment?->coach?->name ?? 'votre coach' }}</strong> 
-                                                    <p>
-                                                        <small>{{$candidat->candidatAssignment?->coach?->phone ?? 'Aucun numéro renseigné'}} / </small>
-                                                        <small>{{$candidat->candidatAssignment?->coach?->email ?? 'Aucun email renseigné'}}</small>
-
-                                                    </p>
+                                                    <strong>{{ $candidat->candidatAssignment?->coach?->name ?? 'votre coach' }}</strong>
+                                                <p>
+                                                    <small>{{ $candidat->candidatAssignment?->coach?->phone ?? 'Aucun numéro renseigné' }}
+                                                        / </small>
+                                                    <small>{{ $candidat->candidatAssignment?->coach?->email ?? 'Aucun email renseigné' }}</small>
+                                                </p>
                                                 </p>
                                             </div>
                                         </div>
-                                        {{-- <div class="col-md-4 text-center">
-                                            @php
-                                                $jours = \Carbon\Carbon::now()->diffInDays(
-                                                    \Carbon\Carbon::parse($entretien->scheduled_date),
-                                                    false,
-                                                );
-                                            @endphp
-                                            @if ($jours >= 0)
-                                                <div style="font-size:36px; font-weight:bold; color:#006b08;">
-                                                    @if ($jours === 0)
-                                                        {{ \Carbon\Carbon::parse($entretien->date_heure)->format('H:i') }}
-                                                    @else
-                                                        J-{{ $jours }}
-                                                    @endif
-                                                </div>
-                                                <small class="text-muted">
-                                                    @if ($jours === 0)
-                                                        Entretien prévu aujourd'hui
-                                                    @else
-                                                        avant l'entretien
-                                                    @endif
-                                                </small>
-                                            @endif
-                                        </div> --}}
                                     </div>
-                                    {{-- @elseif($interview) --}}
-                                    {{-- Entretien passé avec notes --}}
-                                    {{-- <div class="row">
-                                        <div class="col-md-3 text-center">
-                                            @php
-                                                $scoreColor =
-                                                    $interview->total_score >= 60
-                                                        ? '#1cc88a'
-                                                        : ($interview->total_score >= 40
-                                                            ? '#f6c23e'
-                                                            : '#e74a3b');
-                                                $scoreLabel =
-                                                    $interview->total_score >= 60
-                                                        ? 'Bien'
-                                                        : ($interview->total_score >= 40
-                                                            ? 'Moyen'
-                                                            : 'À améliorer');
-                                            @endphp
-                                            <div
-                                                style="width:90px; height:90px; border-radius:50%; margin:0 auto;
-                                        background:{{ $scoreColor }}; display:flex;
-                                        align-items:center; justify-content:center;">
-                                                <span style="color:#fff; font-size:20px; font-weight:bold;">
-                                                    {{ $interview->total_score }}/100
-                                                </span>
-                                            </div>
-                                            <p class="mt-2 mb-0 font-weight-bold" style="color:{{ $scoreColor }};">
-                                                {{ $scoreLabel }}
-                                            </p>
-                                            <small class="text-muted">Score global</small>
-                                        </div>
-
-                                        <div class="col-md-9">
-                                            <div class="table-responsive">
-                                                <table class="table table-sm mb-0">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Compétence</th>
-                                                            <th>Note</th>
-                                                            <th></th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        @foreach ($interview->scores as $score)
-                                                            <tr>
-                                                                <td>{{ $score->competence->name }}</td>
-                                                                <td><strong>{{ $score->note }}/20</strong></td>
-                                                                <td style="width:120px;">
-                                                                    <div class="progress" style="height:6px;">
-                                                                        <div class="progress-bar
-                                                            @if ($score->note < 8) bg-danger
-                                                            @elseif($score->note < 14) bg-warning
-                                                            @else bg-success @endif"
-                                                                            style="width:{{ ($score->note / 20) * 100 }}%">
-                                                                        </div>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                        @endforeach
-                                                    </tbody>
-                                                </table>
-                                            </div>
-
-                                            @if ($interview->strengths || $interview->weaknesses)
-                                                <div class="row mt-3">
-                                                    @if ($interview->strengths)
-                                                        <div class="col-md-6">
-                                                            <small class="font-weight-bold text-success">
-                                                                <i class="fas fa-plus-circle mr-1"></i> Points forts
-                                                            </small>
-                                                            <p class="text-muted mt-1" style="font-size:12px;">
-                                                                {{ $interview->strengths }}
-                                                            </p>
-                                                        </div>
-                                                    @endif
-                                                    @if ($interview->weaknesses)
-                                                        <div class="col-md-6">
-                                                            <small class="font-weight-bold text-danger">
-                                                                <i class="fas fa-minus-circle mr-1"></i> Points à
-                                                                améliorer
-                                                            </small>
-                                                            <p class="text-muted mt-1" style="font-size:12px;">
-                                                                {{ $interview->weaknesses }}
-                                                            </p>
-                                                        </div>
-                                                    @endif
-                                                </div>
-                                            @endif
-                                        </div>
-                                    </div> --}}
                                 @elseif($interview)
                                     @php
                                         $noteFinale = round($interview->total_score / 5);
@@ -534,9 +380,7 @@
                                         };
                                         $blocColors = ['#006b08', '#4e73df', '#1cc88a', '#f6c23e', '#e74a3b'];
                                     @endphp
-
                                     <div class="row align-items-center">
-
                                         {{-- Cercle score --}}
                                         <div class="col-md-3 text-center">
                                             <div
@@ -562,7 +406,6 @@
                                                     style="color:{{ $scoreColor }}; font-weight:bold;">{{ $orientation }}</span>
                                             </div>
                                         </div>
-
                                         {{-- Barres par bloc --}}
                                         <div class="col-md-9">
                                             @foreach ($interview->scores->sortBy('competence.order') as $index => $score)
@@ -590,7 +433,6 @@
                                                     </div>
                                                 </div>
                                             @endforeach
-
                                             <hr class="my-2">
                                             <div class="d-flex justify-content-between align-items-center">
                                                 <small class="text-muted">Total général</small>
@@ -601,7 +443,6 @@
                                                 <strong
                                                     style="font-size:18px; color:{{ $scoreColor }};">{{ $noteFinale }}/20</strong>
                                             </div>
-
                                             @if ($interview->strengths || $interview->weaknesses)
                                                 <div class="row mt-3">
                                                     @if ($interview->strengths)
@@ -630,7 +471,6 @@
                                                 </div>
                                             @endif
                                         </div>
-
                                     </div>
                                 @endif
                             </div>
@@ -638,6 +478,119 @@
                     </div>
                 </div>
 
+
+                {{-- ===== BLOC PROJET PROFESSIONNEL ===== --}}
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="card-title mb-0">
+                                    <i class="fas fa-project-diagram text-info mr-2"></i> Mon Projet Professionnel
+                                </h5>
+
+                                @if (auth()->user()->professionalProject)
+                                    <a href="{{ route('candidat.projects.pdf') }}"
+                                        class="btn btn-sm btn-danger d-none d-md-inline-block" target="_blank">
+                                        <i class="fas fa-file-pdf mr-1"></i> Exporter en PDF
+                                    </a>
+                                @endif
+                            </div>
+
+                            <div class="card-body">
+
+                                @if (!auth()->user()->professionalProject)
+
+                                    {{-- Aucun projet --}}
+                                    <div class="text-center py-3">
+                                        <i class="fas fa-project-diagram fa-2x text-muted mb-2 d-block"></i>
+                                        <p class="text-muted mb-0">
+                                            Votre projet professionnel n'a pas encore été défini.
+                                        </p>
+                                        <small class="text-muted">
+                                            Votre coach s'en chargera après votre entretien de diagnostic.
+                                        </small>
+                                    </div>
+                                @else
+                                    @php $projet = auth()->user()->professionalProject; @endphp
+
+                                    <div class="row">
+
+                                        <div class="col-md-4">
+                                            <small class="text-muted">Titre du projet</small>
+                                            <p class="font-weight-bold mb-2">
+                                                {{ $projet->titre_projet }}
+                                            </p>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <small class="text-muted">Secteur cible</small>
+                                            <p class="font-weight-bold mb-2">
+                                                {{ $projet->secteur_cible ?? '—' }}
+                                            </p>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <small class="text-muted">Poste visé</small>
+                                            <p class="font-weight-bold mb-2">
+                                                {{ $projet->poste_vise ?? '—' }}
+                                            </p>
+                                        </div>
+
+                                        @if ($projet->description)
+                                            <div class="col-12">
+                                                <small class="text-muted">Description</small>
+                                                <p class="mb-2">
+                                                    {{ $projet->description }}
+                                                </p>
+                                            </div>
+                                        @endif
+
+                                        @if ($projet->objectif_court_terme)
+                                            <div class="col-md-6">
+                                                <small class="text-muted">
+                                                    <i class="fas fa-flag text-warning mr-1"></i>
+                                                    Objectif court terme
+                                                </small>
+                                                <p class="mb-0">
+                                                    {{ $projet->objectif_court_terme }}
+                                                </p>
+                                            </div>
+                                        @endif
+
+                                        @if ($projet->objectif_long_terme)
+                                            <div class="col-md-6">
+                                                <small class="text-muted">
+                                                    <i class="fas fa-flag-checkered text-success mr-1"></i>
+                                                    Objectif long terme
+                                                </small>
+                                                <p class="mb-0">
+                                                    {{ $projet->objectif_long_terme }}
+                                                </p>
+                                            </div>
+                                        @endif
+
+                                    </div>
+
+                                    <div class="mt-3" style="font-size:12px; color:#aaa;">
+                                        <i class="fas fa-calendar-alt mr-1"></i>
+                                        Enregistré le {{ $projet->created_at->format('d/m/Y') }}
+
+                                        @if ($projet->updated_at->ne($projet->created_at))
+                                            — <small>
+                                                Modifié le {{ $projet->updated_at->format('d/m/Y') }}
+                                            </small>
+                                        @endif
+                                    </div>
+
+                                @endif
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                {{-- Mon Parcours --}}
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
@@ -661,7 +614,6 @@
                                     <div class="timeline">
                                         @foreach ($steps as $step)
                                             <div class="timeline-item d-flex mb-4">
-
                                                 {{-- Icône statut --}}
                                                 <div class="timeline-icon mr-3" style="flex-shrink:0;">
                                                     @if ($step->status === 'completed')
@@ -676,7 +628,6 @@
                                                         </div>
                                                     @endif
                                                 </div>
-
                                                 {{-- Contenu --}}
                                                 <div class="timeline-content flex-grow-1">
                                                     <div class="d-flex justify-content-between align-items-start">
@@ -688,7 +639,8 @@
                                                     </div>
                                                     @if ($step->description)
                                                         <p class="text-muted mb-1" style="font-size:13px;">
-                                                            {{ $step->description }}</p>
+                                                            {{ $step->description }}
+                                                        </p>
                                                     @endif
                                                     @if ($step->result)
                                                         <p class="mb-1" style="font-size:13px;">
@@ -705,7 +657,6 @@
                                                         @endif
                                                     </small>
                                                 </div>
-
                                             </div>
                                         @endforeach
                                     </div>
@@ -715,6 +666,42 @@
                     </div>
                 </div>
 
+                {{-- GRAPHIQUES --}}
+                {{-- @if ($interview || $compteurs['steps_total'] > 0)
+                    <div class="row mt-4">
+
+                        @if ($interview && count($radarChart['labels']) > 0)
+                            <div class="col-md-6 mb-4">
+                                <div class="card h-100">
+                                    <div class="card-header">
+                                        <h6 class="mb-0 font-weight-bold">
+                                            <i class="fas fa-chart-area mr-2 text-primary"></i> Mes compétences
+                                        </h6>
+                                    </div>
+                                    <div class="card-body d-flex justify-content-center align-items-center">
+                                        <canvas id="radarChart" style="max-height:260px;"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+
+                        @if ($compteurs['steps_total'] > 0)
+                            <div class="col-md-6 mb-4">
+                                <div class="card h-100">
+                                    <div class="card-header">
+                                        <h6 class="mb-0 font-weight-bold">
+                                            <i class="fas fa-tasks mr-2 text-warning"></i> Progression de mon parcours
+                                        </h6>
+                                    </div>
+                                    <div class="card-body d-flex justify-content-center align-items-center">
+                                        <canvas id="parcourChart" style="max-height:260px;"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+
+                    </div>
+                @endif --}}
             </div>
         </div>
     </div>
@@ -722,9 +709,84 @@
     </div>
     <!-- #/ content body -->
     <!-- footer -->
-
     <!-- #/ footer -->
     </div>
+    {{-- Chart.js --}}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        @if ($interview && count($radarChart['labels']) > 0)
+            new Chart(document.getElementById('radarChart'), {
+                type: 'radar',
+                data: {
+                    labels: @json($radarChart['labels']),
+                    datasets: [{
+                        label: 'Score /20',
+                        data: @json($radarChart['data']),
+                        backgroundColor: 'rgba(0, 107, 8, 0.15)',
+                        borderColor: '#006b08',
+                        pointBackgroundColor: '#006b08',
+                        pointRadius: 4,
+                        borderWidth: 2,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        r: {
+                            min: 0,
+                            max: 20,
+                            ticks: {
+                                stepSize: 5,
+                                font: {
+                                    size: 10
+                                }
+                            },
+                            pointLabels: {
+                                font: {
+                                    size: 11
+                                }
+                            },
+                            grid: {
+                                color: '#e0e0e0'
+                            },
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        @endif
+
+        @if ($compteurs['steps_total'] > 0)
+            new Chart(document.getElementById('parcourChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: @json($parcourChart['labels']),
+                    datasets: [{
+                        data: @json($parcourChart['data']),
+                        backgroundColor: ['#1cc88a', '#f6c23e'],
+                        borderWidth: 2,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: {
+                                    size: 11
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        @endif
+    </script>
     @include('section.footer')
     @include('section.foot')
     {{-- Rouvrir le modal si erreur de validation --}}
@@ -735,7 +797,6 @@
             });
         </script>
     @endif
-
 </body>
 
 </html>

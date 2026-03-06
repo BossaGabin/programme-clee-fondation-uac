@@ -404,9 +404,237 @@
                     </div>
                 </div>
 
+                <div class="row page-titles">
+                    <div class="col-md-12 align-self-center">
+                        <h4 class="text-themecolor">
+                            <i class="fas fa-chart-bar mr-2"></i> Statistiques & Graphiques
+                        </h4>
+                        {{-- <small class="text-muted">Vue d'ensemble de la plateforme CLEE</small> --}}
+                    </div>
+                </div>
+
+                {{-- GRAPHIQUES --}}
+                <div class="row mt-4">
+                    {{-- Donut Orientations --}}
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header">
+                                <h6 class="mb-0 font-weight-bold">
+                                    <i class="fas fa-bullseye mr-2 text-success"></i> Orientations
+                                </h6>
+                            </div>
+                            <div class="card-body d-flex justify-content-center align-items-center">
+                                <canvas id="orientationsChart" style="max-height:220px;"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Donut Suivi étapes --}}
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header">
+                                <h6 class="mb-0 font-weight-bold">
+                                    <i class="fas fa-tasks mr-2 text-warning"></i> Suivi du parcours
+                                </h6>
+                            </div>
+                            <div class="card-body d-flex justify-content-center align-items-center">
+                                <canvas id="stepsChart" style="max-height:220px;"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                {{-- Évolution des affectations & Score moyen par compétence --}}
+                {{-- <div class="row mt-4">
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header d-flex justify-content-between align-items-center" >
+                                <h6 class="mb-0 font-weight-bold">
+                                    <i class="fas fa-chart-line mr-2 text-info"></i>
+                                    Évolution des candidats affectés
+                                </h6>
+
+                                <div class="btn-group btn-group-sm" role="group"  >
+                                    @foreach (['jour' => 'Jour', 'semaine' => 'Semaine', 'mois' => 'Mois', 'annee' => 'Année'] as $key => $label)
+                                        <a href="{{ request()->fullUrlWithQuery(['periode' => $key]) }}"
+                                            class="btn {{ $evolutionChart['periode'] === $key ? 'btn-primary' : 'btn-outline-primary' }}">
+                                            {{ $label }}
+                                        </a>
+                                    @endforeach
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="evolutionChart" style="max-height:220px;"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header">
+                                <h6 class="mb-0 font-weight-bold">
+                                    <i class="fas fa-chart-bar mr-2 text-primary"></i> Score moyen par compétence
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="scoresChart" style="max-height:220px;"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div> --}}
             </div>
         </div>
     </div>
+    {{-- Chart.js --}}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // 1. Donut Orientations
+        new Chart(document.getElementById('orientationsChart'), {
+            type: 'doughnut',
+            data: {
+                labels: @json($orientationsChart['labels']),
+                datasets: [{
+                    data: @json($orientationsChart['data']),
+                    backgroundColor: ['#4e73df', '#1cc88a', '#f6c23e', '#e74a3b'],
+                    borderWidth: 2,
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            font: {
+                                size: 11
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // 2. Bar horizontal Scores
+        new Chart(document.getElementById('scoresChart'), {
+            type: 'bar',
+            data: {
+                labels: @json($scoresChart['labels']),
+                datasets: [{
+                    label: 'Score moyen /20',
+                    data: @json($scoresChart['data']),
+                    backgroundColor: '#006b08cc',
+                    borderColor: '#006b08',
+                    borderWidth: 1,
+                    borderRadius: 4,
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                scales: {
+                    x: {
+                        min: 0,
+                        max: 20,
+                        grid: {
+                            color: '#f0f0f0'
+                        }
+                    },
+                    y: {
+                        ticks: {
+                            font: {
+                                size: 11
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+
+        // 3. Donut Étapes
+        new Chart(document.getElementById('stepsChart'), {
+            type: 'doughnut',
+            data: {
+                labels: @json($stepsChart['labels']),
+                datasets: [{
+                    data: @json($stepsChart['data']),
+                    backgroundColor: ['#1cc88a', '#f6c23e'],
+                    borderWidth: 2,
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            font: {
+                                size: 11
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+    <script>
+        new Chart(document.getElementById('evolutionChart'), {
+            type: 'line',
+            data: {
+                labels: @json($evolutionChart['labels']),
+                datasets: [{
+                    label: 'Candidats affectés',
+                    data: @json($evolutionChart['data']),
+                    borderColor: '#006b08',
+                    backgroundColor: 'rgba(0, 107, 8, 0.08)',
+                    pointBackgroundColor: '#006b08',
+                    pointRadius: 5,
+                    pointHoverRadius: 7,
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4,
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1,
+                            precision: 0
+                        },
+                        grid: {
+                            color: '#f0f0f0'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            font: {
+                                size: 11
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: ctx => ` ${ctx.parsed.y} candidat(s)`
+                        }
+                    }
+                }
+            }
+        });
+    </script>
     @include('section.foot')
 </body>
 

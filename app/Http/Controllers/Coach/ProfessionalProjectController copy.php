@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Coach;
 use App\Http\Controllers\Controller;
 use App\Models\ProfessionalProject;
 use App\Models\User;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 
 class ProfessionalProjectController extends Controller
@@ -18,33 +17,27 @@ class ProfessionalProjectController extends Controller
     public function store(Request $request, User $candidat)
     {
         $request->validate([
-            'titre_projet'         => 'required|string|max:255',
-            'secteur_cible'        => 'required|string|max:255',
-            'poste_vise'           => 'required|string|max:255',
-            'description'          => 'nullable|string',
-            'objectif_court_terme' => 'nullable|string',
-            'objectif_long_terme'  => 'nullable|string',
+            'titre_projet'          => 'required|string|max:255',
+            'secteur_cible'         => 'required|string|max:255',
+            'poste_vise'            => 'required|string|max:255',
+            'description'           => 'nullable|string',
+            'objectif_court_terme'  => 'nullable|string',
+            'objectif_long_terme'   => 'nullable|string',
         ]);
 
         ProfessionalProject::create([
-            'candidat_id'          => $candidat->id,
-            'coach_id'             => auth()->id(),
-            'titre_projet'         => $request->titre_projet,
-            'secteur_cible'        => $request->secteur_cible,
-            'poste_vise'           => $request->poste_vise,
-            'description'          => $request->description,
-            'objectif_court_terme' => $request->objectif_court_terme,
-            'objectif_long_terme'  => $request->objectif_long_terme,
+            'candidat_id'           => $candidat->id,
+            'coach_id'              => auth()->id(),
+            'titre_projet'          => $request->titre_projet,
+            'secteur_cible'         => $request->secteur_cible,
+            'poste_vise'            => $request->poste_vise,
+            'description'           => $request->description,
+            'objectif_court_terme'  => $request->objectif_court_terme,
+            'objectif_long_terme'   => $request->objectif_long_terme,
         ]);
 
-        return redirect()->route('coach.projects.show', $candidat)
+        return redirect()->route('coach.candidats.show', $candidat)
             ->with('success', 'Projet professionnel enregistré.');
-    }
-
-    public function show(User $candidat)
-    {
-        $project = ProfessionalProject::where('candidat_id', $candidat->id)->firstOrFail();
-        return view('coach.projects.show', compact('candidat', 'project'));
     }
 
     public function edit(User $candidat)
@@ -70,14 +63,8 @@ class ProfessionalProjectController extends Controller
                 'description', 'objectif_court_terme', 'objectif_long_terme'
             ]));
 
-        return redirect()->route('coach.projects.show', $candidat)
+        return redirect()->route('coach.dashboard')
             ->with('success', 'Projet professionnel mis à jour.');
     }
-
-    public function exportPdf(User $candidat)
-    {
-        $project = ProfessionalProject::where('candidat_id', $candidat->id)->firstOrFail();
-        $pdf = Pdf::loadView('coach.projects.pdf', compact('candidat', 'project'));
-        return $pdf->download('projet-professionnel-' . str()->slug($candidat->name) . '.pdf');
-    }
 }
+

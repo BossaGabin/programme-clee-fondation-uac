@@ -21,11 +21,23 @@
         <div class="content-body">
             <div class="container-fluid">
 
-                <div class="row page-titles">
+                <div class="row mb-3">
                     <div class="col-md-5 align-self-center">
                         <h4 class="text-themecolor">
                             <i class="fas fa-user mr-2"></i> Fiche candidat
                         </h4>
+
+                    </div>
+                    <div class=" col-md-7 text-right">
+                        <a href="{{ route('admin.candidats.index') }}"
+                            class="btn btn-sm btn-outline-secondary mr-2">
+                            <i class="fas fa-arrow-left mr-1"></i> Retour
+                        </a>
+
+                        <a href="{{ route('admin.candidats.pdf', $candidat) }}" class="btn btn-sm btn-danger"
+                            target="_blank">
+                            <i class="fas fa-file-pdf mr-1"></i> Exporter la fiche candidat en PDF
+                        </a>
                     </div>
                     @if (session('success'))
                         <div class="alert alert-success alert-dismissible fade show">
@@ -41,26 +53,6 @@
                             </button> <strong>Erreur!</strong> {{ session('error') }}
                         </div>
                     @endif
-                </div>
-                <div class="card">
-                    <div class="card-body d-flex justify-content-between">
-                        {{-- <div class="col-md-7 align-self-center text-right"> --}}
-                        <div class="">
-                            <a href="{{ route('admin.candidats.index') }}"
-                                class="btn btn-sm btn-outline-secondary mr-2">
-                                <i class="fas fa-arrow-left mr-1"></i> Retour
-                            </a>
-
-                        </div>
-                        <div class="">
-                            <a href="{{ route('admin.candidats.pdf', $candidat) }}" class="btn btn-sm btn-danger"
-                                target="_blank">
-                                <i class="fas fa-file-pdf mr-1"></i> Exporter en PDF
-                            </a>
-                        </div>
-                        {{-- </div> --}}
-
-                    </div>
                 </div>
 
                 <div class="row">
@@ -309,10 +301,16 @@
                         {{-- Projet professionnel --}}
                         @if ($candidat->professionalProject)
                             <div class="card">
-                                <div class="card-header">
+                                <div class="card-header d-flex justify-content-between align-items-center">
                                     <h6 class="mb-0 font-weight-bold">
                                         <i class="fas fa-project-diagram mr-2 text-info"></i> Projet professionnel
                                     </h6>
+                                    <div>
+                                        <a href="{{ route('admin.projects.pdf', $candidat) }}"
+                                            class="btn btn-sm btn-danger d-none d-md-inline-block" target="_blank">
+                                            <i class="fas fa-file-pdf mr-1"></i> Exporter en PDF
+                                        </a>
+                                    </div>
                                 </div>
                                 <div class="card-body">
                                     @php $projet = $candidat->professionalProject; @endphp
@@ -357,10 +355,16 @@
                         {{-- Résultats de l'entretien --}}
                         @if ($interview)
                             <div class="card">
-                                <div class="card-header">
+                                <div class="card-header d-flex justify-content-between align-items-center">
                                     <h6 class="mb-0 font-weight-bold">
                                         <i class="fas fa-star mr-2 text-warning"></i> Résultats de l'entretien
                                     </h6>
+                                    <div>
+                                        <a href="{{ route('admin.interviews.pdf', $interview) }}"
+                                            class="btn btn-sm btn-danger d-none d-md-inline-block" target="_blank">
+                                            <i class="fas fa-file-pdf mr-1"></i> Exporter en PDF
+                                        </a>
+                                    </div>
                                 </div>
                                 <div class="card-body">
                                     <div class="row mb-3">

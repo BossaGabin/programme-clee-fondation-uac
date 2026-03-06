@@ -231,7 +231,7 @@
             margin: 0 auto;
             position: relative;
         }
-        
+
         .score-content {
             position: absolute;
             top: 50%;
@@ -241,7 +241,7 @@
             -webkit-transform: translate(-50%, -50%);
             -moz-transform: translate(-50%, -50%);
         }
-        
+
         .score-circle .score-small {
             font-size: 9px;
             opacity: 0.9;
@@ -336,7 +336,8 @@
     {{-- Pied de page fixe sur toutes les pages --}}
     <div class="page-footer clearfix">
         <div class="page-footer-left">
-            Document confidentiel — Programme CLEE &copy; {{ date('Y') }} — Fiche-Candidat-{{ Str::slug($candidat->name) }}
+            Document confidentiel — Programme CLEE &copy; {{ date('Y') }} —
+            Fiche-Candidat-{{ Str::slug($candidat->name) }}
         </div>
         <div class="page-number"></div>
     </div>
@@ -363,7 +364,7 @@
             <div class="identity-left">
                 <div class="candidat-name">{{ $candidat->name }}</div>
                 <div class="candidat-info">
-                    {{ $candidat->email }} &nbsp;&nbsp;  / {{ $candidat->phone }}
+                    {{ $candidat->email }} &nbsp;&nbsp; / {{ $candidat->phone }}
                 </div><br>
 
                 @if ($candidat->candidatAssignment?->coach)
@@ -371,7 +372,8 @@
                         Coach : <strong>{{ $candidat->candidatAssignment->coach->name }}</strong>
                     </div>
                     <div class="candidat-info">
-                        {{ $candidat->candidatAssignment->coach->email }} &nbsp;&nbsp; /  {{ $candidat->candidatAssignment->coach->phone }}
+                        {{ $candidat->candidatAssignment->coach->email }} &nbsp;&nbsp; /
+                        {{ $candidat->candidatAssignment->coach->phone }}
                     </div>
                 @endif
             </div>
@@ -381,7 +383,7 @@
                 <small style="color:#888;">Profil complété</small>
             </div>
         </div>
-        
+
 
         {{-- LIGNE 1 : Infos personnelles + Résultats entretien --}}
         <div class="row-two">
@@ -393,7 +395,11 @@
                 <table class="info-table">
                     <tr>
                         <td>Date de naissance</td>
-                        <td>{{ $profile?->date_of_birth ?? '—' }}</td>
+                        <td>
+                            {{ $profile?->date_of_birth
+                                ? ucfirst(\Carbon\Carbon::parse($profile->date_of_birth)->translatedFormat('d F Y'))
+                                : '—' }}
+                        </td>
                     </tr>
                     <tr>
                         <td>Genre</td>

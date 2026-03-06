@@ -37,7 +37,7 @@
                            @if ($errors->any())
                            <h4 class="text-center m-t-15">Création de compte</h4>
                            <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
-                              <ul class="list-disc list-inside">
+                              <ul class="list-disc list-inside text-danger">
                                  @foreach ($errors->all() as $error)
                                  <li>{{ $error }}</li>
                                  @endforeach
@@ -113,8 +113,7 @@
                                  </div>
                               </div>
                               <div class="text-center m-b-15 m-t-15">
-                                 <button type="submit" class="btn"
-                                    style="background: #006b08; border-color:#006b08">S'incrire</button>
+                                 <button type="submit" class="btn btn-primary">S'incrire</button>
                               </div>
                               <div class="create-btn text-center">
                                  <p>
