@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\DiagnosticRequest;
+use App\Models\Interview;
 use App\Models\NeedAssignment;
 use App\Models\User;
 use Carbon\Carbon;
@@ -31,6 +32,33 @@ class DashboardController extends Controller
             ->with('candidat')
             ->latest()
             ->take(5)
+            ->get();
+
+        // ── Candidats ayant passé l'entretien ──
+        $interviewsAujourdhui = Interview::where('status', 'completed')
+            ->whereDate('completed_at', Carbon::today())
+            ->with(
+                'appointment.coachAssignment.candidat.candidatProfile',
+                'appointment.coachAssignment.coach'
+            )
+            ->get();
+
+
+        $interviewsSemaine = Interview::where('status', 'completed')
+            ->whereBetween('completed_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])
+            ->with(
+                'appointment.coachAssignment.candidat.candidatProfile',
+                'appointment.coachAssignment.coach'
+            )
+            ->get();
+
+        $interviewsMois = Interview::where('status', 'completed')
+            ->whereMonth('completed_at', Carbon::now()->month)
+            ->whereYear('completed_at', Carbon::now()->year)
+            ->with(
+                'appointment.coachAssignment.candidat.candidatProfile',
+                'appointment.coachAssignment.coach'
+            )
             ->get();
 
         // ── DONNÉES GRAPHIQUES ──
@@ -67,7 +95,7 @@ class DashboardController extends Controller
         ];
 
         // 4. Line — Évolution des inscriptions candidats par période
-        $periode = $request->get('periode', 'mois');
+        $periode = $request->get('periode', 'jour');
 
         $inscriptionsQuery = User::where('role', 'candidat');
 
@@ -106,9 +134,13 @@ class DashboardController extends Controller
             'periode' => $periode,
         ];
 
+
         return view('admin.dashboard', compact(
             'stats',
             'demandes_recentes',
+            'interviewsAujourdhui',
+            'interviewsSemaine',
+            'interviewsMois',
             'orientationsChart',
             'demandesChart',
             'candidatsParCoachChart',

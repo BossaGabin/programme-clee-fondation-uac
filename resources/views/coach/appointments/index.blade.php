@@ -151,6 +151,10 @@
                                                                     <i class="fas fa-times mr-1"></i> Annuler
                                                                 </button>
                                                             </form>
+                                                            {{-- <a href="{{ route('coach.interviews.start', $prochainEntretien) }}"
+                                                                class="btn btn-success" title="Commencer l'entretien">
+                                                                <i class="fas fa-play mr-1"></i> 
+                                                            </a> --}}
                                                         </td>
                                                     </tr>
                                                 @endforeach

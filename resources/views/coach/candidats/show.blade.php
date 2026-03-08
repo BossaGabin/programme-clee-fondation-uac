@@ -172,43 +172,13 @@
                                 ->where('status', 'scheduled')
                                 ->orderBy('scheduled_date')
                                 ->first();
+
+                            $entretienExistant = \App\Models\Appointment::where('coach_assignment_id', auth()->id())
+                                ->where('status', 'scheduled')
+                                ->first();
                         @endphp
 
                         @if ($prochainEntretien)
-                            {{-- <div class="card" style="border-left:4px solid #006b08;">
-                                <div class="card-body d-flex align-items-center justify-content-between">
-                                    <div>
-                                        <h6 class="font-weight-bold mb-1">
-                                            <i class="fas fa-calendar-check text-success mr-2"></i>
-                                            Prochain entretien
-                                        </h6>
-                                        <p class="mb-0">
-                                            <strong>{{ \Carbon\Carbon::parse($prochainEntretien->scheduled_date)->format('d/m/Y') }}</strong>
-                                            à <strong>{{ \Carbon\Carbon::parse($prochainEntretien->scheduled_time)->format('H:i') }}</strong>
-                                            —
-                                            @if ($prochainEntretien->mode === 'presentiel')
-                                                <span class="badge badge-primary">Présentiel</span>
-                                                <small class="text-muted ml-1">{{ $prochainEntretien->location }}</small>
-                                            @else
-                                                <span class="badge badge-info">En ligne</span>
-                                                @if ($prochainEntretien->meeting_link)
-                                                    <a href="{{ $prochainEntretien->meeting_link }}" target="_blank"
-                                                       class="btn btn-sm btn-outline-info ml-2">
-                                                        <i class="fas fa-external-link-alt mr-1"></i> Rejoindre
-                                                    </a>
-                                                @endif
-                                            @endif
-                                        </p>
-                                    </div>
-                                    @if ($assignment)
-                                        <a href="{{ route('coach.appointments.create', $assignment) }}"
-                                           class="btn btn-sm btn-outline-primary">
-                                            <i class="fas fa-plus mr-1"></i> Nouveau
-                                        </a>
-                                    @endif
-                                </div>
-                            </div> --}}
-
                             <div class="card" style="border-left:4px solid #006b08;">
                                 <div class="card-body d-flex align-items-center justify-content-between">
                                     <div>
@@ -251,31 +221,35 @@
                                     </div>
                                 </div>
                             </div>
-                        @else
-                            @if (!$interview)
-                                <div class="alert alert-warning d-flex align-items-center justify-content-between">
-                                    <span>
-                                        <i class="fas fa-exclamation-triangle mr-2"></i>
-                                        Aucun entretien programmé pour ce candidat.
-                                    </span>
-                                    @if ($assignment)
-                                        <a href="{{ route('coach.appointments.create', $assignment) }}"
-                                            class="btn btn-sm btn-warning">
-                                            <i class="fas fa-calendar-plus mr-1"></i> Programmer
-                                        </a>
-                                    @endif
-                                </div>
-
-                            @endif
+                        @endif
+                        @if ($entretienExistant)
+                            <div class="alert alert-warning d-flex align-items-center justify-content-between">
+                                <span>
+                                    <i class="fas fa-exclamation-triangle mr-2"></i>
+                                    Le candidat est déjà promgrammé pour un entretien.
+                                </span>
+                                <a href="{{ route('coach.appointments.create', $assignment) }}"
+                                    class="btn btn-sm btn-warning">
+                                    <i class="fas fa-calendar-plus mr-1"></i> Reporter l'entretien
+                                </a>
+                            </div>
                         @endif
 
                         {{-- Besoin professionnel --}}
                         @if ($candidat->needAssignment)
                             <div class="card">
-                                <div class="card-header">
+                                <div class="card-header d-flex justify-content-between align-items-center">
                                     <h6 class="mb-0 font-weight-bold">
                                         <i class="fas fa-bullseye mr-2 text-success"></i> Besoin professionnel
                                     </h6>
+                                    @if (!$candidat->professionalProject)
+                                        <div>
+                                            <a href="{{ route('coach.projects.create', $candidat) }}"
+                                                class="btn btn-sm btn-success mr-1">
+                                                <i class="fas fa-plus mr-1"></i> Créer le projet professionnel
+                                            </a>
+                                        </div>
+                                    @endif
                                 </div>
                                 <div class="card-body">
                                     @php
@@ -287,7 +261,7 @@
                                                 'class' => 'badge-success',
                                             ],
                                             'auto_emploi' => ['label' => 'Auto-emploi', 'class' => 'badge-warning'],
-                                            'formation' => ['label' => 'Formation', 'class' => 'badge-info'],
+                                            'formation' => ['label' => 'Formation', 'class' => 'badge-danger'],
                                         ];
                                         $info = $labels[$besoin->type] ?? [
                                             'label' => $besoin->type,

@@ -113,6 +113,7 @@ Route::middleware(['auth', 'isCoach'])->prefix('coach')->name('coach.')->group(f
 
     // Passer à l'entretien
     Route::get('/entretiens/{appointment}/demarrer',   [InterviewController::class, 'start'])->name('interviews.start');
+    Route::get('/entretiens/termine',   [InterviewController::class, 'termine'])->name('interviews.end');
     Route::post('/entretiens/{appointment}/soumettre', [InterviewController::class, 'store'])->name('interviews.store');
     Route::get('/entretiens/{interview}/rapport',      [InterviewController::class, 'report'])->name('interviews.report');
     Route::get('/entretiens/{interview}/pdf',          [InterviewController::class, 'exportPdf'])->name('interviews.pdf');

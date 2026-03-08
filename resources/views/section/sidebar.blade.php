@@ -2,7 +2,7 @@
 
 <!-- sidebar -->
 <div class="nk-sidebar">
-    <div class="nk-nav-scroll" >
+    <div class="nk-nav-scroll">
         <ul class="metismenu" id="menu">
 
             {{-- =============================== --}}
@@ -182,12 +182,25 @@
                     </ul>
                 </li>
 
-                {{-- Entretiens programmés --}}
-                <li class="{{ request()->routeIs('coach.appointments.*') ? 'active' : '' }}">
-                    <a href="{{ route('coach.appointments.index') }}">
+                {{-- Entretiens avec sous-menu --}}
+                <li
+                    class="{{ request()->routeIs('coach.appointments.*') || request()->routeIs('coach.interviews.end') ? 'active' : '' }}">
+                    <a class="has-arrow" href="#" aria-expanded="false">
                         <i class="fas fa-calendar-check"></i>
-                        <span class="nav-text">Entretiens programmés</span>
+                        <span class="nav-text">Entretiens</span>
                     </a>
+                    <ul aria-expanded="false">
+                        <li class="{{ request()->routeIs('coach.appointments.*') ? 'active' : '' }}">
+                            <a href="{{ route('coach.appointments.index') }}">
+                                <i class="fas fa-calendar-plus"></i> Programmés
+                            </a>
+                        </li>
+                        <li class="{{ request()->routeIs('coach.interviews.end') ? 'active' : '' }}">
+                            <a href="{{ route('coach.interviews.end') }}">
+                                <i class="fas fa-calendar-check"></i> Terminés
+                            </a>
+                        </li>
+                    </ul>
                 </li>
 
             @endif

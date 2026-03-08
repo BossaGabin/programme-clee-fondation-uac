@@ -11,7 +11,7 @@ class CandidatController extends Controller
 {
     public function index(Request $request)
     {
-        $query = User::where('role', 'candidat')
+        $query = User::where('role', 'candidat')->orderBy('created_at','desc')
             ->with(['candidatProfile', 'candidatAssignment.coach', 'needAssignment']);
 
         if ($request->filled('search')) {
@@ -27,7 +27,9 @@ class CandidatController extends Controller
             });
         }
 
-        $candidats = $query->latest()->paginate(15);
+        $candidats = $query->get();
+        // dd($candidats );
+
 
         return view('admin.candidats.index', compact('candidats'));
     }
@@ -95,7 +97,6 @@ class CandidatController extends Controller
             'diagnosticRequests',
             'professionalProject',
         ]);
-        // dd( $candidat);
 
         // Récupérer l'entretien manuellement
         $interview = \App\Models\Interview::whereHas('appointment', function ($q) use ($candidat) {

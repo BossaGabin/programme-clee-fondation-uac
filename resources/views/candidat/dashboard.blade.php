@@ -373,9 +373,9 @@
                                                         ? 'Moyen'
                                                         : 'À améliorer'));
                                         $orientation = match (true) {
-                                            $noteFinale <= 7 => 'Renforcement compétences',
-                                            $noteFinale <= 11 => 'Stage / immersion',
-                                            $noteFinale <= 15 => 'Insertion accompagnée',
+                                            $noteFinale <= 9 => 'Renforcement compétences',
+                                            $noteFinale <= 14 => 'Stage / immersion',
+                                            $noteFinale <= 17 => 'Insertion accompagnée',
                                             default => 'Insertion rapide / autonomie',
                                         };
                                         $blocColors = ['#006b08', '#4e73df', '#1cc88a', '#f6c23e', '#e74a3b'];
@@ -488,12 +488,12 @@
                                     <i class="fas fa-project-diagram text-info mr-2"></i> Mon Projet Professionnel
                                 </h5>
 
-                                @if (auth()->user()->professionalProject)
+                                {{-- @if (auth()->user()->professionalProject)
                                     <a href="{{ route('candidat.projects.pdf') }}"
                                         class="btn btn-sm btn-danger d-none d-md-inline-block" target="_blank">
                                         <i class="fas fa-file-pdf mr-1"></i> Exporter en PDF
                                     </a>
-                                @endif
+                                @endif --}}
                             </div>
 
                             <div class="card-body">

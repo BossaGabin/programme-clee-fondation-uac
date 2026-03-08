@@ -21,11 +21,20 @@
         <div class="content-body">
             <div class="container-fluid">
 
-                <div class="row page-titles">
+                <div class="row mb-3">
                     <div class="col-md-5 align-self-center">
                         <h4 class="text-themecolor">
                             <i class="fas fa-file-alt mr-2"></i> Rapport d'entretien
                         </h4>
+                    </div>
+                    <div class="col-md-7 align-self-center text-right">
+                        <a href="{{ route('coach.dashboard') }}" class="btn btn-sm btn-outline-secondary mr-2">
+                            <i class="fas fa-arrow-left mr-1"></i> Retour
+                        </a>
+                        <a href="{{ route('coach.interviews.pdf', $interview) }}" class="btn btn-sm btn-danger"
+                            target="_blank">
+                            <i class="fas fa-file-pdf mr-1"></i> Exporter PDF
+                        </a>
                     </div>
                 </div>
                 @if (session('success'))
@@ -61,18 +70,7 @@
                         5 => '#e74a3b',
                     ];
                 @endphp
-                <div class="row">
-                    <div class="card col-md-12 text-end">
-                        <div class="card-body d-flex justify-content-between align-items-center">
-
-                            {{-- Bouton Retour --}}
-                            <div>
-                                <a href="{{ route('coach.dashboard') }}" class="btn btn-sm btn-outline-secondary mr-2">
-                                    <i class="fas fa-arrow-left mr-1"></i> Retour
-                                </a>
-                            </div>
-
-                            {{-- Bouton Orientation (coach uniquement) --}}
+                {{-- <div class="row">
                             @if (Auth::user()->role == 'coach')
                                 @php $candidat = $interview->appointment->coachAssignment->candidat; @endphp
                                 <div>
@@ -88,19 +86,8 @@
                                     @endif
                                 </div>
                             @endif
-
-                            {{-- Bouton PDF — masqué sur mobile --}}
-                            <div class="d-none d-md-block">
-                                <a href="{{ route('coach.interviews.pdf', $interview) }}" class="btn btn-sm btn-danger"
-                                    target="_blank">
-                                    <i class="fas fa-file-pdf mr-1"></i> Exporter PDF
-                                </a>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-
+                </div> --}}
+                
                 <div class="row">
                     {{-- Score global --}}
                     <div class="col-md-4">

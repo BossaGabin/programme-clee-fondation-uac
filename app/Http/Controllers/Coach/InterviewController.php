@@ -9,6 +9,7 @@ use App\Models\Interview;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class InterviewController extends Controller
 {
@@ -129,9 +130,9 @@ class InterviewController extends Controller
 
         // Orientation automatique selon le score
         $orientationType = match (true) {
-            $noteFinale <= 7  => 'formation',
-            $noteFinale <= 11 => 'stage',
-            $noteFinale <= 15 => 'insertion_emploi',
+            $noteFinale <= 9  => 'formation',
+            $noteFinale <= 14 => 'stage',
+            $noteFinale <= 17 => 'insertion_emploi',
             default           => 'auto_emploi',
         };
 
@@ -200,5 +201,50 @@ class InterviewController extends Controller
         }
 
         return view('coach.interviews.report', compact('interview'));
+    }
+
+    public function termine(Appointment $appointment)
+    {
+        // abort_if($appointment->coachAssignment->coach_id !== auth()->id(), 403);
+        $coach = auth()->user();
+
+        // ── Candidats ayant passé l'entretien ──
+
+        // ✅ 1 seule requête pour tout charger — on filtre ensuite en PHP
+        $allInterviews = Interview::whereHas(
+            'appointment.coachAssignment',
+            fn($q) => $q->where('coach_id', $coach->id)
+        )
+            ->where('status', 'completed')
+            ->orderBy('completed_at', 'desc')
+            ->with([
+                'appointment.coachAssignment.candidat.candidatProfile',
+                'appointment.coachAssignment.candidat.needAssignment', 
+                'appointment.coachAssignment.coach',                   
+            ])
+            ->get();
+
+        // ✅ Filtrage en PHP — pas de requêtes supplémentaires
+        $interviewsAujourdhui = $allInterviews->filter(
+            fn($i) => \Carbon\Carbon::parse($i->completed_at)->isToday()
+        );
+
+        $interviewsSemaine = $allInterviews->filter(
+            fn($i) => \Carbon\Carbon::parse($i->completed_at)->isBetween(
+                Carbon::now()->startOfWeek(),
+                Carbon::now()->endOfWeek()
+            )
+        );
+
+        $interviewsMois = $allInterviews->filter(
+            fn($i) => \Carbon\Carbon::parse($i->completed_at)->month === Carbon::now()->month
+                && \Carbon\Carbon::parse($i->completed_at)->year  === Carbon::now()->year
+        );
+
+        return view('coach.interviews.termine', compact(
+            'interviewsAujourdhui',
+            'interviewsSemaine',
+            'interviewsMois'
+        ));
     }
 }

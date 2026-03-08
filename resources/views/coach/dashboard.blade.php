@@ -119,7 +119,7 @@
                                     <div>
                                         <h6 class="text-muted mb-1">Entretiens programmés</h6>
                                         <h3 class="mb-0 font-weight-bold">
-                                            {{ \App\Models\Appointment::whereHas('coachAssignment', fn($q) => $q->where('coach_id', auth()->id()))->where('status', 'scheduled')->count() }}
+                                            {{ $entretiens }}
                                         </h3>
                                     </div>
                                     <div
@@ -132,6 +132,8 @@
                         </a>
                     </div>
                 </div>
+
+
 
                 {{-- ============================================ --}}
                 {{-- LIGNE 2 : STATISTIQUES PAR TYPE DE BESOIN --}}
@@ -217,34 +219,39 @@
                     </div>
                 </div>
 
+
                 {{-- ============================================ --}}
                 {{-- FILTRES PAR BESOIN --}}
                 {{-- ============================================ --}}
-                <div class="row mb-3">
+                <div class="row mb-3 mt-4">
                     <div class="col-12">
-                        <a href="{{ route('coach.dashboard') }}"
-                            class="btn btn-sm {{ !$statut ? 'btn-primary' : 'btn-outline-primary' }} mr-2">
-                            Tous <span class="badge badge-light ml-1">{{ $compteurs['tous'] }}</span>
-                        </a>
-                        <a href="{{ route('coach.dashboard', ['statut' => 'stage']) }}"
-                            class="btn btn-sm {{ $statut === 'stage' ? 'btn-primary' : 'btn-outline-primary' }} mr-2">
-                            Stage <span class="badge badge-light ml-1">{{ $compteurs['stage'] }}</span>
-                        </a>
-                        <a href="{{ route('coach.dashboard', ['statut' => 'insertion_emploi']) }}"
-                            class="btn btn-sm {{ $statut === 'insertion_emploi' ? 'btn-success' : 'btn-outline-success' }} mr-2">
-                            Insertion emploi <span
-                                class="badge badge-light ml-1">{{ $compteurs['insertion_emploi'] }}</span>
-                        </a>
-                        <a href="{{ route('coach.dashboard', ['statut' => 'auto_emploi']) }}"
-                            class="btn btn-sm {{ $statut === 'auto_emploi' ? 'btn-warning' : 'btn-outline-warning' }} mr-2">
-                            Auto-emploi <span class="badge badge-light ml-1">{{ $compteurs['auto_emploi'] }}</span>
-                        </a>
-                        <a href="{{ route('coach.dashboard', ['statut' => 'formation']) }}"
-                            class="btn btn-sm {{ $statut === 'formation' ? 'btn-info' : 'btn-outline-info' }} mr-2">
-                            Formation <span class="badge badge-light ml-1">{{ $compteurs['formation'] }}</span>
-                        </a>
+                        <div class="d-flex flex-wrap" style="gap:8px;">
+                            <a href="{{ route('coach.dashboard') }}"
+                                class="btn btn-sm {{ !$statut ? 'btn-primary' : 'btn-outline-primary' }}">
+                                Tous <span class="badge badge-light ml-1">{{ $compteurs['tous'] }}</span>
+                            </a>
+                            <a href="{{ route('coach.dashboard', ['statut' => 'stage']) }}"
+                                class="btn btn-sm {{ $statut === 'stage' ? 'btn-primary' : 'btn-outline-primary' }}">
+                                Stage <span class="badge badge-light ml-1">{{ $compteurs['stage'] }}</span>
+                            </a>
+                            <a href="{{ route('coach.dashboard', ['statut' => 'insertion_emploi']) }}"
+                                class="btn btn-sm {{ $statut === 'insertion_emploi' ? 'btn-success' : 'btn-outline-success' }}">
+                                Insertion emploi <span
+                                    class="badge badge-light ml-1">{{ $compteurs['insertion_emploi'] }}</span>
+                            </a>
+                            <a href="{{ route('coach.dashboard', ['statut' => 'auto_emploi']) }}"
+                                class="btn btn-sm {{ $statut === 'auto_emploi' ? 'btn-warning' : 'btn-outline-warning' }}">
+                                Auto-emploi <span
+                                    class="badge badge-light ml-1">{{ $compteurs['auto_emploi'] }}</span>
+                            </a>
+                            <a href="{{ route('coach.dashboard', ['statut' => 'formation']) }}"
+                                class="btn btn-sm {{ $statut === 'formation' ? 'btn-info' : 'btn-outline-danger' }}">
+                                Formation <span class="badge badge-light ml-1">{{ $compteurs['formation'] }}</span>
+                            </a>
+                        </div>
                     </div>
                 </div>
+
 
                 {{-- ============================================ --}}
                 {{-- LISTE DES CANDIDATS --}}
@@ -268,142 +275,345 @@
                                         Aucun candidat trouvé.
                                     </p>
                                 @else
-                                    <div class="table-responsive">
-                                        <table class="table table-hover">
-                                            <thead class="thead-light">
-                                                <tr>
-                                                    <th>Candidat</th>
-                                                    <th>Niveau d'étude</th>
-                                                    <th>Besoin</th>
-                                                    <th>Profil</th>
-                                                    <th>Suivi</th>
-                                                    <th>Actions</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach ($assignments as $assignment)
-                                                    @php $candidat = $assignment->candidat; @endphp
-                                                    <tr>
-                                                        <td>
-                                                            <div class="d-flex align-items-center" style="gap:10px;">
-                                                                @if ($candidat->avatar)
-                                                                    <img src="{{ Storage::url($candidat->avatar) }}"
-                                                                        style="width:40px;height:40px;border-radius:50%;object-fit:cover;">
-                                                                @else
-                                                                    <div
-                                                                        style="width:40px;height:40px;border-radius:50%;
-                                                                                background:#006b08;display:flex;
-                                                                                align-items:center;justify-content:center;">
-                                                                        <i class="fas fa-user text-white"></i>
-                                                                    </div>
-                                                                @endif
-                                                                <div>
-                                                                    <p class="mb-0 font-weight-bold">
-                                                                        {{ $candidat->name }}</p>
-                                                                    <small
-                                                                        class="text-muted">{{ $candidat->email }}</small>
-                                                                </div>
-                                                            </div>
-                                                        </td>
-                                                        <td>{{ $candidat->candidatProfile?->niveau_etude ?? '—' }}</td>
-                                                        <td>
-                                                            @php
-                                                                $labels = [
-                                                                    'stage' => [
-                                                                        'label' => 'Stage',
-                                                                        'class' => 'badge-primary',
-                                                                    ],
-                                                                    'insertion_emploi' => [
-                                                                        'label' => 'Insertion emploi',
-                                                                        'class' => 'badge-success',
-                                                                    ],
-                                                                    'auto_emploi' => [
-                                                                        'label' => 'Auto-emploi',
-                                                                        'class' => 'badge-warning',
-                                                                    ],
-                                                                    'formation' => [
-                                                                        'label' => 'Formation',
-                                                                        'class' => 'badge-info',
-                                                                    ],
-                                                                ];
-                                                                $type = $candidat->needAssignment?->type;
-                                                            @endphp
-                                                            @if ($type && isset($labels[$type]))
-                                                                <span class="badge {{ $labels[$type]['class'] }}">
-                                                                    {{ $labels[$type]['label'] }}
-                                                                </span>
+                                    {{-- ✅ Pas de div.table-responsive — DataTables Responsive s'en charge --}}
+                                    <table class="table table-hover w-100" id="table-candidats">
+                                        <thead class="thead-light">
+                                            <tr>
+                                                <th>Candidat</th>
+                                                <th>Niveau d'étude</th>
+                                                <th>Besoin</th>
+                                                <th>Profil</th>
+                                                <th>Suivi</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($assignments as $assignment)
+                                                @php $candidat = $assignment->candidat; @endphp
+                                                {{-- ✅ classe data-row pour la détection JS --}}
+                                                <tr class="data-row">
+                                                    <td>
+                                                        <div class="d-flex align-items-center" style="gap:10px;">
+                                                            @if ($candidat->avatar)
+                                                                <img src="{{ Storage::url($candidat->avatar) }}"
+                                                                    style="width:40px;height:40px;border-radius:50%;object-fit:cover;flex-shrink:0;">
                                                             @else
-                                                                <span class="badge badge-secondary">—</span>
-                                                            @endif
-                                                        </td>
-                                                        <td>
-                                                            @php $completion = $candidat->candidatProfile?->profile_completion ?? 0; @endphp
-                                                            <div class="d-flex align-items-center" style="gap:6px;">
-                                                                <div class="progress flex-grow-1"
-                                                                    style="height:6px;min-width:70px;">
-                                                                    <div class="progress-bar
-                                                                        @if ($completion < 50) bg-danger
-                                                                        @elseif($completion < 100) bg-warning
-                                                                        @else bg-success @endif"
-                                                                        style="width:{{ $completion }}%">
-                                                                    </div>
+                                                                <div
+                                                                    style="width:40px;height:40px;border-radius:50%;flex-shrink:0;
+                                                    background:#006b08;display:flex;align-items:center;justify-content:center;">
+                                                                    <i class="fas fa-user text-white"></i>
                                                                 </div>
-                                                                <small>{{ $completion }}%</small>
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                            @php
-                                                                $total = $candidat->followUpSteps->count();
-                                                                $completed = $candidat->followUpSteps
-                                                                    ->where('status', 'completed')
-                                                                    ->count();
-                                                            @endphp
-                                                            <small
-                                                                class="{{ $total > 0 && $completed === $total ? 'text-success font-weight-bold' : 'text-muted' }}">
-                                                                {{ $completed }}/{{ $total }} étapes
-                                                            </small>
-                                                        </td>
-                                                        <td>
-                                                            @if ($assignment && !$interview)
-                                                                {{-- Programmer entretien --}}
-                                                                <a href="{{ route('coach.appointments.create', $assignment) }}"
-                                                                    class="btn btn-sm btn-outline-primary mr-1"
-                                                                    title="Programmer un entretien">
-                                                                    <i class="fas fa-calendar-plus"></i>
-                                                                </a>
                                                             @endif
+                                                            <div>
+                                                                <p class="mb-0 font-weight-bold">{{ $candidat->name }}
+                                                                </p>
+                                                                <small
+                                                                    class="text-muted">{{ $candidat->email }}</small>
+                                                            </div>
+                                                        </div>
+                                                    </td>
 
-                                                            {{-- Voir fiche candidat --}}
-                                                            <a href="{{ route('coach.candidats.show', $candidat) }}"
-                                                                class="btn btn-sm btn-outline-secondary"
-                                                                title="Voir la fiche">
-                                                                <i class="fas fa-eye"></i>
-                                                            </a>
+                                                    <td>{{ $candidat->candidatProfile?->niveau_etude ?? '—' }}</td>
 
-                                                            {{-- Télecharger le rapport d'évaluation du candidat en pdf --}}
-                                                            <a href="{{ route('coach.interviews.report.candidat', $candidat) }}"
-                                                                class="btn btn-sm btn-outline-success"
-                                                                title="Rapport entretien">
-                                                                <i class="fas fa-chart-bar"></i>
-                                                            </a>
+                                                    <td>
+                                                        @php
+                                                            $labels = [
+                                                                'stage' => [
+                                                                    'label' => 'Stage',
+                                                                    'class' => 'badge-primary',
+                                                                ],
+                                                                'insertion_emploi' => [
+                                                                    'label' => 'Insertion emploi',
+                                                                    'class' => 'badge-success',
+                                                                ],
+                                                                'auto_emploi' => [
+                                                                    'label' => 'Auto-emploi',
+                                                                    'class' => 'badge-warning',
+                                                                ],
+                                                                'formation' => [
+                                                                    'label' => 'Formation',
+                                                                    'class' => 'badge-danger',
+                                                                ],
+                                                            ];
+                                                            $type = $candidat->needAssignment?->type;
+                                                        @endphp
+                                                        @if ($type && isset($labels[$type]))
+                                                            <span class="badge {{ $labels[$type]['class'] }}">
+                                                                {{ $labels[$type]['label'] }}
+                                                            </span>
+                                                        @else
+                                                            <span class="badge badge-secondary">—</span>
+                                                        @endif
+                                                    </td>
 
-                                                            {{-- Télecharger fiche candidat en pdf --}}
-                                                            <a href="{{ route('coach.candidats.pdf', $candidat) }}"
-                                                                class="btn btn-sm btn-outline-danger" target="_blank">
-                                                                <i class="fas fa-file-pdf mr-1"></i>
+                                                    <td>
+                                                        @php $completion = $candidat->candidatProfile?->profile_completion ?? 0; @endphp
+                                                        <div class="d-flex align-items-center" style="gap:6px;">
+                                                            <div class="progress flex-grow-1"
+                                                                style="height:6px;min-width:70px;">
+                                                                <div class="progress-bar
+                                                    @if ($completion < 50) bg-danger
+                                                    @elseif($completion < 100) bg-warning
+                                                    @else bg-success @endif"
+                                                                    style="width:{{ $completion }}%">
+                                                                </div>
+                                                            </div>
+                                                            <small>{{ $completion }}%</small>
+                                                        </div>
+                                                    </td>
+
+                                                    <td>
+                                                        @php
+                                                            $total = $candidat->followUpSteps->count();
+                                                            $completed = $candidat->followUpSteps
+                                                                ->where('status', 'completed')
+                                                                ->count();
+                                                        @endphp
+                                                        <small
+                                                            class="{{ $total > 0 && $completed === $total ? 'text-success font-weight-bold' : 'text-muted' }}">
+                                                            {{ $completed }}/{{ $total }} étapes
+                                                        </small>
+                                                    </td>
+
+                                                    <td>
+                                                        @if ($assignment && !in_array($assignment->id, $assignmentsAvecEntretien))
+                                                            <a href="{{ route('coach.appointments.create', $assignment) }}"
+                                                                class="btn btn-sm btn-outline-primary mr-1"
+                                                                title="Programmer un entretien">
+                                                                <i class="fas fa-calendar-plus"></i>
                                                             </a>
-                                                        </td>
-                                                    </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                                        @endif
+
+                                                        <a href="{{ route('coach.candidats.show', $candidat) }}"
+                                                            class="btn btn-sm btn-outline-primary"
+                                                            title="Voir la fiche">
+                                                            <i class="fas fa-eye"></i>
+                                                        </a>
+
+                                                        <a href="{{ route('coach.interviews.report.candidat', $candidat) }}"
+                                                            class="btn btn-sm btn-outline-success"
+                                                            title="Rapport entretien">
+                                                            <i class="fas fa-chart-bar"></i>
+                                                        </a>
+
+                                                        <a href="{{ route('coach.candidats.pdf', $candidat) }}"
+                                                            class="btn btn-sm btn-outline-danger"
+                                                            title="Télécharger la fiche candidat" target="_blank">
+                                                            <i class="fas fa-file-pdf"></i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
                                 @endif
                             </div>
                         </div>
                     </div>
                 </div>
 
+                {{-- ══════════════════════════════════ --}}
+                {{-- ENTRETIENS RÉCENTS                 --}}
+                {{-- ══════════════════════════════════ --}}
+                <div class="row page-titles mt-2">
+                    <div class="col-md-12">
+                        <h4 class="text-themecolor">
+                            <i class="fas fa-clipboard-list mr-2"></i> Entretiens récents
+                        </h4>
+                        <small class="text-muted">Candidats ayant passé leur entretien de diagnostic</small>
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+
+                                {{-- Onglets --}}
+                                <ul class="nav nav-tabs mb-4" role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" data-toggle="tab" href="#tab-jour"
+                                            role="tab">
+                                            <i class="fas fa-calendar-day mr-1 text-success"></i>
+                                            Aujourd'hui
+                                            <span
+                                                class="badge badge-success ml-1">{{ $interviewsAujourdhui->count() }}</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-toggle="tab" href="#tab-semaine" role="tab">
+                                            <i class="fas fa-calendar-week mr-1 text-primary"></i>
+                                            Cette semaine
+                                            <span
+                                                class="badge badge-primary ml-1">{{ $interviewsSemaine->count() }}</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-toggle="tab" href="#tab-mois" role="tab">
+                                            <i class="fas fa-calendar-alt mr-1 text-warning"></i>
+                                            Ce mois
+                                            <span
+                                                class="badge badge-warning ml-1">{{ $interviewsMois->count() }}</span>
+                                        </a>
+                                    </li>
+                                </ul>
+
+                                <div class="tab-content">
+                                    @foreach (['jour' => ['id' => 'tab-jour', 'data' => $interviewsAujourdhui, 'active' => true], 'semaine' => ['id' => 'tab-semaine', 'data' => $interviewsSemaine, 'active' => false], 'mois' => ['id' => 'tab-mois', 'data' => $interviewsMois, 'active' => false]] as $key => $tab)
+                                        @php
+                                            $isAdmin = auth()->user()->role === 'admin';
+                                            $colCount = $isAdmin ? 6 : 5;
+                                        @endphp
+
+                                        <div class="tab-pane fade {{ $tab['active'] ? 'show active' : '' }}"
+                                            id="{{ $tab['id'] }}" role="tabpanel">
+
+                                            <table class="table table-hover w-100" id="table-{{ $key }}">
+                                                <thead class="thead-light">
+                                                    <tr>
+                                                        <th>Candidat</th>
+                                                        @if ($isAdmin)
+                                                            <th>Coach</th>
+                                                        @endif
+                                                        <th>Score</th>
+                                                        <th>Orientation</th>
+                                                        <th>Date entretien</th>
+                                                        <th>Actions</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @forelse($tab['data'] as $interview)
+                                                        @php
+                                                            $candidat =
+                                                                $interview->appointment->coachAssignment->candidat;
+                                                            $coach = $interview->appointment->coachAssignment->coach;
+                                                            $noteFinale = round($interview->total_score / 5);
+                                                        @endphp
+                                                        <tr class="data-row">
+                                                            <td>
+                                                                <div class="d-flex align-items-center"
+                                                                    style="gap:10px;">
+                                                                    @if ($candidat->avatar)
+                                                                        <img src="{{ Storage::url($candidat->avatar) }}"
+                                                                            style="width:36px;height:36px;border-radius:50%;object-fit:cover;flex-shrink:0;">
+                                                                    @else
+                                                                        <div
+                                                                            style="width:36px;height:36px;border-radius:50%;flex-shrink:0;
+                                        background:#006b08;display:flex;align-items:center;justify-content:center;">
+                                                                            <i class="fas fa-user text-white"
+                                                                                style="font-size:13px;"></i>
+                                                                        </div>
+                                                                    @endif
+                                                                    <div>
+                                                                        <p class="mb-0 font-weight-bold"
+                                                                            style="font-size:13px;">
+                                                                            {{ $candidat->name }}
+                                                                        </p>
+                                                                        <small
+                                                                            class="text-muted">{{ $candidat->email }}</small>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+
+                                                            @if ($isAdmin)
+                                                                <td>
+                                                                    <span class="badge badge-secondary"
+                                                                        style="font-size:11px;">
+                                                                        {{ $coach->name }}
+                                                                    </span>
+                                                                </td>
+                                                            @endif
+
+                                                            <td>
+                                                                <span class="font-weight-bold"
+                                                                    style="color:#006b08; font-size:14px;">
+                                                                    {{ $noteFinale }}/20
+                                                                </span>
+                                                                <br>
+                                                                <small
+                                                                    class="text-muted">{{ $interview->total_score }}/100</small>
+                                                            </td>
+
+                                                            <td>
+                                                                @php
+                                                                    $labels = [
+                                                                        'stage' => [
+                                                                            'label' => 'Stage',
+                                                                            'class' => 'badge-primary',
+                                                                        ],
+                                                                        'insertion_emploi' => [
+                                                                            'label' => 'Insertion emploi',
+                                                                            'class' => 'badge-success',
+                                                                        ],
+                                                                        'auto_emploi' => [
+                                                                            'label' => 'Auto-emploi',
+                                                                            'class' => 'badge-warning',
+                                                                        ],
+                                                                        'formation' => [
+                                                                            'label' => 'Formation',
+                                                                            'class' => 'badge-danger',
+                                                                        ],
+                                                                    ];
+                                                                    $type = $candidat->needAssignment?->type;
+                                                                @endphp
+                                                                @if ($type && isset($labels[$type]))
+                                                                    <span class="badge {{ $labels[$type]['class'] }}">
+                                                                        {{ $labels[$type]['label'] }}
+                                                                    </span>
+                                                                @else
+                                                                    <span class="badge badge-secondary">—</span>
+                                                                @endif
+                                                            </td>
+
+                                                            <td>
+                                                                <small>{{ \Carbon\Carbon::parse($interview->completed_at)->format('d/m/Y à H:i') }}</small>
+                                                            </td>
+
+                                                            <td>
+                                                                <a href="{{ route('coach.candidats.show', $candidat) }}"
+                                                                    class="btn btn-sm btn-outline-primary"
+                                                                    title="Voir la fiche">
+                                                                    <i class="fas fa-eye"></i>
+                                                                </a>
+                                                                <a href="{{ route('coach.interviews.report.candidat', $candidat) }}"
+                                                                    class="btn btn-sm btn-outline-success"
+                                                                    title="Rapport entretien">
+                                                                    <i class="fas fa-chart-bar"></i>
+                                                                </a>
+                                                                <a href="{{ route('coach.candidats.pdf', $candidat) }}"
+                                                                    class="btn btn-sm btn-outline-danger"
+                                                                    title="Télécharger la fiche candidat"
+                                                                    target="_blank">
+                                                                    <i class="fas fa-file-pdf"></i>
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                    @empty
+                                                        <tr>
+                                                            {{-- ✅ $colCount défini dans le @php au début du foreach --}}
+                                                            <td colspan="{{ $colCount }}"
+                                                                class="text-center text-muted py-4">
+                                                                <i class="fas fa-inbox mr-2"></i> Aucun entretien sur
+                                                                cette période.
+                                                            </td>
+                                                        </tr>
+                                                    @endforelse
+                                                </tbody>
+                                            </table>
+
+                                        </div>
+                                    @endforeach
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                {{-- ══════════════════════════════════ --}}
+                {{--  GRAPHIQUES                 --}}
+                {{-- ══════════════════════════════════ --}}
                 <div class="row page-titles">
                     <div class="col-md-12 align-self-center">
                         <h4 class="text-themecolor">
@@ -412,8 +622,6 @@
                         {{-- <small class="text-muted">Vue d'ensemble de la plateforme CLEE</small> --}}
                     </div>
                 </div>
-
-                {{-- GRAPHIQUES --}}
                 <div class="row mt-4">
                     {{-- Donut Orientations --}}
                     <div class="col-md-6 mb-4">
@@ -444,43 +652,6 @@
                     </div>
 
                 </div>
-                {{-- Évolution des affectations & Score moyen par compétence --}}
-                {{-- <div class="row mt-4">
-                    <div class="col-md-6 mb-4">
-                        <div class="card h-100">
-                            <div class="card-header d-flex justify-content-between align-items-center" >
-                                <h6 class="mb-0 font-weight-bold">
-                                    <i class="fas fa-chart-line mr-2 text-info"></i>
-                                    Évolution des candidats affectés
-                                </h6>
-
-                                <div class="btn-group btn-group-sm" role="group"  >
-                                    @foreach (['jour' => 'Jour', 'semaine' => 'Semaine', 'mois' => 'Mois', 'annee' => 'Année'] as $key => $label)
-                                        <a href="{{ request()->fullUrlWithQuery(['periode' => $key]) }}"
-                                            class="btn {{ $evolutionChart['periode'] === $key ? 'btn-primary' : 'btn-outline-primary' }}">
-                                            {{ $label }}
-                                        </a>
-                                    @endforeach
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <canvas id="evolutionChart" style="max-height:220px;"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 mb-4">
-                        <div class="card h-100">
-                            <div class="card-header">
-                                <h6 class="mb-0 font-weight-bold">
-                                    <i class="fas fa-chart-bar mr-2 text-primary"></i> Score moyen par compétence
-                                </h6>
-                            </div>
-                            <div class="card-body">
-                                <canvas id="scoresChart" style="max-height:220px;"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div> --}}
             </div>
         </div>
     </div>
@@ -508,47 +679,6 @@
                                 size: 11
                             }
                         }
-                    }
-                }
-            }
-        });
-
-        // 2. Bar horizontal Scores
-        new Chart(document.getElementById('scoresChart'), {
-            type: 'bar',
-            data: {
-                labels: @json($scoresChart['labels']),
-                datasets: [{
-                    label: 'Score moyen /20',
-                    data: @json($scoresChart['data']),
-                    backgroundColor: '#006b08cc',
-                    borderColor: '#006b08',
-                    borderWidth: 1,
-                    borderRadius: 4,
-                }]
-            },
-            options: {
-                indexAxis: 'y',
-                responsive: true,
-                scales: {
-                    x: {
-                        min: 0,
-                        max: 20,
-                        grid: {
-                            color: '#f0f0f0'
-                        }
-                    },
-                    y: {
-                        ticks: {
-                            font: {
-                                size: 11
-                            }
-                        }
-                    }
-                },
-                plugins: {
-                    legend: {
-                        display: false
                     }
                 }
             }

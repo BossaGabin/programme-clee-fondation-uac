@@ -4,57 +4,85 @@ namespace App\Http\Controllers\Coach;
 
 use App\Http\Controllers\Controller;
 use App\Models\Appointment;
-use Illuminate\Http\Request;
-use Carbon\Carbon;
 use App\Models\CoachAssignment;
+use App\Models\Interview;
+use App\Models\InterviewScore;
+use App\Models\FollowUpStep;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
     public function index(Request $request)
     {
-        $coach = auth()->user();
+        $coach  = auth()->user();
+        $statut = $request->get('statut');
 
-        $query = $coach->assignments()->orderBy('created_at', 'desc')
+        // ── 1. Assignments — 1 seule requête ────────────────────────
+        $allAssignments = $coach->assignments()
             ->where('status', 'active')
+            ->orderBy('created_at', 'desc')
             ->with([
                 'candidat.candidatProfile',
                 'candidat.needAssignment',
                 'candidat.followUpSteps',
-            ]);
+            ])
+            ->get();
 
-        if ($request->filled('statut')) {
-            $query->whereHas('candidat.needAssignment', function ($q) use ($request) {
-                $q->where('type', $request->statut);
-            });
-        }
+        // Filtrage en PHP — pas de requête supplémentaire
+        $assignments = $statut
+            ? $allAssignments->filter(
+                fn($a) => $a->candidat->needAssignment?->type === $statut
+            )
+            : $allAssignments;
 
-        $assignments = $query->get();
-        $statut      = $request->get('statut');
-
+        // ── 2. Compteurs — calculés depuis la collection déjà chargée
         $compteurs = [
-            'tous'             => $coach->assignments()->where('status', 'active')->count(),
-            'stage'            => $coach->assignments()->where('status', 'active')
-                ->whereHas('candidat.needAssignment', fn($q) => $q->where('type', 'stage'))->count(),
-            'insertion_emploi' => $coach->assignments()->where('status', 'active')
-                ->whereHas('candidat.needAssignment', fn($q) => $q->where('type', 'insertion_emploi'))->count(),
-            'auto_emploi'      => $coach->assignments()->where('status', 'active')
-                ->whereHas('candidat.needAssignment', fn($q) => $q->where('type', 'auto_emploi'))->count(),
-            'formation'        => $coach->assignments()->where('status', 'active')
-                ->whereHas('candidat.needAssignment', fn($q) => $q->where('type', 'formation'))->count(),
+            'tous'             => $allAssignments->count(),
+            'stage'            => $allAssignments->filter(fn($a) => $a->candidat->needAssignment?->type === 'stage')->count(),
+            'insertion_emploi' => $allAssignments->filter(fn($a) => $a->candidat->needAssignment?->type === 'insertion_emploi')->count(),
+            'auto_emploi'      => $allAssignments->filter(fn($a) => $a->candidat->needAssignment?->type === 'auto_emploi')->count(),
+            'formation'        => $allAssignments->filter(fn($a) => $a->candidat->needAssignment?->type === 'formation')->count(),
         ];
 
+        // ── 3. Entretiens programmés — 1 requête ────────────────────
         $entretiens = Appointment::whereHas('coachAssignment', fn($q) => $q->where('coach_id', $coach->id))
             ->where('status', 'scheduled')
             ->count();
-        $interview = Appointment::whereHas('coachAssignment', fn($q) => $q->where('coach_id', $coach->id))
+
+        $assignmentsAvecEntretien = Appointment::whereHas('coachAssignment', fn($q) => $q->where('coach_id', $coach->id))
+            ->whereIn('status', ['scheduled', 'completed'])
+            ->pluck('coach_assignment_id')
+            ->toArray();
+
+        // ── 4. Interviews — 1 seule requête + filtrage PHP ──────────
+        $allInterviews = Interview::whereHas('appointment.coachAssignment', fn($q) => $q->where('coach_id', $coach->id))
+            ->where('status', 'completed')
+            ->orderBy('completed_at', 'desc')
+            ->with([
+                'appointment.coachAssignment.candidat.candidatProfile',
+                'appointment.coachAssignment.candidat.needAssignment',
+                'appointment.coachAssignment.coach',
+            ])
             ->get();
-        // ->count();
-        // dd($entretiens);
 
+        $interviewsAujourdhui = $allInterviews->filter(
+            fn($i) => Carbon::parse($i->completed_at)->isToday()
+        );
 
-        // ── DONNÉES GRAPHIQUES ──
+        $interviewsSemaine = $allInterviews->filter(
+            fn($i) => Carbon::parse($i->completed_at)->isBetween(
+                Carbon::now()->startOfWeek(),
+                Carbon::now()->endOfWeek()
+            )
+        );
 
-        // 1. Donut orientations
+        $interviewsMois = $allInterviews->filter(
+            fn($i) => Carbon::parse($i->completed_at)->month === Carbon::now()->month
+                && Carbon::parse($i->completed_at)->year  === Carbon::now()->year
+        );
+
+        // ── 5. Graphique orientations — depuis compteurs déjà calculés
         $orientationsChart = [
             'labels' => ['Stage', 'Insertion emploi', 'Auto-emploi', 'Formation'],
             'data'   => [
@@ -65,35 +93,21 @@ class DashboardController extends Controller
             ],
         ];
 
-        // 2. Bar horizontal — score moyen par compétence
-        $scoresChart = \App\Models\InterviewScore::whereHas('interview.appointment.coachAssignment', function ($q) use ($coach) {
-            $q->where('coach_id', $coach->id);
-        })
-            ->with('competence')
-            ->get()
-            ->groupBy('competence.name')
-            ->map(fn($scores) => round($scores->avg('note'), 1));
 
-        $scoresChart = [
-            'labels' => $scoresChart->keys()->values()->toArray(),
-            'data'   => $scoresChart->values()->toArray(),
-        ];
+        // ── 7. Graphique suivi étapes — 2 requêtes simples ──────────
+        $allSteps = FollowUpStep::whereHas('candidat.candidatAssignment', fn($q) => $q->where('coach_id', $coach->id))
+            ->get();
 
-        // 3. Donut suivi étapes
         $stepsChart = [
             'labels' => ['Terminées', 'En cours'],
             'data'   => [
-                \App\Models\FollowUpStep::whereHas('candidat.candidatAssignment', fn($q) => $q->where('coach_id', $coach->id))
-                    ->where('status', 'completed')->count(),
-                \App\Models\FollowUpStep::whereHas('candidat.candidatAssignment', fn($q) => $q->where('coach_id', $coach->id))
-                    ->where('status', 'in_progress')->count(),
+                $allSteps->where('status', 'completed')->count(),
+                $allSteps->where('status', 'in_progress')->count(),
             ],
         ];
 
-
-        // ── Évolution des affectations ──
-        $periode = $request->get('periode', 'mois'); // défaut : mois
-
+        // ── 8. Évolution des affectations ───────────────────────────
+        $periode       = $request->get('periode', 'jour');
         $evolutionQuery = CoachAssignment::where('coach_id', $coach->id);
 
         $evolution = match ($periode) {
@@ -122,8 +136,8 @@ class DashboardController extends Controller
         };
 
         $evolutionChart = [
-            'labels' => $evolution->keys()->values()->toArray(),
-            'data'   => $evolution->values()->toArray(),
+            'labels'  => $evolution->keys()->values()->toArray(),
+            'data'    => $evolution->values()->toArray(),
             'periode' => $periode,
         ];
 
@@ -132,14 +146,13 @@ class DashboardController extends Controller
             'statut',
             'compteurs',
             'entretiens',
-            'interview',
+            'assignmentsAvecEntretien',
+            'interviewsAujourdhui',
+            'interviewsSemaine',
+            'interviewsMois',
             'orientationsChart',
-            'scoresChart',
             'stepsChart',
-            'evolutionChart'
+            'evolutionChart',
         ));
-
-
-        // return view('coach.dashboard', compact('assignments', 'statut', 'compteurs', 'entretiens','interview'));
     }
 }

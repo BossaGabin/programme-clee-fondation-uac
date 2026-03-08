@@ -180,7 +180,7 @@
                                     1. Avez-vous un métier ou poste clairement identifié ?
                                 </label>
                                 <div class="d-flex" style="gap:10px; flex-wrap:wrap;">
-                                    @foreach ([0 => 'Non (0)', 5 => 'Vaguement (5)', 10 => 'Clairement (10)'] as $val => $label)
+                                    @foreach ([0 => 'Non (0)', 3 => 'Vaguement (3)', 5 => 'Clairement (5)'] as $val => $label)
                                         <label class="choice-btn" data-bloc="A" data-max="10">
                                             <input type="radio" name="blocs[A][q1]" value="{{ $val }}"
                                                 class="bloc-radio" data-bloc="A"
@@ -197,7 +197,7 @@
                                     2. Savez-vous quelles compétences sont exigées pour ce métier ?
                                 </label>
                                 <div class="d-flex" style="gap:10px; flex-wrap:wrap;">
-                                    @foreach ([0 => 'Non (0)', 5 => 'Partiellement (5)', 10 => 'Oui clairement (10)'] as $val => $label)
+                                    @foreach ([0 => 'Non (0)', 3 => 'Partiellement (3)', 5 => 'Oui clairement (5)'] as $val => $label)
                                         <label class="choice-btn" data-bloc="A" data-max="10">
                                             <input type="radio" name="blocs[A][q2]" value="{{ $val }}"
                                                 class="bloc-radio" data-bloc="A"
@@ -214,7 +214,7 @@
                                     3. Avez-vous identifié un secteur ou type d'employeur précis ?
                                 </label>
                                 <div class="d-flex" style="gap:10px; flex-wrap:wrap;">
-                                    @foreach ([0 => 'Non (0)', 5 => 'Oui (5)'] as $val => $label)
+                                    @foreach ([0 => 'Non (0)', 2 => 'Autre réponse (2)', 5 => 'Oui (5)'] as $val => $label)
                                         <label class="choice-btn" data-bloc="A" data-max="5">
                                             <input type="radio" name="blocs[A][q3]" value="{{ $val }}"
                                                 class="bloc-radio" data-bloc="A"
@@ -231,7 +231,7 @@
                                     4. Votre projet est-il réaliste par rapport à votre niveau actuel ?
                                 </label>
                                 <div class="d-flex" style="gap:10px; flex-wrap:wrap;">
-                                    @foreach ([0 => 'Non (0)', 5 => 'Oui (5)'] as $val => $label)
+                                    @foreach ([0 => 'Non (0)', 2 => 'Autre réponse (2)', 5 => 'Oui (5)'] as $val => $label)
                                         <label class="choice-btn" data-bloc="A" data-max="5">
                                             <input type="radio" name="blocs[A][q4]" value="{{ $val }}"
                                                 class="bloc-radio" data-bloc="A"
@@ -278,7 +278,7 @@
                                 <div class="form-group {{ $qkey === 'q4' ? 'mb-0' : '' }}">
                                     <label class="font-weight-bold">{{ $qlabel }}</label>
                                     <div class="d-flex" style="gap:10px; flex-wrap:wrap;">
-                                        @foreach ([0 => 'Non (0)', 5 => 'Oui (5)'] as $val => $label)
+                                        @foreach ([0 => 'Non (0)', 2 => 'Autre réponse (2)', 5 => 'Oui (5)'] as $val => $label)
                                             <label class="choice-btn" data-bloc="B" data-max="5">
                                                 <input type="radio" name="blocs[B][{{ $qkey }}]"
                                                     value="{{ $val }}" class="bloc-radio" data-bloc="B"
@@ -340,7 +340,7 @@
                                     2. Avez-vous déjà une expérience pratique (stage, job, activité) ?
                                 </label>
                                 <div class="d-flex" style="gap:10px; flex-wrap:wrap;">
-                                    @foreach ([0 => 'Non (0)', 5 => 'Oui (5)'] as $val => $label)
+                                    @foreach ([0 => 'Non (0)', 2 => 'Autre réponse (2)', 5 => 'Oui (5)'] as $val => $label)
                                         <label class="choice-btn" data-bloc="C" data-max="5">
                                             <input type="radio" name="blocs[C][q2]" value="{{ $val }}"
                                                 class="bloc-radio" data-bloc="C"
@@ -357,7 +357,7 @@
                                     3. Savez-vous décrire clairement ce que vous savez faire ?
                                 </label>
                                 <div class="d-flex" style="gap:10px; flex-wrap:wrap;">
-                                    @foreach ([0 => 'Non (0)', 5 => 'Oui (5)'] as $val => $label)
+                                    @foreach ([0 => 'Non (0)', 2 => 'Autre réponse (2)', 5 => 'Oui (5)'] as $val => $label)
                                         <label class="choice-btn" data-bloc="C" data-max="5">
                                             <input type="radio" name="blocs[C][q3]" value="{{ $val }}"
                                                 class="bloc-radio" data-bloc="C"
@@ -466,7 +466,7 @@
                                     2. Savez-vous chercher un emploi ou un stage ?
                                 </label>
                                 <div class="d-flex" style="gap:10px; flex-wrap:wrap;">
-                                    @foreach ([0 => 'Non (0)', 5 => 'Oui (5)'] as $val => $label)
+                                    @foreach ([0 => 'Non (0)', 2 => 'Autre réponse (2)', 5 => 'Oui (5)'] as $val => $label)
                                         <label class="choice-btn" data-bloc="E" data-max="5">
                                             <input type="radio" name="blocs[E][q2]" value="{{ $val }}"
                                                 class="bloc-radio" data-bloc="E"
@@ -483,7 +483,7 @@
                                     3. Êtes-vous à l'aise avec les outils numériques ?
                                 </label>
                                 <div class="d-flex" style="gap:10px; flex-wrap:wrap;">
-                                    @foreach ([0 => 'Non (0)', 5 => 'Oui (5)'] as $val => $label)
+                                    @foreach ([0 => 'Non (0)', 2 => 'Autre réponse (2)', 5 => 'Oui (5)'] as $val => $label)
                                         <label class="choice-btn" data-bloc="E" data-max="5">
                                             <input type="radio" name="blocs[E][q3]" value="{{ $val }}"
                                                 class="bloc-radio" data-bloc="E"
@@ -620,13 +620,13 @@
         const txt = document.getElementById('orientation-text');
         box.style.display = 'block';
 
-        if (noteFinale <= 7) {
+        if (noteFinale <= 9) {
             box.className = 'alert alert-danger';
             txt.textContent = 'Renforcement compétences (formation de base)';
-        } else if (noteFinale <= 11) {
+        } else if (noteFinale <= 14) {
             box.className = 'alert alert-warning';
             txt.textContent = 'Stage / immersion professionnelle';
-        } else if (noteFinale <= 15) {
+        } else if (noteFinale <= 17) {
             box.className = 'alert alert-info';
             txt.textContent = 'Insertion emploi accompagnée';
         } else {

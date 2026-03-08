@@ -259,7 +259,7 @@
                                                 'class' => 'badge-success',
                                             ],
                                             'auto_emploi' => ['label' => 'Auto-emploi', 'class' => 'badge-warning'],
-                                            'formation' => ['label' => 'Formation', 'class' => 'badge-info'],
+                                            'formation' => ['label' => 'Formation', 'class' => 'badge-danger'],
                                         ];
                                         $info = $labels[$besoin->type] ?? [
                                             'label' => $besoin->type,
