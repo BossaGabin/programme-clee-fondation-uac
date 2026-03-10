@@ -16,7 +16,31 @@
     <div id="main-wrapper">
         @include('section.header')
         @include('section.sidebar')
-
+        @php
+            $candidat = $interview->appointment->coachAssignment->candidat;
+            $noteFinale = round($interview->total_score / 5);
+            $scoreColor =
+                $noteFinale >= 16
+                    ? '#1cc88a'
+                    : ($noteFinale >= 12
+                        ? '#36b9cc'
+                        : ($noteFinale >= 8
+                            ? '#f6c23e'
+                            : '#e74a3b'));
+            $orientation = match (true) {
+                $noteFinale <= 7 => 'Renforcement compétences (formation de base)',
+                $noteFinale <= 11 => 'Stage / immersion professionnelle',
+                $noteFinale <= 15 => 'Insertion emploi accompagnée(Insertion à l\'emploi)',
+                default => 'Insertion rapide / autonomie (Auto emploi)',
+            };
+            $blocColors = [
+                1 => '#006b08',
+                2 => '#4e73df',
+                3 => '#1cc88a',
+                4 => '#f6c23e',
+                5 => '#e74a3b',
+            ];
+        @endphp
 
         <div class="content-body">
             <div class="container-fluid">
@@ -28,8 +52,11 @@
                         </h4>
                     </div>
                     <div class="col-md-7 align-self-center text-right">
-                        <a href="{{ route('coach.dashboard') }}" class="btn btn-sm btn-outline-secondary mr-2">
+                        <a href="{{ route('coach.candidats.show', $candidat) }}" class="btn btn-sm btn-outline-secondary mr-2">
                             <i class="fas fa-arrow-left mr-1"></i> Retour
+                        </a>
+                        <a href="{{ route('coach.projects.create', $candidat) }}" class="btn btn-sm btn-success mr-1">
+                            <i class="fas fa-plus mr-1"></i> Créer le projet professionnel
                         </a>
                         <a href="{{ route('coach.interviews.pdf', $interview) }}" class="btn btn-sm btn-danger"
                             target="_blank">
@@ -45,49 +72,6 @@
                     </div>
                 @endif
 
-                @php
-                    $candidat = $interview->appointment->coachAssignment->candidat;
-                    $noteFinale = round($interview->total_score / 5);
-                    $scoreColor =
-                        $noteFinale >= 16
-                            ? '#1cc88a'
-                            : ($noteFinale >= 12
-                                ? '#36b9cc'
-                                : ($noteFinale >= 8
-                                    ? '#f6c23e'
-                                    : '#e74a3b'));
-                    $orientation = match (true) {
-                        $noteFinale <= 7 => 'Renforcement compétences (formation de base)',
-                        $noteFinale <= 11 => 'Stage / immersion professionnelle',
-                        $noteFinale <= 15 => 'Insertion emploi accompagnée',
-                        default => 'Insertion rapide / autonomie',
-                    };
-                    $blocColors = [
-                        1 => '#006b08',
-                        2 => '#4e73df',
-                        3 => '#1cc88a',
-                        4 => '#f6c23e',
-                        5 => '#e74a3b',
-                    ];
-                @endphp
-                {{-- <div class="row">
-                            @if (Auth::user()->role == 'coach')
-                                @php $candidat = $interview->appointment->coachAssignment->candidat; @endphp
-                                <div>
-                                    @if (!$candidat->needAssignment)
-                                        <a href="{{ route('coach.needs.create', $candidat) }}"
-                                            class="btn btn-sm btn-success">
-                                            <i class="fas fa-bullseye mr-1"></i> Assigner l'orientation
-                                        </a>
-                                    @else
-                                        <span class="badge badge-success" style="font-size:12px; padding:6px 12px;">
-                                            <i class="fas fa-check mr-1"></i> Orientation déjà assigné
-                                        </span>
-                                    @endif
-                                </div>
-                            @endif
-                </div> --}}
-                
                 <div class="row">
                     {{-- Score global --}}
                     <div class="col-md-4">

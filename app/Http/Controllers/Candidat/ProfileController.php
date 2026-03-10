@@ -30,10 +30,10 @@ class ProfileController extends Controller
             'niveau_etude'       => 'nullable|string|max:100',
             'domaine_formation'  => 'nullable|string|max:100',
             'experience_years'   => 'nullable|integer|min:0|max:50',
-            'situation_actuelle' => 'nullable|in:en_emploi,sans_emploi,etudiant',
+            'situation_actuelle' => 'nullable|in:en_emploi,sans_emploi,etudiant,autre',
+            'situation_autre'    => 'required_if:situation_actuelle,autre|nullable|string|max:255',
         ]);
 
-        // Calcul complétion profil
         $fields = [
             'date_of_birth', 'gender', 'address',
             'niveau_etude', 'domaine_formation',
@@ -42,7 +42,12 @@ class ProfileController extends Controller
 
         $data = $request->only($fields);
 
-        // Calculer le pourcentage de complétion
+        // Gérer situation_autre
+        $data['situation_autre'] = $request->situation_actuelle === 'autre'
+            ? $request->situation_autre
+            : null;
+
+        // Calcul complétion profil
         $weights = [
             'date_of_birth'      => 20,
             'gender'             => 10,

@@ -6,11 +6,11 @@
                 <span class="brand-title">
                     <strong style="
                         color:#006b08;
-                        font-size:13px;
+                        font-size:17px;
                         letter-spacing:2px;
                         text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
                         font-family: 'Segoe UI', sans-serif;
-                    ">PROGRAMME</strong>
+                    ">CLEE UAC</strong>
                     <strong style="
                         color:#f4a900;
                         font-size:20px;
@@ -19,7 +19,7 @@
                         font-family: 'Segoe UI', sans-serif;
                         display:block;
                         margin-top:-4px;
-                    ">CLEE</strong>
+                    ">STARTUP VALLEY</strong>
                 </span>
             </a>
         </div>

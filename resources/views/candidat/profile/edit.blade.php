@@ -354,7 +354,7 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-6">
+                                                {{-- <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label for="situation_actuelle">
                                                             Situation actuelle <span class="text-danger">*</span>
@@ -377,7 +377,53 @@
                                                             </div>
                                                         @enderror
                                                     </div>
+                                                </div> --}}
+                                                <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="situation_actuelle">
+                                                        Situation actuelle <span class="text-danger">*</span>
+                                                    </label>
+                                                    <select id="situation_actuelle" name="situation_actuelle"
+                                                        class="form-control @error('situation_actuelle') is-invalid @enderror"
+                                                        onchange="toggleSituationAutre(this.value)">
+                                                        <option value="">-- Sélectionner --</option>
+                                                        <option value="en_emploi"
+                                                            {{ old('situation_actuelle', $profile->situation_actuelle) === 'en_emploi' ? 'selected' : '' }}>
+                                                            En emploi
+                                                        </option>
+                                                        <option value="sans_emploi"
+                                                            {{ old('situation_actuelle', $profile->situation_actuelle) === 'sans_emploi' ? 'selected' : '' }}>
+                                                            Sans emploi
+                                                        </option>
+                                                        <option value="etudiant"
+                                                            {{ old('situation_actuelle', $profile->situation_actuelle) === 'etudiant' ? 'selected' : '' }}>
+                                                            Étudiant(e)
+                                                        </option>
+                                                        <option value="autre"
+                                                            {{ old('situation_actuelle', $profile->situation_actuelle) === 'autre' ? 'selected' : '' }}>
+                                                            Autre (à préciser)
+                                                        </option>
+                                                    </select>
+                                                    @error('situation_actuelle')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
                                                 </div>
+
+                                                {{-- Champ conditionnel "Autre" --}}
+                                                <div class="form-group" id="situation_autre_wrapper"
+                                                    style="{{ old('situation_actuelle', $profile->situation_actuelle) === 'autre' ? '' : 'display:none;' }}">
+                                                    <label for="situation_autre">
+                                                        Précisez votre situation <span class="text-danger">*</span>
+                                                    </label>
+                                                    <input type="text" id="situation_autre" name="situation_autre"
+                                                        class="form-control @error('situation_autre') is-invalid @enderror"
+                                                        placeholder="Ex : Freelance, En reconversion, Retraité..."
+                                                        value="{{ old('situation_autre', $profile->situation_autre) }}">
+                                                    @error('situation_autre')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                            </div>
 
                                             </div>
 
@@ -504,6 +550,26 @@
             });
         });
     </script>
+    <script>
+    function toggleSituationAutre(value) {
+        const wrapper = document.getElementById('situation_autre_wrapper');
+        const input   = document.getElementById('situation_autre');
+        if (value === 'autre') {
+            wrapper.style.display = 'block';
+            input.setAttribute('required', 'required');
+        } else {
+            wrapper.style.display = 'none';
+            input.removeAttribute('required');
+            input.value = '';
+        }
+    }
+
+    // Au chargement si old value = autre
+    document.addEventListener('DOMContentLoaded', function () {
+        const select = document.getElementById('situation_actuelle');
+        if (select) toggleSituationAutre(select.value);
+    });
+</script>
 
 </body>
 

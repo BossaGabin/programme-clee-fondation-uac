@@ -48,7 +48,7 @@
                                     @csrf
 
                                     {{-- Rôle --}}
-                                    <div class="form-group">
+                                    {{-- <div class="form-group">
                                         <label class="font-weight-bold">
                                             Rôle <span class="text-danger">*</span>
                                         </label>
@@ -69,6 +69,43 @@
                                                        onchange="toggleCoachFields()">
                                                 <label class="custom-control-label" for="role_coach">
                                                     <i class="fas fa-chalkboard-teacher mr-1 text-warning"></i> Coach
+                                                </label>
+                                            </div>
+                                        </div>
+                                        @error('role')
+                                            <small class="text-danger">{{ $message }}</small>
+                                        @enderror
+                                    </div> --}}
+                                    <div class="form-group">
+                                        <label class="font-weight-bold">
+                                            Rôle <span class="text-danger">*</span>
+                                        </label>
+                                        <div class="d-flex" style="gap: 15px;">
+                                            <div class="custom-control custom-radio">
+                                                <input type="radio" id="role_candidat" name="role"
+                                                    value="candidat" class="custom-control-input"
+                                                    {{ old('role', 'candidat') === 'candidat' ? 'checked' : '' }}
+                                                    onchange="toggleCoachFields()">
+                                                <label class="custom-control-label" for="role_candidat">
+                                                    <i class="fas fa-user mr-1 text-info"></i> Candidat
+                                                </label>
+                                            </div>
+                                            <div class="custom-control custom-radio">
+                                                <input type="radio" id="role_coach" name="role"
+                                                    value="coach" class="custom-control-input"
+                                                    {{ old('role') === 'coach' ? 'checked' : '' }}
+                                                    onchange="toggleCoachFields()">
+                                                <label class="custom-control-label" for="role_coach">
+                                                    <i class="fas fa-chalkboard-teacher mr-1 text-warning"></i> Coach
+                                                </label>
+                                            </div>
+                                            <div class="custom-control custom-radio">
+                                                <input type="radio" id="role_admin" name="role"
+                                                    value="admin" class="custom-control-input"
+                                                    {{ old('role') === 'admin' ? 'checked' : '' }}
+                                                    onchange="toggleCoachFields()">
+                                                <label class="custom-control-label" for="role_admin">
+                                                    <i class="fas fa-user-shield mr-1 text-danger"></i> Administrateur
                                                 </label>
                                             </div>
                                         </div>

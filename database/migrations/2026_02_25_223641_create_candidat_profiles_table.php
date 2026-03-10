@@ -20,8 +20,10 @@ return new class extends Migration
             $table->enum('situation_actuelle', [
                 'en_emploi',
                 'sans_emploi',
-                'etudiant'
-            ])->nullable();                                          // 10%
+                'etudiant',
+                'autre'
+            ])->nullable();
+            $table->string('situation_autre')->nullable();                                          // 10%
             $table->string('cv_path')->nullable();                  // optionnel, hors calcul
             $table->integer('profile_completion')->default(0);      // 0 à 100
             $table->timestamps();

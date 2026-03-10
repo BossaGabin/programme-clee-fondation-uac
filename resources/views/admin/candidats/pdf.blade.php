@@ -437,8 +437,8 @@
                         $orientation = match (true) {
                             $noteFinale <= 7 => 'Renforcement compétences',
                             $noteFinale <= 11 => 'Stage / immersion',
-                            $noteFinale <= 15 => 'Insertion accompagnée',
-                            default => 'Insertion rapide / autonomie',
+                            $noteFinale <= 15 => 'Insertion accompagnée(Insertion à l\'emploi)',
+                            default => 'Insertion rapide / autonomie (Auto emploi)',
                         };
                         $blocColors = ['#006b08', '#4e73df', '#1cc88a', '#f6c23e', '#e74a3b'];
                     @endphp

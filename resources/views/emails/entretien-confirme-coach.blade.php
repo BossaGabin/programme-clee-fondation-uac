@@ -19,16 +19,14 @@
         .info-row { display: table; width: 100%; margin-bottom: 10px; }
         .info-label { display: table-cell; width: 40%; color: #888; font-size: 13px; }
         .info-value { display: table-cell; font-weight: bold; color: #333; font-size: 13px; }
-        .btn {
-            display: inline-block;
+        .success-box {
+            background: #d4edda;
+            border-left: 4px solid #1cc88a;
+            padding: 12px 15px;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #155724;
             margin: 20px 0;
-            padding: 12px 30px;
-            background: #006b08;
-            color: #fff;
-            text-decoration: none;
-            border-radius: 6px;
-            font-size: 15px;
-            font-weight: bold;
         }
         .warning {
             background: #fff3cd;
@@ -37,6 +35,7 @@
             border-radius: 4px;
             font-size: 13px;
             color: #856404;
+            margin: 15px 0;
         }
         .footer { background: #f8f9fc; padding: 15px; text-align: center; color: #999; font-size: 12px; }
     </style>
@@ -47,13 +46,20 @@
             <h1>CLEE UAC STARTUP VALLEY</h1>
         </div>
         <div class="body">
-            <p>Bonjour <strong>{{ $candidatName }}</strong>,</p>
-            <p>
-                Votre coach <strong>{{ $coachName }}</strong> a programmé un entretien de diagnostic
-                avec vous. Voici les informations :
-            </p>
+            <p>Bonjour <strong>{{ $coachName }}</strong>,</p>
+
+            <div class="success-box">
+                Le candidat <strong>{{ $candidatName }}</strong> a confirmé
+                un horaire pour son entretien de diagnostic.
+            </div>
+
+            <p>Voici le récapitulatif de l'entretien :</p>
 
             <div class="info-box">
+                <div class="info-row">
+                    <span class="info-label">👤 Candidat</span>
+                    <span class="info-value">{{ $candidatName }}</span>
+                </div>
                 <div class="info-row">
                     <span class="info-label">📅 Date</span>
                     <span class="info-value">{{ $date }}</span>
@@ -66,38 +72,43 @@
                     <span class="info-label">📍 Mode</span>
                     <span class="info-value">{{ $mode === 'presentiel' ? 'Présentiel' : 'En ligne' }}</span>
                 </div>
+
                 @if($mode === 'presentiel' && $location)
                     <div class="info-row">
                         <span class="info-label">🏢 Lieu</span>
                         <span class="info-value">{{ $location }}</span>
                     </div>
                 @endif
-                @if($mode === 'en_ligne' && $meetingLink)
-                    <div class="info-row">
-                        <span class="info-label">🔗 Lien</span>
-                        <span class="info-value">
-                            <a href="{{ $meetingLink }}" style="color:#006b08;">Rejoindre la réunion</a>
-                        </span>
-                    </div>
+
+                @if($mode === 'en_ligne')
+                    @if($plateforme === 'whatsapp')
+                        <div class="info-row">
+                            <span class="info-label">📱 WhatsApp</span>
+                            <span class="info-value">{{ $numeroWhatsapp }}</span>
+                        </div>
+                    @elseif($plateforme === 'appel_direct')
+                        <div class="info-row">
+                            <span class="info-label">📞 Appel direct</span>
+                            <span class="info-value">{{ $numeroAppel }}</span>
+                        </div>
+                    @elseif($plateforme === 'google_meet' && $meetingLink)
+                        <div class="info-row">
+                            <span class="info-label">🎥 Google Meet</span>
+                            <span class="info-value">
+                                <a href="{{ $meetingLink }}" style="color:#006b08;">Rejoindre la réunion</a>
+                            </span>
+                        </div>
+                    @endif
                 @endif
             </div>
 
-            @if($mode === 'en_ligne' && $meetingLink)
-                <div style="text-align:center;">
-                    <a href="{{ $meetingLink }}" class="btn">Rejoindre la réunion</a>
-                </div>
-            <div class="warning">
-                ⚠️ Si vous pouvez pas rejoindre la réunion par meet appellez nous au 0146464693.
-            </div>
-            @endif
-
             <div class="warning">
                 ⚠️ Merci d'être disponible à l'heure indiquée. En cas d'empêchement,
-                contactez votre coach au plus vite.
+                prévenez le candidat et l'administration au plus vite au 0162470707.
             </div>
 
             <p style="color:#999; font-size:13px; margin-top:20px;">
-                Cet email a été envoyé automatiquement depuis la plateforme du CLEE UAC STARTUP VALLEY.
+                Cet email a été envoyé automatiquement depuis la plateforme CLEE UAC STARTUP VALLEY.
             </p>
         </div>
         <div class="footer">

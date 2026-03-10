@@ -13,67 +13,89 @@
 <script src="https://cdn.datatables.net/responsive/2.4.1/js/responsive.bootstrap4.min.js"></script>
 
 <script>
-$(document).ready(function () {
+    $(document).ready(function () {
 
-    // ── Configuration commune ────────────────────────────────────
-    var dtConfig = {
-        responsive: true,
-        language: { url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/fr-FR.json' },
-        pageLength: 10,
-        dom: 'lfrtip',
-        order: [],
-    };
-
-    // ── Tableaux simples (pas d'onglets) ─────────────────────────
-    // IDs : table-candidats, table-demandes, table-coachs, table-admin-candidats
-    [
-        'table-candidats',
-        'table-demandes',
-        'table-coachs',
-        'table-demandes-index',
-        'table-admin-candidats',
-    ].forEach(function (id) {
-        var $t = $('#' + id);
-        if ($t.length && $t.find('tbody tr.data-row').length > 0) {
-            $t.DataTable($.extend(true, {}, dtConfig));
+        // ── Configuration commune ────────────────────────────────────
+var dtConfig = {
+    responsive: true,
+    language: {
+        "decimal":        ",",
+        "emptyTable":     "Aucune donnée disponible",
+        "info":           "Affichage de _START_ à _END_ sur _TOTAL_ entrées",
+        "infoEmpty":      "Affichage de 0 à 0 sur 0 entrées",
+        "infoFiltered":   "(filtré depuis _MAX_ entrées au total)",
+        "lengthMenu":     "Afficher _MENU_ entrées",
+        "loadingRecords": "Chargement...",
+        "processing":     "Traitement...",
+        "search":         "Rechercher :",
+        "zeroRecords":    "Aucun résultat trouvé",
+        "paginate": {
+            "first":    "Premier",
+            "last":     "Dernier",
+            "next":     "Suivant",
+            "previous": "Précédent"
+        },
+        "aria": {
+            "sortAscending":  " : activer pour trier la colonne par ordre croissant",
+            "sortDescending": " : activer pour trier la colonne par ordre décroissant"
         }
-    });
+    },
+    pageLength: 10,
+    dom: 'lfrtip',
+    order: [],
+};
 
-    // ── Tableaux onglets utilisateurs (coach / candidats) ────────
-    // IDs : table-users-coachs, table-users-candidats
-    [
-        'table-users-coachs',
-        'table-users-candidats',
-    ].forEach(function (id) {
-        var $t = $('#' + id);
-        if ($t.length && $t.find('tbody tr.data-row').length > 0) {
-            $t.DataTable($.extend(true, {}, dtConfig));
-        }
-    });
+        // ── Tableaux simples (pas d'onglets) ─────────────────────────
+        // IDs : table-candidats, table-demandes, table-coachs, table-admin-candidats
+        [
+            'table-candidats',
+            'table-demandes',
+            'table-coachs',
+            'table-demandes-index',
+            'table-admin-candidats',
+        ].forEach(function (id) {
+            var $t = $('#' + id);
+            if ($t.length && $t.find('tbody tr.data-row').length > 0) {
+                $t.DataTable($.extend(true, {}, dtConfig));
+            }
+        });
 
-    // ── Tableaux onglets entretiens coach (jour/semaine/mois) ────
-    // IDs : table-jour, table-semaine, table-mois
-    ['jour', 'semaine', 'mois'].forEach(function (key) {
-        var $t = $('#table-' + key);
-        if ($t.length && $t.find('tbody tr.data-row').length > 0) {
-            $t.DataTable($.extend(true, {}, dtConfig, { order: [[4, 'desc']] }));
-        }
-    });
+        // ── Tableaux onglets utilisateurs (coach / candidats) ────────
+        // IDs : table-users-coachs, table-users-candidats
+        [
+            'table-users-coachs',
+            'table-users-candidats',
+            'table-users-admins',
+        ].forEach(function (id) {
+            var $t = $('#' + id);
+            if ($t.length && $t.find('tbody tr.data-row').length > 0) {
+                $t.DataTable($.extend(true, {}, dtConfig));
+            }
+        });
 
-    // ── Tableaux onglets entretiens admin (jour/semaine/mois) ────
-    // IDs : admin-entretiens-jour, admin-entretiens-semaine, admin-entretiens-mois
-    ['jour', 'semaine', 'mois'].forEach(function (key) {
-        var $t = $('#admin-entretiens-' + key);
-        if ($t.length && $t.find('tbody tr.data-row').length > 0) {
-            $t.DataTable($.extend(true, {}, dtConfig, { order: [[4, 'desc']] }));
-        }
-    });
+        // ── Tableaux onglets entretiens coach (jour/semaine/mois) ────
+        // IDs : table-jour, table-semaine, table-mois
+        ['jour', 'semaine', 'mois'].forEach(function (key) {
+            var $t = $('#table-' + key);
+            if ($t.length && $t.find('tbody tr.data-row').length > 0) {
+                $t.DataTable($.extend(true, {}, dtConfig, { order: [[4, 'desc']] }));
+            }
+        });
 
-    // ── Recalcul au changement d'onglet (tous les onglets) ───────
-    $('a[data-toggle="tab"]').on('shown.bs.tab', function () {
-        $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust().responsive.recalc();
-    });
+        // ── Tableaux onglets entretiens admin (jour/semaine/mois) ────
+        // IDs : admin-entretiens-jour, admin-entretiens-semaine, admin-entretiens-mois
+        ['jour', 'semaine', 'mois'].forEach(function (key) {
+            var $t = $('#admin-entretiens-' + key);
+            if ($t.length && $t.find('tbody tr.data-row').length > 0) {
+                $t.DataTable($.extend(true, {}, dtConfig, { order: [[4, 'desc']] }));
+            }
+        });
 
-});
+        // ── Recalcul au changement d'onglet (tous les onglets) ───────
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function () {
+            $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust().responsive.recalc();
+        });
+
+    });
 </script>
 

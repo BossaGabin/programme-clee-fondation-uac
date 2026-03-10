@@ -570,7 +570,7 @@
                                     <strong id="note-recap" style="font-size:20px; color:#006b08;">0/20</strong>
                                 </div>
                                 <button type="submit" class="btn btn-success btn-lg">
-                                    <i class="fas fa-check-circle mr-2"></i> Terminer l'entretien
+                                    <i class="fas fa-check-circle mr-2"></i> Enregistrer le rapport
                                 </button>
                             </div>
                         </div>
@@ -628,10 +628,10 @@
             txt.textContent = 'Stage / immersion professionnelle';
         } else if (noteFinale <= 17) {
             box.className = 'alert alert-info';
-            txt.textContent = 'Insertion emploi accompagnée';
+            txt.textContent = 'Insertion emploi accompagnée(Insertion à l\'emploi)';
         } else {
             box.className = 'alert alert-success';
-            txt.textContent = 'Insertion rapide / autonomie';
+            txt.textContent = 'Insertion rapide / autonomie (Auto emploi)';
         }
     }
 

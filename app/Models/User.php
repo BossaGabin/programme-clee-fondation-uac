@@ -73,7 +73,14 @@ class User extends Authenticatable
     // Candidat : son affectation coach
     public function candidatAssignment()
     {
-        return $this->hasOne(CoachAssignment::class, 'candidat_id');
+        return $this->hasOne(CoachAssignment::class, 'candidat_id')
+                    ->where('status', 'active');
+    }
+
+    // Toutes les affectations (pour l'historique)
+    public function coachAssignments()
+    {
+        return $this->hasMany(CoachAssignment::class, 'candidat_id');
     }
 
     public function followUpSteps()

@@ -1,3 +1,4 @@
+{{-- resources/views/admin/demandes/show.blade.php --}}
 <!DOCTYPE html>
 <html lang="fr">
 <title>CLEE - Traiter la demande</title>
@@ -16,7 +17,6 @@
         @include('section.header')
         @include('section.sidebar')
 
-
         <div class="content-body">
             <div class="container-fluid">
 
@@ -26,30 +26,40 @@
                             <i class="fas fa-clipboard-check mr-2"></i> Traiter la demande
                         </h4>
                     </div>
-                    {{-- <div class="col-md-7 align-self-center text-right">
-                        <a href="{{ route('admin.demandes.index') }}" class="btn btn-sm btn-outline-secondary">
-                            <i class="fas fa-arrow-left mr-1"></i> Retour
-                        </a>
-                    </div> --}}
                 </div>
+
                 @if (session('success'))
                     <div class="alert alert-success alert-dismissible fade show">
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-                                aria-hidden="true">×</span>
-                        </button> <strong>Bravo!</strong> {{ session('success') }}
+                        <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
+                        <strong>Bravo!</strong> {{ session('success') }}
                     </div>
                 @endif
                 @if (session('error'))
                     <div class="alert alert-danger alert-dismissible fade show">
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-                                aria-hidden="true">×</span>
-                        </button> <strong>Erreur!</strong> {{ session('error') }}
+                        <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
+                        <strong>Erreur!</strong> {{ session('error') }}
                     </div>
                 @endif
 
+                @php
+                    $pendingAssignment = $demande->candidat->coachAssignments()
+                        ->where('status', 'pending')
+                        ->with('coach')
+                        ->first();
+
+                    $rejectedAssignments = $demande->candidat->coachAssignments()
+                        ->where('status', 'rejected')
+                        ->with('coach')
+                        ->get();
+
+                    $activeAssignment = $demande->candidat->candidatAssignment;
+                @endphp
+
                 <div class="row">
 
-                    {{-- Infos candidat --}}
+                    {{-- ============================================ --}}
+                    {{-- COLONNE GAUCHE : Infos candidat             --}}
+                    {{-- ============================================ --}}
                     <div class="col-md-4">
                         <div class="card">
                             <div class="card-header">
@@ -60,15 +70,15 @@
                             <div class="card-body text-center">
                                 @if ($demande->candidat->avatar)
                                     <img src="{{ Storage::url($demande->candidat->avatar) }}"
-                                        style="width:80px; height:80px; border-radius:50%; object-fit:cover; border:3px solid #006b08;"
+                                        style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid #006b08;"
                                         class="mb-3">
                                 @else
-                                    <div
-                                        style="width:80px; height:80px; border-radius:50%; background:#006b08;
-                                                display:flex; align-items:center; justify-content:center; margin: 0 auto 15px;">
+                                    <div style="width:80px;height:80px;border-radius:50%;background:#006b08;
+                                        display:flex;align-items:center;justify-content:center;margin:0 auto 15px;">
                                         <i class="fas fa-user text-white fa-2x"></i>
                                     </div>
                                 @endif
+
                                 <h5 class="font-weight-bold mb-1">{{ $demande->candidat->name }}</h5>
                                 <p class="text-muted mb-1">{{ $demande->candidat->email }}</p>
                                 <p class="text-muted mb-3">{{ $demande->candidat->phone }}</p>
@@ -82,18 +92,19 @@
                                         </li>
                                         <li class="list-group-item d-flex justify-content-between px-0">
                                             <small class="text-muted">Domaine</small>
-                                            <small
-                                                class="font-weight-bold">{{ $profile->domaine_formation ?? '—' }}</small>
+                                            <small class="font-weight-bold">{{ $profile->domaine_formation ?? '—' }}</small>
                                         </li>
                                         <li class="list-group-item d-flex justify-content-between px-0">
                                             <small class="text-muted">Expérience</small>
-                                            <small class="font-weight-bold">{{ $profile->experience_years ?? '0' }}
-                                                ans</small>
+                                            <small class="font-weight-bold">{{ $profile->experience_years ?? '0' }} ans</small>
                                         </li>
                                         <li class="list-group-item d-flex justify-content-between px-0">
                                             <small class="text-muted">Situation</small>
-                                            <small
-                                                class="font-weight-bold">{{ $profile->situation_actuelle ?? '—' }}</small>
+                                            <small class="font-weight-bold">
+                                                {{ $profile->situation_actuelle === 'autre'
+                                                    ? $profile->situation_autre
+                                                    : ($profile->situation_actuelle ?? '—') }}
+                                            </small>
                                         </li>
                                     </ul>
                                 @endif
@@ -108,7 +119,9 @@
                         </div>
                     </div>
 
-                    {{-- Parcours + Actions --}}
+                    {{-- ============================================ --}}
+                    {{-- COLONNE DROITE                              --}}
+                    {{-- ============================================ --}}
                     <div class="col-md-8">
 
                         {{-- Parcours professionnel --}}
@@ -129,7 +142,7 @@
                             </div>
                         </div>
 
-                        {{-- Statut actuel --}}
+                        {{-- Statut de la demande --}}
                         <div class="card">
                             <div class="card-header">
                                 <h5 class="card-title mb-0">
@@ -139,36 +152,31 @@
                             <div class="card-body">
 
                                 @if ($demande->status === 'pending')
-
                                     <div class="row">
                                         {{-- Valider --}}
                                         <div class="col-md-6">
-                                            <form method="POST"
-                                                action="{{ route('admin.demandes.validate', $demande) }}">
+                                            <form method="POST" action="{{ route('admin.demandes.validate', $demande) }}">
                                                 @csrf
                                                 <div class="form-group">
                                                     <label class="font-weight-bold text-success">
                                                         <i class="fas fa-check-circle mr-1"></i> Valider la demande
                                                     </label>
-                                                    {{-- <textarea name="note_admin" class="form-control" rows="3"
-                                                              placeholder="Note pour le candidat (optionnel)"></textarea> --}}
                                                 </div>
                                                 <button type="submit" class="btn btn-success btn-block">
                                                     <i class="fas fa-check mr-1"></i> Valider
                                                 </button>
                                             </form>
                                         </div>
-
                                         {{-- Rejeter --}}
                                         <div class="col-md-6">
-                                            <form method="POST"
-                                                action="{{ route('admin.demandes.reject', $demande) }}">
+                                            <form method="POST" action="{{ route('admin.demandes.reject', $demande) }}">
                                                 @csrf
                                                 <div class="form-group">
                                                     <label class="font-weight-bold text-danger">
                                                         <i class="fas fa-times-circle mr-1"></i> Rejeter la demande
                                                     </label>
-                                                    <textarea name="note_admin" class="form-control" rows="3" placeholder="Motif du rejet (obligatoire)" required></textarea>
+                                                    <textarea name="note_admin" class="form-control" rows="3"
+                                                        placeholder="Motif du rejet (obligatoire)" required></textarea>
                                                 </div>
                                                 <button type="submit" class="btn btn-danger btn-block">
                                                     <i class="fas fa-times mr-1"></i> Rejeter
@@ -176,16 +184,18 @@
                                             </form>
                                         </div>
                                     </div>
+
                                 @elseif($demande->status === 'validated')
-                                    <div class="alert alert-success">
+                                    <div class="alert alert-success mb-0">
                                         <i class="fas fa-check-circle mr-2"></i>
                                         Demande validée le {{ $demande->validated_at?->format('d/m/Y') }}
                                         @if ($demande->note_admin)
                                             <br><small>Note : {{ $demande->note_admin }}</small>
                                         @endif
                                     </div>
+
                                 @elseif($demande->status === 'rejected')
-                                    <div class="alert alert-danger">
+                                    <div class="alert alert-danger mb-0">
                                         <i class="fas fa-times-circle mr-2"></i>
                                         Demande rejetée.
                                         @if ($demande->note_admin)
@@ -197,8 +207,69 @@
                             </div>
                         </div>
 
-                        {{-- Affectation coach (visible seulement si validée et pas encore affectée) --}}
-                        @if ($demande->status === 'validated' && !$demande->candidat->candidatAssignment)
+                        {{-- Affectation en attente --}}
+                        @if($pendingAssignment)
+                            <div class="card" style="border-left:4px solid #f6c23e;">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">
+                                        <i class="fas fa-hourglass-half mr-2 text-warning"></i>
+                                        Affectation en attente de validation
+                                    </h5>
+                                </div>
+                                <div class="card-body d-flex align-items-center" style="gap:15px;">
+                                    @if($pendingAssignment->coach->avatar)
+                                        <img src="{{ Storage::url($pendingAssignment->coach->avatar) }}"
+                                            style="width:50px;height:50px;border-radius:50%;object-fit:cover;flex-shrink:0;">
+                                    @else
+                                        <div style="width:50px;height:50px;border-radius:50%;background:#f4a900;
+                                            display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                                            <i class="fas fa-user text-white fa-lg"></i>
+                                        </div>
+                                    @endif
+                                    <div>
+                                        <p class="mb-0 font-weight-bold">{{ $pendingAssignment->coach->name }}</p>
+                                        <small class="text-muted">{{ $pendingAssignment->coach->email }}</small>
+                                        <br>
+                                        <small class="text-warning font-weight-bold">
+                                            <i class="fas fa-clock mr-1"></i>
+                                            Expire le {{ \Carbon\Carbon::parse($pendingAssignment->expires_at)->format('d/m/Y à H:i') }}
+                                            ({{ \Carbon\Carbon::parse($pendingAssignment->expires_at)->diffForHumans() }})
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+
+                        {{-- Affectations rejetées --}}
+                        @if($rejectedAssignments->isNotEmpty())
+                            <div class="card" style="border-left:4px solid #e74a3b;">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">
+                                        <i class="fas fa-times-circle mr-2 text-danger"></i>
+                                        Affectations rejetées
+                                    </h5>
+                                </div>
+                                <div class="card-body p-0">
+                                    <ul class="list-group list-group-flush">
+                                        @foreach($rejectedAssignments as $rejected)
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <p class="mb-0 font-weight-bold">{{ $rejected->coach->name }}</p>
+                                                    <small class="text-muted">
+                                                        <i class="fas fa-comment mr-1"></i>
+                                                        {{ $rejected->rejected_reason ?? 'Aucune raison fournie' }}
+                                                    </small>
+                                                </div>
+                                                <span class="badge badge-danger">Rejeté</span>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            </div>
+                        @endif
+
+                        {{-- Formulaire affecter un coach --}}
+                        @if ($demande->status === 'validated' && !$activeAssignment && !$pendingAssignment)
                             <div class="card">
                                 <div class="card-header">
                                     <h5 class="card-title mb-0">
@@ -238,30 +309,32 @@
                             </div>
                         @endif
 
-                        {{-- Coach déjà affecté --}}
-                        @if ($demande->candidat->candidatAssignment)
-                            <div class="card">
+                        {{-- Coach actif affecté --}}
+                        @if($activeAssignment)
+                            <div class="card" style="border-left:4px solid #1cc88a;">
                                 <div class="card-header">
                                     <h5 class="card-title mb-0">
                                         <i class="fas fa-user-check mr-2 text-success"></i> Coach affecté
                                     </h5>
                                 </div>
                                 <div class="card-body d-flex align-items-center" style="gap:15px;">
-                                    @if ($demande->candidat->candidatAssignment->coach->avatar)
-                                        <img src="{{ Storage::url($demande->candidat->candidatAssignment->coach->avatar) }}"
-                                            style="width:55px; height:55px; border-radius:50%; object-fit:cover;">
+                                    @if($activeAssignment->coach->avatar)
+                                        <img src="{{ Storage::url($activeAssignment->coach->avatar) }}"
+                                            style="width:55px;height:55px;border-radius:50%;object-fit:cover;flex-shrink:0;">
                                     @else
-                                        <div
-                                            style="width:55px; height:55px; border-radius:50%; background:#f4a900;
-                                                    display:flex; align-items:center; justify-content:center;">
+                                        <div style="width:55px;height:55px;border-radius:50%;background:#f4a900;
+                                            display:flex;align-items:center;justify-content:center;flex-shrink:0;">
                                             <i class="fas fa-user text-white fa-lg"></i>
                                         </div>
                                     @endif
                                     <div>
-                                        <p class="mb-0 font-weight-bold">
-                                            {{ $demande->candidat->candidatAssignment->coach->name }}</p>
-                                        <small
-                                            class="text-muted">{{ $demande->candidat->candidatAssignment->coach->email }}</small>
+                                        <p class="mb-0 font-weight-bold">{{ $activeAssignment->coach->name }}</p>
+                                        <small class="text-muted">{{ $activeAssignment->coach->email }}</small>
+                                        <br>
+                                        <small class="text-success font-weight-bold">
+                                            <i class="fas fa-check-circle mr-1"></i>
+                                            Accepté le {{ \Carbon\Carbon::parse($activeAssignment->accepted_at)->format('d/m/Y à H:i') }}
+                                        </small>
                                     </div>
                                 </div>
                             </div>
@@ -276,5 +349,4 @@
     @include('section.footer')
     @include('section.foot')
 </body>
-
 </html>

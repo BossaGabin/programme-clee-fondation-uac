@@ -139,8 +139,8 @@ class InterviewController extends Controller
         $orientationLabel = match ($orientationType) {
             'formation'       => 'Renforcement compétences (formation de base)',
             'stage'           => 'Stage / immersion professionnelle',
-            'insertion_emploi' => 'Insertion emploi accompagnée',
-            'auto_emploi'     => 'Insertion rapide / autonomie',
+            'insertion_emploi' => 'Insertion emploi accompagnée (Insertion à l\'emploi)',
+            'auto_emploi'     => 'Insertion rapide / autonomie (Auto emploi)',
         };
 
         $interview->update([

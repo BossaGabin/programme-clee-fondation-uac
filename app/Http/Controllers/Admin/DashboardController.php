@@ -34,6 +34,21 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
+                // ── Affectations en attente de validation ────────────────
+            $pendingAssignments = \App\Models\CoachAssignment::where('coach_id', auth()->id())
+                ->where('status', 'pending')
+                ->where('expires_at', '>', now())
+                ->with('candidat')
+                ->get();
+
+            // ── Affectations actives sans entretien programmé ────────
+            $assignmentsWithoutAppointment = \App\Models\CoachAssignment::where('coach_id', auth()->id())
+                ->where('status', 'active')
+                ->whereNotNull('appointment_deadline')
+                ->whereDoesntHave('appointments', fn($q) => $q->where('status', 'scheduled'))
+                ->with('candidat')
+                ->get();
+
         // ── Candidats ayant passé l'entretien ──
         $interviewsAujourdhui = Interview::where('status', 'completed')
             ->whereDate('completed_at', Carbon::today())
@@ -144,7 +159,9 @@ class DashboardController extends Controller
             'orientationsChart',
             'demandesChart',
             'candidatsParCoachChart',
-            'inscriptionsChart'
+            'inscriptionsChart',
+            'pendingAssignments',
+            'assignmentsWithoutAppointment'
         ));
 
         // return view('admin.dashboard', compact('stats', 'demandes_recentes'));

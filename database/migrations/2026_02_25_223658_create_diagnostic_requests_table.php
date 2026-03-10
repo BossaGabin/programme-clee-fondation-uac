@@ -13,6 +13,10 @@ return new class extends Migration
             $table->foreignId('candidat_id')->constrained('users')->onDelete('cascade');
             $table->text('parcours_professionnel')->nullable();
             $table->enum('status', ['pending', 'validated', 'rejected'])->default('pending');
+            $table->enum('mode_entretien', ['presentiel', 'en_ligne'])->nullable();
+            $table->enum('plateforme_enligne', ['whatsapp', 'google_meet', 'appel_direct'])->nullable();
+            $table->string('numero_whatsapp')->nullable();
+            $table->string('numero_appel')->nullable();
             $table->text('note_admin')->nullable();
             $table->timestamp('validated_at')->nullable();
             $table->timestamps();

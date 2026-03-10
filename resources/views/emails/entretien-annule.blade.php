@@ -33,7 +33,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>Programme CLEE</h1>
+            <h1>CLEE UAC STARTUP VALLEY</h1>
         </div>
         <div class="body">
             <p>Bonjour <strong>{{ $candidatName }}</strong>,</p>
@@ -63,11 +63,11 @@
             </div>
 
             <p style="color:#999; font-size:13px; margin-top:20px;">
-                Cet email a été envoyé automatiquement par la plateforme Programme CLEE.
+                Cet email a été envoyé automatiquement depuis la plateforme du CLEE UAC STARTUP VALLEY.
             </p>
         </div>
         <div class="footer">
-            &copy; {{ date('Y') }} Programme CLEE — Tous droits réservés
+            &copy; {{ date('Y') }} CLEE UAC STARTUP VALLEY — Tous droits réservés
         </div>
     </div>
 </body>

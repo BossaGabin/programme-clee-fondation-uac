@@ -138,6 +138,25 @@
                     </a>
                 </li>
 
+                {{-- Affectations en attente --}}
+                @if(auth()->user()->role === 'coach')
+                    @php
+                        $pendingCount = \App\Models\CoachAssignment::where('coach_id', auth()->id())
+                            ->where('status', 'pending')
+                            ->where('expires_at', '>', now())
+                            ->count();
+                    @endphp
+                    <li class="{{ request()->routeIs('coach.assignments.*') ? 'active' : '' }}">
+                        <a href="{{ route('coach.assignments.index') }}">
+                            <i class="fas fa-user-clock"></i>
+                            <span class="nav-text">Affectations</span>
+                            @if($pendingCount > 0)
+                                <span class="badge badge-warning ml-1">{{ $pendingCount }}</span>
+                            @endif
+                        </a>
+                    </li>
+                @endif
+
                 <li class="nav-label">Mes Candidats</li>
 
                 {{-- Candidats avec sous-menu par statut --}}

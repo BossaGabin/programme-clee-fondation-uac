@@ -14,7 +14,11 @@ return new class extends Migration
             $table->foreignId('candidat_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('coach_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('assigned_by')->constrained('users')->onDelete('cascade');
-            $table->enum('status', ['active', 'terminated'])->default('active');
+            $table->enum('status', ['pending','active','rejected','expired','terminated'])->default('pending');
+            $table->timestamp('appointment_deadline')->nullable()->change();
+            $table->timestamp('expires_at')->nullable();
+            $table->string('rejected_reason')->nullable();
+            $table->timestamp('accepted_at')->nullable();
             $table->timestamps();
         });
     }

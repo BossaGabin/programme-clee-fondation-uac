@@ -176,8 +176,8 @@
         $orientation = match(true) {
             $noteFinale <= 7  => 'Renforcement compétences (formation de base)',
             $noteFinale <= 11 => 'Stage / immersion professionnelle',
-            $noteFinale <= 15 => 'Insertion emploi accompagnée',
-            default           => 'Insertion rapide / autonomie',
+            $noteFinale <= 15 => 'Insertion emploi accompagnée(Insertion à l\'emploi)',
+            default           => 'Insertion rapide / autonomie (Auto emploi)',
         };
         $scoreColor = $noteFinale >= 16 ? '#1cc88a' : ($noteFinale >= 12 ? '#36b9cc' : ($noteFinale >= 8 ? '#f6c23e' : '#e74a3b'));
         $blocColors = ['#006b08','#4e73df','#1cc88a','#f6c23e','#e74a3b'];

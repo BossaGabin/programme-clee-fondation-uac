@@ -63,6 +63,7 @@
                                     </div>
                                  </div>
                               </div>
+
                               <div class="row">
                                  <div class="col-md-6">
                                     <div class="form-group">
@@ -74,13 +75,30 @@
                                  </div>
                                  <div class="col-md-6">
                                     <div class="form-group">
-                                       <label for="avatar">Photo de profil <span
-                                          class="text-danger">*</span></label>
+                                       <label for="avatar">Photo de profil 
+                                       {{-- <span class="text-danger">*</span></label> --}}
+                                       <span class="text-muted">(Optionnel)</span></label>
                                        <input type="file" id="avatar" name="avatar" class="form-control"
                                           placeholder="Photo de profil">
                                     </div>
                                  </div>
                               </div>
+
+                              <div class="row">
+                                 <div class="col-md-12">
+                                    <div class="form-group mb-3">
+                                          <label for="date_of_birth">Date de naissance <span class="text-danger">*</span></label>
+                                          <input type="date" id="date_of_birth" name="date_of_birth"
+                                             class="form-control @error('date_of_birth') is-invalid @enderror"
+                                             value="{{ old('date_of_birth') }}"
+                                             max="{{ now()->subYears(18)->format('Y-m-d') }}">
+                                          @error('date_of_birth')
+                                             <div class="invalid-feedback">{{ $message }}</div>
+                                          @enderror
+                                    </div>
+                                 </div>
+                              </div>
+
                               <div class="row">
                                  <div class="col-md-6">
                                     <div class="form-group mb-3">

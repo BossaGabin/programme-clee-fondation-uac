@@ -142,7 +142,7 @@
                 <div class="email-container">
                     <div class="container">
                         <div class="header">
-                            <h1>Programme CLEE</h1>
+                            <h1>CLEE UAC STARTUP VALLEY</h1>
                         </div>
                         <div class="body">
                             <p>Bonjour <strong>{{ $name }}</strong>,</p>
@@ -156,7 +156,7 @@
                             </p>
                         </div>
                         <div class="footer">
-                            &copy; {{ date('Y') }} Programme CLEE — Tous droits réservés
+                            &copy; {{ date('Y') }} CLEE UAC STARTUP VALLEY — Tous droits réservés
                         </div>
                     </div>
                 </div>

@@ -27,7 +27,11 @@ class UserController extends Controller
             ->latest()
             ->get();
 
-        return view('admin.users.index', compact('coachs', 'candidats'));
+        $admins = User::where('role', 'admin')
+            ->latest()
+            ->get();
+
+        return view('admin.users.index', compact('coachs', 'candidats', 'admins'));
     }
 
     public function create()
@@ -37,20 +41,36 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
+        // $request->validate([
+        //     'name'      => 'required|string|max:255',
+        //     'email'     => 'required|email|unique:users,email',
+        //     'phone'     => 'required|string|max:20',
+        //     'role'      => 'required|in:coach,candidat',
+        //     'speciality' => 'nullable|string|max:255',
+        //     'bio'       => 'nullable|string',
+        // ], [
+        //     'name.required'  => 'Le nom est obligatoire.',
+        //     'email.required' => "L'email est obligatoire.",
+        //     'email.unique'   => 'Cet email est déjà utilisé.',
+        //     'phone.required' => 'Le téléphone est obligatoire.',
+        //     'role.required'  => 'Le rôle est obligatoire.',
+        //     'role.in'        => 'Le rôle doit être coach ou candidat.',
+        // ]);
+
         $request->validate([
-            'name'      => 'required|string|max:255',
-            'email'     => 'required|email|unique:users,email',
-            'phone'     => 'required|string|max:20',
-            'role'      => 'required|in:coach,candidat',
+            'name'       => 'required|string|max:255',
+            'email'      => 'required|email|unique:users,email',
+            'phone'      => 'required|string|max:20',
+            'role'       => 'required|in:coach,candidat,admin', // ← ajouter admin
             'speciality' => 'nullable|string|max:255',
-            'bio'       => 'nullable|string',
+            'bio'        => 'nullable|string',
         ], [
             'name.required'  => 'Le nom est obligatoire.',
             'email.required' => "L'email est obligatoire.",
             'email.unique'   => 'Cet email est déjà utilisé.',
             'phone.required' => 'Le téléphone est obligatoire.',
             'role.required'  => 'Le rôle est obligatoire.',
-            'role.in'        => 'Le rôle doit être coach ou candidat.',
+            'role.in'        => 'Le rôle doit être coach, candidat ou admin.',
         ]);
 
         // Générer un mot de passe aléatoire
@@ -90,17 +110,18 @@ class UserController extends Controller
             $user->role
         ));
 
-        return redirect()->route('admin.users.index')
-            ->with('success', ucfirst($request->role) . ' créé avec succès. Les identifiants ont été envoyés par email.');
+        // return redirect()->route('admin.users.index')
+        //     ->with('success', ucfirst($request->role) . ' créé avec succès. Les identifiants ont été envoyés par email.');
+        $redirectRoute = match($request->role) {
+        'coach'  => 'admin.users.index',
+        'admin'  => 'admin.users.index',
+        default  => 'admin.users.index',
+    };
+
+    return redirect()->route($redirectRoute)
+    ->with('success', ucfirst($request->role) . ' créé avec succès. Les identifiants ont été envoyés par email.');
     }
 
-    // public function destroy(User $user)
-    // {
-    //     $user->delete();
-
-    //     return redirect()->route('admin.users.index')
-    //         ->with('success', 'Utilisateur supprimé.');
-    // }
     public function destroy(User $user)
     {
         $user->delete(); // Avec SoftDeletes, c'est automatiquement une suppression douce
@@ -146,5 +167,26 @@ class UserController extends Controller
 
         return redirect()->route('admin.users.trashed')
             ->with('success', 'Utilisateur supprimé définitivement.');
+    }
+
+        public function toggleActive(User $user)
+    {
+        // Empêcher de se désactiver soi-même
+        if ($user->id === auth()->id()) {
+            return redirect()->back()->with('error', 'Vous ne pouvez pas désactiver votre propre compte.');
+        }
+
+        $user->update(['is_active' => !$user->is_active]);
+
+        $role   = match($user->role) {
+            'coach'  => 'Coach',
+            'admin'  => 'Administrateur',
+            default  => 'Candidat',
+        };
+
+        $statut = $user->is_active ? 'activé' : 'désactivé';
+
+        return redirect()->back()
+            ->with('success', $role . ' ' . $user->name . ' ' . $statut . ' avec succès.');
     }
 }

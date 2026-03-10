@@ -7,8 +7,21 @@ use Illuminate\Database\Eloquent\Model;
 class CoachAssignment extends Model
 {
     protected $fillable = [
-        'diagnostic_request_id', 'candidat_id',
-        'coach_id', 'assigned_by', 'status'
+        'diagnostic_request_id',
+        'candidat_id',
+        'coach_id',
+        'assigned_by',
+        'status',
+        'expires_at',
+        'rejected_reason',
+        'accepted_at',
+        'appointment_deadline',
+    ];
+
+    protected $casts = [
+        'expires_at'           => 'datetime',
+        'accepted_at'          => 'datetime',
+        'appointment_deadline' => 'datetime',
     ];
 
     public function diagnosticRequest()
@@ -34,5 +47,9 @@ class CoachAssignment extends Model
     public function appointments()
     {
         return $this->hasMany(Appointment::class);
+    }
+    public function appointmentProposal()
+    {
+        return $this->hasOne(AppointmentProposal::class);
     }
 }

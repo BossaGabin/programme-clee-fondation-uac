@@ -9,7 +9,7 @@ class CandidatProfile extends Model
     protected $fillable = [
         'user_id', 'date_of_birth', 'gender', 'address',
         'niveau_etude', 'domaine_formation', 'experience_years',
-        'situation_actuelle', 'cv_path', 'profile_completion'
+        'situation_actuelle', 'cv_path', 'profile_completion','situation_autre'
     ];
 
     public function user()

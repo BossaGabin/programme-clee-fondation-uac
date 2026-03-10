@@ -155,4 +155,5 @@ class DashboardController extends Controller
             'evolutionChart',
         ));
     }
+
 }

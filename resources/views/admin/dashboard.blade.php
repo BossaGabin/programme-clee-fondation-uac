@@ -40,6 +40,90 @@
                         </button> <strong>Erreur!</strong> {{ session('error') }}
                     </div>
                 @endif
+
+
+                {{-- ============================================ --}}
+                {{-- ALERTES AFFECTATIONS EN ATTENTE             --}}
+                {{-- ============================================ --}}
+                @if($pendingAssignments->isNotEmpty())
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            @foreach($pendingAssignments as $assignment)
+                                <div class="alert mb-2 d-flex align-items-center justify-content-between"
+                                    style="background:#fff8e1; border:1px solid #f6c23e;
+                                        border-left:5px solid #f6c23e; border-radius:6px; padding:15px 20px;">
+                                    <div class="d-flex align-items-center" style="gap:14px;">
+                                        <div style="width:42px;height:42px;border-radius:50%;background:#f6c23e22;
+                                            display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                                            <i class="fas fa-user-clock" style="color:#f6c23e; font-size:18px;"></i>
+                                        </div>
+                                        <div>
+                                            <p class="mb-0 font-weight-bold" style="color:#856404;">
+                                                Nouvelle affectation — {{ $assignment->candidat->name }}
+                                            </p>
+                                            <small style="color:#856404; opacity:0.85;">
+                                                Expire le {{ \Carbon\Carbon::parse($assignment->expires_at)->format('d/m/Y à H:i') }}
+                                                ({{ \Carbon\Carbon::parse($assignment->expires_at)->diffForHumans() }})
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex ml-3" style="gap:8px; flex-shrink:0;">
+                                        <form method="POST"
+                                            action="{{ route('coach.assignments.accept', $assignment) }}"
+                                            class="d-inline">
+                                            @csrf
+                                            <button type="submit" class="btn btn-sm btn-success">
+                                                <i class="fas fa-check mr-1"></i> Accepter
+                                            </button>
+                                        </form>
+                                        <a href="{{ route('coach.assignments.rejectForm', $assignment) }}"
+                                            class="btn btn-sm btn-danger">
+                                            <i class="fas fa-times mr-1"></i> Rejeter
+                                        </a>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
+
+                {{-- ============================================ --}}
+                {{-- ALERTES DEADLINE ENTRETIEN                  --}}
+                {{-- ============================================ --}}
+                @if($assignmentsWithoutAppointment->isNotEmpty())
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            @foreach($assignmentsWithoutAppointment as $assignment)
+                                <div class="alert mb-2 d-flex align-items-center justify-content-between"
+                                    style="background:#fdf2f2; border:1px solid #e74a3b;
+                                        border-left:5px solid #e74a3b; border-radius:6px; padding:15px 20px;">
+                                    <div class="d-flex align-items-center" style="gap:14px;">
+                                        <div style="width:42px;height:42px;border-radius:50%;background:#e74a3b22;
+                                            display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                                            <i class="fas fa-calendar-times" style="color:#e74a3b; font-size:18px;"></i>
+                                        </div>
+                                        <div>
+                                            <p class="mb-0 font-weight-bold" style="color:#721c24;">
+                                                Entretien non programmé — {{ $assignment->candidat->name }}
+                                            </p>
+                                            <small style="color:#721c24; opacity:0.85;">
+                                                Deadline :
+                                                {{ \Carbon\Carbon::parse($assignment->appointment_deadline)->format('d/m/Y') }}
+                                                ({{ \Carbon\Carbon::parse($assignment->appointment_deadline)->diffForHumans() }})
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <a href="{{ route('coach.appointments.create', $assignment) }}"
+                                        class="btn btn-sm btn-warning ml-3" style="flex-shrink:0;">
+                                        <i class="fas fa-calendar-plus mr-1"></i> Programmer
+                                    </a>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
+
+
                 {{-- ============================================ --}}
                 {{-- STATISTIQUES PRINCIPALES --}}
                 {{-- ============================================ --}}

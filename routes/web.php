@@ -6,6 +6,7 @@
 
 use App\Http\Controllers\Admin\CandidatController as AdminCandidatController;
 use App\Http\Controllers\Admin\CoachAssignmentController;
+// use App\Http\Controllers\Coach\CoachAssignmentController;
 use App\Http\Controllers\Admin\CoachController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboard;
 use App\Http\Controllers\Admin\DiagnosticRequestController;
@@ -77,6 +78,7 @@ Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(f
     Route::post('/utilisateurs/creer', [UserController::class, 'store'])->name('users.store');
     Route::get('/utilisateurs',        [UserController::class, 'index'])->name('users.index');
     Route::delete('/utilisateurs/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+    Route::post('/users/{user}/toggle-active', [UserController::class, 'toggleActive'])->name('users.toggleActive');
 
     // Rapport d'evaluation dans la liste des candidats et exporter en pdf
     Route::get('/candidats/{candidat}/rapport', [InterviewController::class, 'reportByCandidat'])->name('candidats.rapport');
@@ -150,6 +152,12 @@ Route::middleware(['auth', 'isCoach'])->prefix('coach')->name('coach.')->group(f
     // Annuler ou reporter un entretien 
     Route::get('/appointments/{appointment}/report', [AppointmentController::class, 'editReport'])->name('appointments.report');
     Route::put('/appointments/{appointment}/report', [AppointmentController::class, 'report'])->name('appointments.update.report');
+
+   // Affectations
+    Route::get('/assignments',                                [App\Http\Controllers\Coach\CoachAssignmentController::class, 'index'])->name('assignments.index');
+    Route::post('/assignments/{assignment}/accept',           [App\Http\Controllers\Coach\CoachAssignmentController::class, 'accept'])->name('assignments.accept');
+    Route::get('/assignments/{assignment}/reject-form',       [App\Http\Controllers\Coach\CoachAssignmentController::class, 'rejectForm'])->name('assignments.rejectForm');
+    Route::post('/assignments/{assignment}/reject',           [App\Http\Controllers\Coach\CoachAssignmentController::class, 'reject'])->name('assignments.reject');
 });
 
 // =============================================
@@ -160,12 +168,6 @@ Route::middleware(['auth', 'isCandidat'])->prefix('candidat')->name('candidat.')
 
     Route::get('/dashboard',          [CandidatDashboard::class, 'index'])->name('dashboard');
 
-    // Profil
-    // Route::get('/profil',             [ProfileController::class, 'edit'])->name('profile.edit');
-    // Route::put('/profil',             [ProfileController::class, 'update'])->name('profile.update');
-    // Route::post('/profil/avatar',     [ProfileController::class, 'updateAvatar'])->name('profile.avatar');
-    // Route::post('/profil/cv',         [ProfileController::class, 'uploadCv'])->name('profile.cv');
-    // Route::put('/profil/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
     Route::get('/profile',          [App\Http\Controllers\Candidat\ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile',          [App\Http\Controllers\Candidat\ProfileController::class, 'update'])->name('profile.update');
     Route::put('/profile/password', [App\Http\Controllers\Candidat\ProfileController::class, 'password'])->name('profile.password');
@@ -177,21 +179,14 @@ Route::middleware(['auth', 'isCandidat'])->prefix('candidat')->name('candidat.')
 
     // Exporter son projet professionnel
     Route::get('/project/pdf', [CandidatDashboard::class, 'exportPdfCandidat'])->name('projects.pdf');
+
+    // Confirmer un horaire d'entretien
+    Route::get('/appointments/confirm/{proposal}/{choix}',    [CandidatDashboard::class, 'confirmAppointment'])->name('appointments.confirm');
 });
 
 Route::get('/', function () {
     return view('auth.login');
 });
-
-// Route::get('/dashboard', function () {
-//     return view('dashboard');
-// })->middleware(['auth', 'verified'])->name('dashboard');
-
-// Route::middleware('auth')->group(function () {
-//     Route::get('/profile',           [ProfileController::class, 'edit'])->name('profile.edit');
-//     Route::put('/profile',           [ProfileController::class, 'update'])->name('profile.update');
-//     Route::put('/profile/password',  [ProfileController::class, 'updatePassword'])->name('profile.password');
-// });
 
 
 require __DIR__ . '/auth.php';

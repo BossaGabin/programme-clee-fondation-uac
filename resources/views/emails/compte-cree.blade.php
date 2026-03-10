@@ -58,28 +58,31 @@
     <div class="container">
 
         <div class="header">
-            <h1>Programme CLEE</h1>
-            <p>Plateforme de suivi de l'employabilité</p>
+            <h1>CLEE UAC STARTUP VALLEY</h1>
+            <p>Plateforme de suivi à l'employabilité</p>
         </div>
 
         <div class="body">
             <p>Bonjour <strong>{{ $name }}</strong>,</p>
 
-            {{-- <span class="role-badge role-{{ $role }}">
-                @if($role === 'coach') 🎓 Coach @else 👤 Candidat @endif
-            </span> --}}
-
             @if($role === 'coach')
                 <p>
-                    Vous avez été inscrit sur la plateforme du <strong>Programme CLEE</strong>
-                    en tant que <strong>Coach</strong>.<br>
+                    Vous avez été inscrit sur la plateforme du <strong class="text-primary">CLEE UAC STARTUP VALLEY</strong>
+                    en tant que <strong class="text-primary">Coach</strong>.<br>
                     Votre rôle est d'accompagner les candidats dans leur parcours vers l'emploi,
                     en réalisant des entretiens de diagnostic et en assurant leur suivi professionnel.
                 </p>
+           @elseif($role === 'admin')
+            <p>
+                    Vous avez été inscrit sur la plateforme du <strong class="text-primary">CLEE UAC STARTUP VALLEY</strong>
+                    en tant qu'<strong class="text-primary">Administrateur</strong>.<br>
+                    Vous avez accès à l'ensemble des fonctionnalités de la plateforme : gestion des utilisateurs,
+                    validation des demandes, affectation des coachs et supervision du parcours des candidats.
+                </p>
             @else
                 <p>
-                    Vous avez été inscrit sur la plateforme du <strong>Programme CLEE</strong>
-                    en tant que <strong>Candidat</strong>.<br>
+                    Vous avez été inscrit sur la plateforme du <strong class="text-primary">CLEE UAC STARTUP VALLEY</strong>
+                    en tant que <strong class="text-primary">Candidat</strong>.<br>
                     Cette plateforme vous permettra de suivre votre parcours vers l'emploi,
                     d'être accompagné par un coach dédié et de bénéficier d'un suivi personnalisé.
                 </p>
@@ -108,12 +111,12 @@
 
             <p style="color:#999; font-size:13px; margin-top:20px;">
                 Si vous n'êtes pas à l'origine de cette inscription ou si vous avez des questions,
-                contactez notre équipe support.
+                contactez le sécretariat au 0162470707.
             </p>
         </div>
 
         <div class="footer">
-            &copy; {{ date('Y') }} Programme CLEE — Tous droits réservés
+            &copy; {{ date('Y') }} CLEE UAC STARTUP VALLE — Tous droits réservés
         </div>
 
     </div>

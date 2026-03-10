@@ -33,27 +33,27 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>Programme CLEE</h1>
+            <h1>CLEE UAC STARTUP VALLEY</h1>
         </div>
         <div class="body">
             <p>Bonjour <strong>{{ $candidatName }}</strong>,</p>
-            <p>Nous avons le plaisir de vous informer que votre demande de diagnostic a été <strong>validée</strong>.</p>
+            <p>Nous avons le plaisir de vous informer que votre demande d'appui a été <strong>validée</strong>.</p>
 
             <div class="info-box">
                 <p style="margin:0; color:#333;">
                     <strong>Votre coach :</strong> {{ $coachName }}<br><br>
-                    Il vous contactera prochainement via la plateforme pour planifier votre entretien de diagnostic.
+                    Il vous contactera prochainement via la plateforme pour planifier un entretien.
                 </p>
             </div>
 
             <p>En attendant, assurez-vous que votre profil est complet et que votre CV est à jour.</p>
 
             <p style="color:#999; font-size:13px;">
-                Si vous avez des questions, n'hésitez pas à contacter notre équipe.
+                Si vous avez des questions, n'hésitez pas à contacter le sécretariat au 0162470707.
             </p>
         </div>
         <div class="footer">
-            &copy; {{ date('Y') }} Programme CLEE — Tous droits réservés
+            &copy; {{ date('Y') }} CLEE UAC STARTUP VALLEY — Tous droits réservés
         </div>
     </div>
 </body>

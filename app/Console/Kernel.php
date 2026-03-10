@@ -12,7 +12,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('inspire')->hourly();
+        // Vérifie toutes les 30 minutes les affectations expirées
+        $schedule->job(new \App\Jobs\ExpireCoachAssignments)->everyThirtyMinutes();
     }
 
     /**

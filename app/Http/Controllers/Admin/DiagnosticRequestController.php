@@ -29,12 +29,27 @@ class DiagnosticRequestController extends Controller
         return view('admin.demandes.index', compact('demandes'));
     }
 
+    // public function show(DiagnosticRequest $demande)
+    // {
+    //     $demande->load([
+    //         'candidat.candidatProfile',
+    //         'candidat.candidatAssignment.coach.coachProfile',
+    //     ]);
+    //     $coachs = User::where('role', 'coach')
+    //         ->withCount(['assignments' => fn($q) => $q->where('status', 'active')])
+    //         ->with('coachProfile')
+    //         ->get();
+
+    //     return view('admin.demandes.show', compact('demande', 'coachs'));
+    // }
+
     public function show(DiagnosticRequest $demande)
     {
         $demande->load([
             'candidat.candidatProfile',
             'candidat.candidatAssignment.coach.coachProfile',
         ]);
+
         $coachs = User::where('role', 'coach')
             ->withCount(['assignments' => fn($q) => $q->where('status', 'active')])
             ->with('coachProfile')

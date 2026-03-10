@@ -6,7 +6,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class DiagnosticRequest extends Model
 {
-    protected $fillable = ['candidat_id', 'status', 'parcours_professionnel','note_admin', 'validated_at'];
+    protected $fillable = [
+    'candidat_id',
+    'status',
+    'parcours_professionnel',
+    'mode_entretien',        // ← ajouter
+    'plateforme_enligne',    // ← ajouter
+    'numero_whatsapp',       // ← ajouter
+    'numero_appel',          // ← ajouter
+    'note_admin',
+    'validated_at',
+];
 
     protected $casts = ['validated_at' => 'datetime'];
 
