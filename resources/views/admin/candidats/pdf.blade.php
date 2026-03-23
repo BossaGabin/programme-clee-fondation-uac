@@ -328,6 +328,132 @@
             height: 30px;
             page-break-after: avoid;
         }
+
+        /* Progression */
+        .progression-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 6px;
+        }
+
+        .progression-table td {
+            padding: 5px 6px;
+            vertical-align: middle;
+            font-size: 11px;
+        }
+
+        .prog-name {
+            width: 36%;
+        }
+
+        .prog-initial {
+            width: 10%;
+            text-align: center;
+            font-weight: bold;
+            color: #888;
+        }
+
+        .prog-current {
+            width: 10%;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .prog-diff {
+            width: 10%;
+            text-align: center;
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        .prog-bar-wrap {
+            width: 34%;
+            padding-left: 6px;
+        }
+
+        .prog-bar-bg {
+            background: #eee;
+            height: 10px;
+            border-radius: 5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .prog-bar-initial {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            border-radius: 5px;
+            background: #ced4da;
+        }
+
+        .prog-bar-current {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            border-radius: 5px;
+            opacity: 0.9;
+        }
+
+        .prog-totaux {
+            display: table;
+            width: 100%;
+            border-top: 1px solid #ddd;
+            margin-top: 8px;
+            padding-top: 8px;
+        }
+
+        .prog-totaux-left {
+            display: table-cell;
+            width: 50%;
+            font-size: 11px;
+            padding-right: 15px;
+            border-right: 1px solid #eee;
+        }
+
+        .prog-totaux-right {
+            display: table-cell;
+            width: 50%;
+            font-size: 11px;
+            padding-left: 15px;
+        }
+
+        .prog-total-line {
+            display: table;
+            width: 100%;
+            margin-bottom: 4px;
+        }
+
+        .prog-total-label {
+            display: table-cell;
+            color: #555;
+        }
+
+        .prog-total-value {
+            display: table-cell;
+            text-align: right;
+            font-weight: bold;
+        }
+
+        .badge-prog {
+            display: inline-block;
+            padding: 1px 6px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        .badge-prog-success {
+            background: #1cc88a;
+            color: #fff;
+        }
+
+        .badge-prog-secondary {
+            background: #ccc;
+            color: #fff;
+        }
     </style>
 </head>
 
@@ -573,6 +699,138 @@
             </div>
         @endif
 
+        {{-- PROGRESSION DES COMPÉTENCES --}}
+        @if ($interview && $candidat->candidatAssignment)
+            @php
+                $assignment = $candidat->candidatAssignment;
+                $assignment->load('progressionUpdates');
+                $scores = $assignment->currentScores();
+
+                $blocColors = [
+                    1 => '#006b08',
+                    2 => '#4e73df',
+                    3 => '#1cc88a',
+                    4 => '#f6c23e',
+                    5 => '#e74a3b',
+                ];
+                $blocKeys = [
+                    1 => 'bloc_a',
+                    2 => 'bloc_b',
+                    3 => 'bloc_c',
+                    4 => 'bloc_d',
+                    5 => 'bloc_e',
+                ];
+                $noteFinaleActuelle = $scores['total_current'];
+                $prog = $scores['total_progression'];
+            @endphp
+
+            <div class="section">
+                <div class="section-title">Progression des compétences</div>
+
+                {{-- En-têtes colonnes --}}
+                <table class="progression-table">
+                    <tr>
+                        <td class="prog-name">
+                            <span style="font-size:10px; color:#888;">Compétence</span>
+                        </td>
+                        <td class="prog-initial">
+                            <span style="font-size:10px; color:#888;">Initial</span>
+                        </td>
+                        <td class="prog-current">
+                            <span style="font-size:10px; color:#888;">Actuel</span>
+                        </td>
+                        <td class="prog-diff">
+                            <span style="font-size:10px; color:#888;">Évol.</span>
+                        </td>
+                        <td class="prog-bar-wrap">
+                            <span style="font-size:10px; color:#888;">Progression</span>
+                        </td>
+                    </tr>
+                </table>
+
+                {{-- Ligne par bloc --}}
+                @foreach ($interview->scores->sortBy('competence.order') as $score)
+                    @php
+                        $order = $score->competence->order;
+                        $color = $blocColors[$order] ?? '#006b08';
+                        $blocKey = $blocKeys[$order] ?? null;
+                        $initial = $score->note;
+                        $current = $blocKey ? $scores['current'][$blocKey] : $initial;
+                        $diff = $blocKey ? $scores['progression'][$blocKey] : 0;
+                        $pctInitial = ($initial / 20) * 100;
+                        $pctCurrent = ($current / 20) * 100;
+                        $valide = $current === 20;
+                    @endphp
+
+                    <table class="progression-table" style="border-bottom:1px solid #f5f5f5;">
+                        <tr>
+                            <td class="prog-name">
+                                {{ $score->competence->name }}
+                                @if ($valide)
+                                    <span class="badge badge-success" style="margin-left:4px;">✓</span>
+                                @endif
+                            </td>
+                            <td class="prog-initial" style="color:#888;">
+                                {{ $initial }}/20
+                            </td>
+                            <td class="prog-current" style="color:{{ $color }};">
+                                {{ $current }}/20
+                            </td>
+                            <td class="prog-diff">
+                                @if ($diff > 0)
+                                    <span class="badge-prog badge-prog-success">+{{ $diff }}</span>
+                                @else
+                                    <span class="badge-prog badge-prog-secondary">—</span>
+                                @endif
+                            </td>
+                            <td class="prog-bar-wrap">
+                                <div class="prog-bar-bg" style="height:10px;">
+                                    {{-- Barre initiale gris --}}
+                                    <div class="prog-bar-initial" style="width:{{ $pctInitial }}%;">
+                                    </div>
+                                    {{-- Barre actuelle colorée --}}
+                                    <div class="prog-bar-current"
+                                        style="width:{{ $pctCurrent }}%; background:{{ $color }};">
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                @endforeach
+
+                {{-- Totaux --}}
+                <div class="prog-totaux">
+                    <div class="prog-totaux-left">
+                        <div class="prog-total-line">
+                            <div class="prog-total-label">Score initial</div>
+                            <div class="prog-total-value">{{ $scores['total_initial'] }}/100</div>
+                        </div>
+                    </div>
+                    <div class="prog-totaux-right">
+                        <div class="prog-total-line">
+                            <div class="prog-total-label">Score actuel</div>
+                            <div class="prog-total-value" style="color:#006b08;">
+                                {{ $scores['total_current'] }}/100
+                            </div>
+                        </div>
+                        <div class="prog-total-line">
+                            <div class="prog-total-label">Progression globale</div>
+                            <div class="prog-total-value" style="color:{{ $prog > 0 ? '#1cc88a' : '#888' }};">
+                                {{ $prog > 0 ? '+' : '' }}{{ $prog }} pts
+                            </div>
+                        </div>
+                        <div class="prog-total-line">
+                            <div class="prog-total-label">Séances de suivi</div>
+                            <div class="prog-total-value">
+                                {{ $assignment->progressionUpdates->count() }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        @endif
+
         {{-- SUIVI DU PARCOURS --}}
         @if ($candidat->followUpSteps->isNotEmpty())
             <div class="section">
@@ -581,7 +839,8 @@
                     <div class="step">
                         <div class="step-title">
                             {{ $step->title }}
-                            <span class="badge {{ $step->status === 'completed' ? 'badge-success' : 'badge-primary' }}"
+                            <span
+                                class="badge {{ $step->status === 'completed' ? 'badge-success' : 'badge-primary' }}"
                                 style="margin-left:8px;">
                                 {{ $step->status === 'completed' ? 'Terminé' : 'En cours' }}
                             </span>

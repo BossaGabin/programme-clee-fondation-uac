@@ -6,12 +6,12 @@
 
 use App\Http\Controllers\Admin\CandidatController as AdminCandidatController;
 use App\Http\Controllers\Admin\CoachAssignmentController;
-// use App\Http\Controllers\Coach\CoachAssignmentController;
 use App\Http\Controllers\Admin\CoachController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboard;
 use App\Http\Controllers\Admin\DiagnosticRequestController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\OtpController;
+use App\Http\Controllers\Candidat;
 use App\Http\Controllers\Candidat\DashboardController as CandidatDashboard;
 use App\Http\Controllers\Candidat\DiagnosticRequestController as CandidatDiagnosticController;
 use App\Http\Controllers\Coach\AppointmentController;
@@ -21,9 +21,9 @@ use App\Http\Controllers\Coach\FollowUpStepController;
 use App\Http\Controllers\Coach\InterviewController;
 use App\Http\Controllers\Coach\NeedAssignmentController;
 use App\Http\Controllers\Coach\ProfessionalProjectController;
+use App\Http\Controllers\Coach\ProgressionController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Candidat;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -85,7 +85,8 @@ Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(f
     Route::get('/entretiens/{interview}/pdf',          [InterviewController::class, 'exportPdf'])->name('interviews.pdf');
 
     //exporter en pdf le projet professionnel d'un candidat dans le show
-    Route::get('/candidats/{candidat}/project/pdf', [ProfessionalProjectController::class, 'exportPdf'])->name('projects.pdf');
+    // Dans le groupe admin
+    Route::get('/candidats/{candidat}/progression', [AdminCandidatController::class, 'progression'])->name('candidats.progression');
 
 
     // Profil admin
@@ -97,6 +98,9 @@ Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(f
     Route::get('/users/trashed', [UserController::class, 'trashed'])->name('users.trashed');
     Route::post('/users/{id}/restore', [UserController::class, 'restore'])->name('users.restore');
     Route::delete('/users/{id}/force-delete', [UserController::class, 'forceDelete'])->name('users.forceDelete');
+
+    //Voir la progression des candidats
+    Route::get('/progression/{assignment}',        [ProgressionController::class, 'show'])->name('progression.show');
 });
 
 // =============================================
@@ -153,11 +157,16 @@ Route::middleware(['auth', 'isCoach'])->prefix('coach')->name('coach.')->group(f
     Route::get('/appointments/{appointment}/report', [AppointmentController::class, 'editReport'])->name('appointments.report');
     Route::put('/appointments/{appointment}/report', [AppointmentController::class, 'report'])->name('appointments.update.report');
 
-   // Affectations
+    // Affectations
     Route::get('/assignments',                                [App\Http\Controllers\Coach\CoachAssignmentController::class, 'index'])->name('assignments.index');
     Route::post('/assignments/{assignment}/accept',           [App\Http\Controllers\Coach\CoachAssignmentController::class, 'accept'])->name('assignments.accept');
     Route::get('/assignments/{assignment}/reject-form',       [App\Http\Controllers\Coach\CoachAssignmentController::class, 'rejectForm'])->name('assignments.rejectForm');
     Route::post('/assignments/{assignment}/reject',           [App\Http\Controllers\Coach\CoachAssignmentController::class, 'reject'])->name('assignments.reject');
+
+    //Enregistrer les progression de chaque candidat
+    Route::get('/progression/{assignment}',        [ProgressionController::class, 'show'])->name('progression.show');
+    Route::get('/progression/{assignment}/update', [ProgressionController::class, 'create'])->name('progression.create');
+    Route::post('/progression/{assignment}/update', [ProgressionController::class, 'store'])->name('progression.store');
 });
 
 // =============================================

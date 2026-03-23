@@ -222,7 +222,7 @@
                                 </div>
                             </div>
                         @endif
-                        @if ($entretienExistant)
+                        @if (!$interview)
                             <div class="alert alert-warning d-flex align-items-center justify-content-between">
                                 <span>
                                     <i class="fas fa-exclamation-triangle mr-2"></i>
@@ -301,68 +301,6 @@
                         @endif
 
                         {{-- Projet professionnel --}}
-                        {{-- @if ($candidat->professionalProject)
-                            <div class="row card">
-                                <div class="card-header col-md-5">
-                                    <h6 class="mb-0 font-weight-bold">
-                                        <i class="fas fa-project-diagram mr-2 text-info"></i> Projet professionnel
-                                    </h6>
-                                    <div class="col-md-7 align-self-center text-right">
-
-                                            <a href="{{ route('coach.projects.edit', $candidat) }}"
-                                                class="btn btn-sm btn-warning">
-                                                <i class="fas fa-edit mr-1"></i> Modifier
-                                            </a>
-
-                                        <a href="{{ route('coach.candidats.pdf', $candidat) }}"
-                                            class="btn btn-sm btn-danger" target="_blank">
-                                            <i class="fas fa-file-pdf mr-1"></i> Exporter en PDF
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="card-body">
-                                    @php $projet = $candidat->professionalProject; @endphp
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <small class="text-muted">Titre du projet</small>
-                                            <p class="font-weight-bold mb-2">{{ $projet->titre_projet }}</p>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <small class="text-muted">Secteur cible</small>
-                                            <p class="font-weight-bold mb-2">{{ $projet->secteur_cible ?? '—' }}</p>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <small class="text-muted">Poste visé</small>
-                                            <p class="font-weight-bold mb-2">{{ $projet->poste_vise ?? '—' }}</p>
-                                        </div>
-                                        @if ($projet->description)
-                                            <div class="col-md-12">
-                                                <small class="text-muted">Description</small>
-                                                <p class="mb-2">{{ $projet->description }}</p>
-                                            </div>
-                                        @endif
-                                        @if ($projet->objectif_court_terme)
-                                            <div class="col-md-6">
-                                                <small class="text-muted">
-                                                    <i class="fas fa-flag text-warning mr-1"></i> Objectif court terme
-                                                </small>
-                                                <p class="mb-0">{{ $projet->objectif_court_terme }}</p>
-                                            </div>
-                                        @endif
-                                        @if ($projet->objectif_long_terme)
-                                            <div class="col-md-6">
-                                                <small class="text-muted">
-                                                    <i class="fas fa-flag-checkered text-success mr-1"></i> Objectif
-                                                    long terme
-                                                </small>
-                                                <p class="mb-0">{{ $projet->objectif_long_terme }}</p>
-                                            </div>
-                                        @endif
-                                    </div>
-                                </div>
-                            </div>
-                        @endif --}}
-                        {{-- Projet professionnel --}}
                         @if ($candidat->professionalProject)
                             <div class="card">
                                 <div class="card-header d-flex justify-content-between align-items-center">
@@ -423,77 +361,201 @@
                             </div>
                         @endif
 
-                        {{-- Résultats entretien --}}
-                        @if ($interview)
+                        {{-- Progression des compétences --}}
+                        @if ($interview && $assignment)
+                            @php
+                                $assignment->load('progressionUpdates');
+                                $scores = $assignment->currentScores();
+
+                                $blocColors = [
+                                    1 => '#006b08',
+                                    2 => '#4e73df',
+                                    3 => '#1cc88a',
+                                    4 => '#f6c23e',
+                                    5 => '#e74a3b',
+                                ];
+                                $blocsIcons = [
+                                    1 => 'fa-bullseye',
+                                    2 => 'fa-fire',
+                                    3 => 'fa-tools',
+                                    4 => 'fa-user-tie',
+                                    5 => 'fa-rocket',
+                                ];
+                                $noteFinale = round($interview->total_score / 5);
+                                $scoreColor =
+                                    $noteFinale <= 9
+                                        ? '#e74a3b'
+                                        : ($noteFinale <= 14
+                                            ? '#f6c23e'
+                                            : ($noteFinale <= 17
+                                                ? '#17a2b8'
+                                                : '#1cc88a'));
+                                $blocKeys = [1 => 'bloc_a', 2 => 'bloc_b', 3 => 'bloc_c', 4 => 'bloc_d', 5 => 'bloc_e'];
+                            @endphp
+
                             <div class="card">
                                 <div class="card-header d-flex justify-content-between align-items-center">
                                     <h6 class="mb-0 font-weight-bold">
-                                        <i class="fas fa-star mr-2 text-warning"></i> Résultats de l'entretien
+                                        <i class="fas fa-chart-line mr-2 text-info"></i> Progression des compétences
                                     </h6>
-                                    <div>
-                                        <a href="{{ route('coach.interviews.pdf', $interview) }}"
-                                            class="btn btn-sm btn-danger d-none d-md-inline-block" target="_blank">
-                                            <i class="fas fa-file-pdf mr-1"></i> Exporter en PDF
+                                    @if (!collect($scores['current'])->every(fn($v) => $v === 20))
+                                        <a href="{{ route('coach.progression.create', $assignment) }}"
+                                            class="btn btn-sm btn-primary">
+                                            <i class="fas fa-plus mr-1"></i> Nouvelle mise à jour
                                         </a>
-                                    </div>
+                                    @endif
                                 </div>
                                 <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-md-3 text-center">
-                                            @php
-                                                $scoreColor =
-                                                    $interview->total_score >= 60
-                                                        ? '#1cc88a'
-                                                        : ($interview->total_score >= 40
-                                                            ? '#f6c23e'
-                                                            : '#e74a3b');
-                                            @endphp
-                                            <div
-                                                style="width:80px;height:80px;border-radius:50%;margin:0 auto;
-                                                        background:{{ $scoreColor }};display:flex;
-                                                        align-items:center;justify-content:center;">
-                                                <span style="color:#fff;font-size:18px;font-weight:bold;">
-                                                    {{ $interview->total_score }}/100
-                                                </span>
-                                            </div>
-                                            <small class="text-muted mt-2 d-block">Score total</small>
+
+                                    {{-- En-têtes --}}
+                                    <div class="row mb-2">
+                                        <div class="col-md-6">
+                                            <h6 class="font-weight-bold text-secondary mb-0">
+                                                <i class="fas fa-clipboard-check mr-1"></i> Scores initiaux
+                                            </h6>
                                         </div>
-                                        <div class="col-md-9">
-                                            <div class="table-responsive">
-                                                <table class="table table-sm mb-0">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Compétence</th>
-                                                            <th>Note /20</th>
-                                                            <th></th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        @foreach ($interview->scores as $score)
-                                                            <tr>
-                                                                <td>{{ $score->competence->name }}</td>
-                                                                <td><strong>{{ $score->note }}/20</strong></td>
-                                                                <td style="width:100px;">
-                                                                    <div class="progress" style="height:6px;">
-                                                                        <div class="progress-bar
-                                                                            @if ($score->note < 8) bg-danger
-                                                                            @elseif($score->note < 14) bg-warning
-                                                                            @else bg-success @endif"
-                                                                            style="width:{{ ($score->note / 20) * 100 }}%">
-                                                                        </div>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                        @endforeach
-                                                    </tbody>
-                                                </table>
+                                        <div class="col-md-6">
+                                            <h6 class="font-weight-bold text-success mb-0">
+                                                <i class="fas fa-chart-line mr-1"></i> Progression actuelle
+                                            </h6>
+                                        </div>
+                                    </div>
+                                    <hr class="mt-0 mb-3">
+
+                                    {{-- Lignes par bloc --}}
+                                    @foreach ($interview->scores->sortBy('competence.order') as $score)
+                                        @php
+                                            $order = $score->competence->order;
+                                            $color = $blocColors[$order] ?? '#006b08';
+                                            $icon = $blocsIcons[$order] ?? 'fa-star';
+                                            $pctInitial = ($score->note / 20) * 100;
+                                            $blocKey = $blocKeys[$order] ?? null;
+                                            $current = $blocKey ? $scores['current'][$blocKey] : $score->note;
+                                            $diff = $blocKey ? $scores['progression'][$blocKey] : 0;
+                                            $pctCurrent = ($current / 20) * 100;
+                                            $valide = $current === 20;
+                                        @endphp
+
+                                        <div class="row align-items-center mb-4">
+
+                                            {{-- GAUCHE : score initial --}}
+                                            <div class="col-md-6"
+                                                style="border-right:1px dashed #dee2e6; padding-right:20px;">
+                                                <div class="d-flex justify-content-between mb-1">
+                                                    <small
+                                                        class="font-weight-bold">{{ $score->competence->name }}</small>
+                                                    <small class="font-weight-bold">{{ $score->note }}/20</small>
+                                                </div>
+                                                <div class="progress" style="height:16px; border-radius:8px;">
+                                                    <div class="progress-bar" role="progressbar"
+                                                        style="width:{{ $pctInitial }}%; background:{{ $color }}; border-radius:8px;">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {{-- DROITE : progression --}}
+                                            <div class="col-md-6" style="padding-left:20px;">
+                                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                                    <small class="font-weight-bold">
+                                                        <i class="fas {{ $icon }} mr-1"
+                                                            style="color:{{ $color }}"></i>
+                                                        {{ $score->competence->name }}
+                                                        @if ($valide)
+                                                            <span class="badge badge-success ml-1">
+                                                                <i class="fas fa-check"></i> Validé
+                                                            </span>
+                                                        @endif
+                                                    </small>
+                                                    @if ($diff > 0)
+                                                        <span class="badge badge-success">+{{ $diff }}
+                                                            pts</span>
+                                                    @else
+                                                        <span class="badge badge-secondary">Inchangé</span>
+                                                    @endif
+                                                </div>
+
+                                                {{-- Barre superposée --}}
+                                                <div
+                                                    style="position:relative; height:16px; background:#e9ecef;
+                            border-radius:8px; overflow:hidden;">
+                                                    {{-- Gris = initial --}}
+                                                    <div
+                                                        style="position:absolute; top:0; left:0; height:100%;
+                                width:{{ $pctInitial }}%; background:#ced4da;
+                                border-radius:8px 0 0 8px; z-index:1;">
+                                                    </div>
+                                                    {{-- Couleur = actuel --}}
+                                                    <div class="bar-show-{{ $blocKey }}"
+                                                        style="position:absolute; top:0; left:0; height:100%;
+                                width:0%; background:{{ $color }};
+                                border-radius:8px; z-index:2;
+                                transition:width 1.2s ease; opacity:0.9;">
+                                                    </div>
+                                                    {{-- Label --}}
+                                                    <div
+                                                        style="position:absolute; top:0; left:0; width:100%; height:100%;
+                                display:flex; align-items:center; justify-content:center; z-index:3;">
+                                                        <small
+                                                            style="font-size:11px; font-weight:bold; color:#fff;
+                                    text-shadow:0 0 3px rgba(0,0,0,0.5);">
+                                                            {{ $current }}/20
+                                                        </small>
+                                                    </div>
+                                                </div>
+
+                                                <div class="d-flex justify-content-between mt-1">
+                                                    <small class="text-muted" style="font-size:11px;">
+                                                        Départ : {{ $score->note }}/20
+                                                    </small>
+                                                    <small
+                                                        style="font-size:11px; color:{{ $color }}; font-weight:bold;">
+                                                        Actuel : {{ $current }}/20
+                                                    </small>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    @endforeach
+
+                                    <hr>
+
+                                    {{-- Totaux --}}
+                                    <div class="row">
+                                        <div class="col-md-6"
+                                            style="border-right:1px dashed #dee2e6; padding-right:20px;">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <strong>Total général</strong>
+                                                <strong
+                                                    style="font-size:16px;">{{ $interview->total_score }}/100</strong>
+                                            </div>
+                                            <div class="d-flex justify-content-between align-items-center mt-1">
+                                                <strong>Note finale</strong>
+                                                <strong style="font-size:20px; color:{{ $scoreColor }};">
+                                                    {{ $noteFinale }}/20
+                                                </strong>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6" style="padding-left:20px;">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <strong>Total actuel</strong>
+                                                <strong style="font-size:16px; color:#006b08;">
+                                                    {{ $scores['total_current'] }}/100
+                                                </strong>
+                                            </div>
+                                            <div class="d-flex justify-content-between align-items-center mt-1">
+                                                <strong>Progression globale</strong>
+                                                @php $prog = $scores['total_progression']; @endphp
+                                                <strong style="font-size:16px;"
+                                                    class="{{ $prog > 0 ? 'text-success' : 'text-muted' }}">
+                                                    {{ $prog > 0 ? '+' : '' }}{{ $prog }} pts
+                                                </strong>
                                             </div>
                                         </div>
                                     </div>
 
                                     @if ($interview->strengths || $interview->weaknesses || $interview->coach_summary)
                                         <hr>
-                                        <div class="row">
+                                        <div class="row mt-2">
                                             @if ($interview->strengths)
                                                 <div class="col-md-6">
                                                     <p class="mb-1 font-weight-bold text-success">
@@ -520,8 +582,11 @@
                                             @endif
                                         </div>
                                     @endif
+
                                 </div>
                             </div>
+
+
                         @endif
 
                         {{-- Suivi du parcours --}}
@@ -671,7 +736,27 @@
             });
         </script>
     @endif
-
+<script>
+    window.addEventListener('load', function() {
+        setTimeout(() => {
+            @if(isset($interview) && $interview && isset($scores) && $scores && isset($blocKeys))
+                @foreach($interview->scores->sortBy('competence.order') as $score)
+                    @php
+                        $order = $score->competence->order;
+                        $bKey  = $blocKeys[$order] ?? null;
+                        $pct   = $bKey ? ($scores['current'][$bKey] / 20) * 100 : 0;
+                    @endphp
+                    @if($bKey)
+                        (function() {
+                            const bar = document.querySelector('.bar-show-{{ $bKey }}');
+                            if (bar) bar.style.width = '{{ $pct }}%';
+                        })();
+                    @endif
+                @endforeach
+            @endif
+        }, 300);
+    });
+</script>
     @include('section.foot')
 </body>
 

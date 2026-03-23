@@ -28,9 +28,9 @@
                             ? '#f6c23e'
                             : '#e74a3b'));
             $orientation = match (true) {
-                $noteFinale <= 7 => 'Renforcement compétences (formation de base)',
-                $noteFinale <= 11 => 'Stage / immersion professionnelle',
-                $noteFinale <= 15 => 'Insertion emploi accompagnée(Insertion à l\'emploi)',
+                $noteFinale <= 9 => 'Renforcement compétences (formation de base)',
+                $noteFinale <= 14 => 'Stage / immersion professionnelle',
+                $noteFinale <= 17 => 'Insertion emploi accompagnée(Insertion à l\'emploi)',
                 default => 'Insertion rapide / autonomie (Auto emploi)',
             };
             $blocColors = [
@@ -52,16 +52,27 @@
                         </h4>
                     </div>
                     <div class="col-md-7 align-self-center text-right">
-                        <a href="{{ route('coach.candidats.show', $candidat) }}" class="btn btn-sm btn-outline-secondary mr-2">
+                        <a href="{{ route('coach.candidats.show', $candidat) }}"
+                            class="btn btn-sm btn-outline-secondary mr-2">
                             <i class="fas fa-arrow-left mr-1"></i> Retour
                         </a>
-                        <a href="{{ route('coach.projects.create', $candidat) }}" class="btn btn-sm btn-success mr-1">
-                            <i class="fas fa-plus mr-1"></i> Créer le projet professionnel
-                        </a>
-                        <a href="{{ route('coach.interviews.pdf', $interview) }}" class="btn btn-sm btn-danger"
-                            target="_blank">
-                            <i class="fas fa-file-pdf mr-1"></i> Exporter PDF
-                        </a>
+                        @if (Auth::user()->role == 'coach')
+                            <a href="{{ route('coach.projects.create', $candidat) }}"
+                                class="btn btn-sm btn-success mr-1">
+                                <i class="fas fa-plus mr-1"></i> Créer le projet professionnel
+                            </a>
+                            <a href="{{ route('coach.interviews.pdf', $interview) }}" class="btn btn-sm btn-danger"
+                                target="_blank">
+                                <i class="fas fa-file-pdf mr-1"></i> Exporter PDF
+                            </a>
+                        @endif
+                        @if (Auth::user()->role == 'admin')
+                            <a href="{{ route('admin.interviews.pdf', $interview) }}" class="btn btn-sm btn-danger"
+                                target="_blank">
+                                <i class="fas fa-file-pdf mr-1"></i> Exporter PDF
+                            </a>
+                        @endif
+
                     </div>
                 </div>
                 @if (session('success'))
@@ -104,10 +115,19 @@
                                     <strong><i class="fas fa-compass mr-1"></i> Orientation :</strong><br>
                                     {{ $orientation }}
                                 </div>
-                                <a href="{{ route('coach.interviews.pdf', $interview) }}" class="btn btn-sm btn-danger"
-                                    target="_blank">
-                                    <i class="fas fa-file-pdf mr-1"></i> Exporter PDF
-                                </a>
+                                @if (Auth::user()->role == 'admin')
+                                    <a href="{{ route('admin.interviews.pdf', $interview) }}"
+                                        class="btn btn-sm btn-danger" target="_blank">
+                                        <i class="fas fa-file-pdf mr-1"></i> Exporter PDF
+                                    </a>
+                                @endif
+                                @if (Auth::user()->role == 'coach')
+
+                                    <a href="{{ route('coach.interviews.pdf', $interview) }}" class="btn btn-sm btn-danger"
+                                        target="_blank">
+                                        <i class="fas fa-file-pdf mr-1"></i> Exporter PDF
+                                    </a>
+                                @endif
                             </div>
                         </div>
 

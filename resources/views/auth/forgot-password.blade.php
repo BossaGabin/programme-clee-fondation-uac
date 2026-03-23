@@ -1,36 +1,6 @@
-{{-- <x-guest-layout>
-    <div class="mb-4 text-sm text-gray-600">
-        {{ __('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.') }}
-    </div>
-
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
-
-    <form method="POST" action="{{ route('password.email') }}">
-        @csrf
-
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-        </div>
-
-        <div class="flex items-center justify-end mt-4">
-            <x-primary-button>
-                {{ __('Email Password Reset Link') }}
-            </x-primary-button>
-        </div>
-    </form>
-</x-guest-layout> --}}
-
 <!DOCTYPE html>
 <html lang="en" class="h-100" id="login-page1">
-
-
-<!-- Mirrored from ameen.vercel.app/main/template-vertical-nav/page-register.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 25 Feb 2026 10:19:38 GMT -->
-<!-- Added by HTTrack -->
-<meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
 
 <head>
     <meta charset="utf-8">
@@ -42,19 +12,6 @@
     <!-- Custom Stylesheet -->
     <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet">
     <script src="{{ asset('assets/js/modernizr-3.6.0.min.js') }}"></script>
-    <style>
-        .btn {
-            background: #006b08;
-            border-color: #006b08;
-            color: #fff
-        }
-
-        .btn:hover {
-            background: #baa505 !important;
-            border-color: #baa505 !important;
-            color: #fff !important;
-        }
-    </style>
 </head>
 
 <body class="h-100">
@@ -73,9 +30,18 @@
                     <div class="form-input-content">
                         <div class="card">
                             <div class="card-body">
-                                <div class="logo text-center">
+                                <div class="logo d-flex justify-content-center align-items-center text-center" style="gap: 30px;">
                                     <a href="/">
-                                        <img src="{{ asset('assets/images/f-logo.png') }}" alt="">
+                                        <img src="{{ asset('assets/images/f-logo.png') }}" class="img-fluid"
+                                            style="width:100px; height:100px; object-fit:contain;">
+                                    </a>
+                                    <a href="/">
+                                        <img src="{{ asset('assets/images/logo-usv.jpg') }}" class="img-fluid"
+                                            style="width:100px; height:100px; object-fit:contain;">
+                                    </a>
+                                    <a href="/">
+                                        <img src="{{ asset('assets/images/f-logo-1.png') }}" class="img-fluid"
+                                            style="width:100px; height:100px; object-fit:contain;">
                                     </a>
                                 </div>
                                 @if ($errors->any())
@@ -87,6 +53,13 @@
                                         </ul>
                                     </div>
                                 @endif
+                                @if (session('success'))
+                                    <div class="alert alert-success alert-dismissible fade show">
+                                        <button type="button" class="close" data-dismiss="alert"
+                                            aria-label="Close"><span aria-hidden="true">×</span>
+                                        </button> <strong>Bravo!</strong> {{ session('success') }}
+                                    </div>
+                                @endif
                                 
                                 <h4 class="text-center m-t-15">Mot de passe oublié</h4>
                                 <p class="text-muted">
@@ -96,8 +69,10 @@
                                 </p>
                                 @if (session('status'))
                                     <div class="alert alert-success alert-dismissible fade show">
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
-                                        </button> <strong>Bravo!</strong> {{ session('status') }}</div>
+                                        <button type="button" class="close" data-dismiss="alert"
+                                            aria-label="Close"><span aria-hidden="true">×</span>
+                                        </button> <strong>Bravo!</strong> {{ session('status') }}
+                                    </div>
                                 @endif
                                 <form class="m-t-30 m-b-30" method="POST" action="{{ route('password.email') }}">
                                     @csrf
@@ -109,7 +84,7 @@
                                     </div>
 
                                     <div class="text-center m-b-15 m-t-15">
-                                        <button type="submit" class="btn">
+                                        <button type="submit" class="btn btn-primary">
                                             Lien de réinitialisation</button>
                                     </div>
                                 </form>

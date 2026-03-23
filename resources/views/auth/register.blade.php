@@ -29,9 +29,18 @@
                   <div class="form-input-content">
                      <div class="card">
                         <div class="card-body">
-                           <div class="logo text-center">
+                           <div class="logo d-flex justify-content-center align-items-center text-center" style="gap: 30px;">
                               <a href="/">
-                              <img src="{{ asset('assets/images/f-logo.png') }}" alt="">
+                                 <img src="{{ asset('assets/images/f-logo.png') }}" class="img-fluid"
+                                       style="width:100px; height:100px; object-fit:contain;">
+                              </a>
+                              <a href="/">
+                                 <img src="{{ asset('assets/images/logo-usv.jpg') }}" class="img-fluid"
+                                       style="width:100px; height:100px; object-fit:contain;">
+                              </a>
+                              <a href="/">
+                                 <img src="{{ asset('assets/images/f-logo-1.png') }}" class="img-fluid"
+                                       style="width:100px; height:100px; object-fit:contain;">
                               </a>
                            </div>
                            @if ($errors->any())
@@ -133,7 +142,7 @@
                               <div class="text-center m-b-15 m-t-15">
                                  <button type="submit" class="btn btn-primary">S'incrire</button>
                               </div>
-                              <div class="create-btn text-center">
+                              <div class="create-btn text-center" style="margin-bottom:-50px">
                                  <p>
                                     Avez-vous un compte?
                                     <a href="{{{route('login')}}}" style="color: #006b08 !important">

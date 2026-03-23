@@ -57,7 +57,7 @@ class CoachAssignmentController extends Controller
         ]);
 
         $coach     = User::findOrFail($request->coach_id);
-        $expiresAt = now()->addHours(8);
+        $expiresAt = now()->addHours(24);
 
         // Créer l'affectation en statut pending
         $assignment = CoachAssignment::create([

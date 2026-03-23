@@ -8,7 +8,8 @@
     <div id="preloader">
         <div class="loader">
             <svg class="circular" viewBox="25 25 50 50">
-                <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="3" stroke-miterlimit="10" />
+                <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="3"
+                    stroke-miterlimit="10" />
             </svg>
         </div>
     </div>
@@ -27,13 +28,13 @@
                     </div>
                 </div>
 
-                @if(session('success'))
+                @if (session('success'))
                     <div class="alert alert-success alert-dismissible fade show">
                         <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
                         <strong>Bravo!</strong> {{ session('success') }}
                     </div>
                 @endif
-                @if(session('error'))
+                @if (session('error'))
                     <div class="alert alert-danger alert-dismissible fade show">
                         <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
                         <strong>Erreur!</strong> {{ session('error') }}
@@ -43,7 +44,7 @@
                 {{-- ============================================ --}}
                 {{-- PROPOSITIONS EN ATTENTE                     --}}
                 {{-- ============================================ --}}
-                @if($proposals->isNotEmpty())
+                @if ($proposals->isNotEmpty())
                     <div class="row">
                         <div class="col-12">
                             <div class="card" style="border-left:4px solid #f4a900;">
@@ -68,24 +69,27 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach($proposals as $proposal)
+                                                @foreach ($proposals as $proposal)
                                                     @php $candidat = $proposal->coachAssignment->candidat; @endphp
                                                     <tr>
                                                         <td>
                                                             <div class="d-flex align-items-center" style="gap:10px;">
-                                                                @if($candidat->avatar)
+                                                                @if ($candidat->avatar)
                                                                     <img src="{{ Storage::url($candidat->avatar) }}"
                                                                         style="width:38px;height:38px;border-radius:50%;object-fit:cover;">
                                                                 @else
-                                                                    <div style="width:38px;height:38px;border-radius:50%;
+                                                                    <div
+                                                                        style="width:38px;height:38px;border-radius:50%;
                                                                         background:#f4a900;display:flex;
                                                                         align-items:center;justify-content:center;">
                                                                         <i class="fas fa-user text-white"></i>
                                                                     </div>
                                                                 @endif
                                                                 <div>
-                                                                    <p class="mb-0 font-weight-bold">{{ $candidat->name }}</p>
-                                                                    <small class="text-muted">{{ $candidat->email }}</small>
+                                                                    <p class="mb-0 font-weight-bold">
+                                                                        {{ $candidat->name }}</p>
+                                                                    <small
+                                                                        class="text-muted">{{ $candidat->email }}</small>
                                                                 </div>
                                                             </div>
                                                         </td>
@@ -114,24 +118,30 @@
                                                             </small>
                                                         </td>
                                                         <td>
-                                                            @if($proposal->mode === 'presentiel')
+                                                            @if ($proposal->mode === 'presentiel')
                                                                 <span class="badge badge-primary">
-                                                                    <i class="fas fa-map-marker-alt mr-1"></i> Présentiel
+                                                                    <i class="fas fa-map-marker-alt mr-1"></i>
+                                                                    Présentiel
                                                                 </span>
-                                                                @if($proposal->location)
-                                                                    <br><small class="text-muted">{{ $proposal->location }}</small>
+                                                                @if ($proposal->location)
+                                                                    <br><small
+                                                                        class="text-muted">{{ $proposal->location }}</small>
                                                                 @endif
                                                             @else
                                                                 <span class="badge badge-info">
                                                                     <i class="fas fa-video mr-1"></i> En ligne
                                                                 </span>
                                                                 <br>
-                                                                @if($proposal->plateforme_enligne === 'whatsapp')
-                                                                    <small><i class="fab fa-whatsapp mr-1 text-success"></i>{{ $proposal->numero_whatsapp }}</small>
+                                                                @if ($proposal->plateforme_enligne === 'whatsapp')
+                                                                    <small><i
+                                                                            class="fab fa-whatsapp mr-1 text-success"></i>{{ $proposal->numero_whatsapp }}</small>
                                                                 @elseif($proposal->plateforme_enligne === 'appel_direct')
-                                                                    <small><i class="fas fa-phone mr-1 text-info"></i>{{ $proposal->numero_appel }}</small>
+                                                                    <small><i
+                                                                            class="fas fa-phone mr-1 text-info"></i>{{ $proposal->numero_appel }}</small>
                                                                 @elseif($proposal->plateforme_enligne === 'google_meet')
-                                                                    <small><i class="fas fa-video mr-1 text-danger"></i>Google Meet</small>
+                                                                    <small><i
+                                                                            class="fas fa-video mr-1 text-danger"></i>Google
+                                                                        Meet</small>
                                                                 @endif
                                                             @endif
                                                         </td>
@@ -161,13 +171,13 @@
                                 <h5 class="card-title mb-0">
                                     <i class="fas fa-calendar-check mr-2 text-success"></i>
                                     Entretiens confirmés
-                                    @if($appointments->isNotEmpty())
+                                    @if ($appointments->isNotEmpty())
                                         <span class="badge badge-success ml-2">{{ $appointments->count() }}</span>
                                     @endif
                                 </h5>
                             </div>
                             <div class="card-body">
-                                @if($appointments->isEmpty())
+                                @if ($appointments->isEmpty())
                                     <div class="text-center py-5">
                                         <i class="fas fa-calendar fa-3x text-muted mb-3 d-block"></i>
                                         <p class="text-muted">Aucun entretien confirmé pour le moment.</p>
@@ -184,29 +194,32 @@
                                                     <th>Date</th>
                                                     <th>Heure</th>
                                                     <th>Mode</th>
-                                                    <th>Détails</th>
+                                                    <th>Moyens</th>
                                                     <th>Actions</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach($appointments as $appointment)
+                                                @foreach ($appointments as $appointment)
                                                     @php $candidat = $appointment->coachAssignment->candidat; @endphp
                                                     <tr>
                                                         <td>
                                                             <div class="d-flex align-items-center" style="gap:10px;">
-                                                                @if($candidat->avatar)
+                                                                @if ($candidat->avatar)
                                                                     <img src="{{ Storage::url($candidat->avatar) }}"
                                                                         style="width:38px;height:38px;border-radius:50%;object-fit:cover;">
                                                                 @else
-                                                                    <div style="width:38px;height:38px;border-radius:50%;
+                                                                    <div
+                                                                        style="width:38px;height:38px;border-radius:50%;
                                                                         background:#006b08;display:flex;
                                                                         align-items:center;justify-content:center;">
                                                                         <i class="fas fa-user text-white"></i>
                                                                     </div>
                                                                 @endif
                                                                 <div>
-                                                                    <p class="mb-0 font-weight-bold">{{ $candidat->name }}</p>
-                                                                    <small class="text-muted">{{ $candidat->email }}</small>
+                                                                    <p class="mb-0 font-weight-bold">
+                                                                        {{ $candidat->name }}</p>
+                                                                    <small
+                                                                        class="text-muted">{{ $candidat->email }}</small>
                                                                 </div>
                                                             </div>
                                                         </td>
@@ -214,8 +227,9 @@
                                                             <span class="font-weight-bold">
                                                                 {{ \Carbon\Carbon::parse($appointment->scheduled_date)->format('d/m/Y') }}
                                                             </span>
-                                                            @if(\Carbon\Carbon::parse($appointment->scheduled_date)->isToday())
-                                                                <span class="badge badge-success ml-1">Aujourd'hui</span>
+                                                            @if (\Carbon\Carbon::parse($appointment->scheduled_date)->isToday())
+                                                                <span
+                                                                    class="badge badge-success ml-1">Aujourd'hui</span>
                                                             @elseif(\Carbon\Carbon::parse($appointment->scheduled_date)->isTomorrow())
                                                                 <span class="badge badge-warning ml-1">Demain</span>
                                                             @endif
@@ -224,38 +238,43 @@
                                                             {{ \Carbon\Carbon::parse($appointment->scheduled_time)->format('H:i') }}
                                                         </td>
                                                         <td>
-                                                            @if($appointment->mode === 'presentiel')
+                                                            @if ($appointment->mode === 'presentiel')
                                                                 <span class="badge badge-primary">
-                                                                    <i class="fas fa-map-marker-alt mr-1"></i> Présentiel
+                                                                    <i class="fas fa-map-marker-alt mr-1"></i>
+                                                                    Présentiel
                                                                 </span>
                                                             @else
-                                                                <span class="badge badge-info">
+                                                                <span class="badge badge-primary">
                                                                     <i class="fas fa-video mr-1"></i> En ligne
                                                                 </span>
                                                             @endif
                                                         </td>
                                                         <td>
-                                                            @if($appointment->mode === 'presentiel' && $appointment->location)
+                                                            @if ($appointment->mode === 'presentiel' && $appointment->location)
                                                                 <small>
-                                                                    <i class="fas fa-map-marker-alt mr-1 text-muted"></i>
+                                                                    <i
+                                                                        class="fas fa-map-marker-alt mr-1 text-muted"></i>
                                                                     {{ $appointment->location }}
                                                                 </small>
                                                             @elseif($appointment->mode === 'en_ligne')
                                                                 @php $proposal = $appointment->coachAssignment->appointmentProposal; @endphp
-                                                                @if($proposal?->plateforme_enligne === 'whatsapp')
+                                                                @if ($proposal?->plateforme_enligne === 'whatsapp')
                                                                     <small>
-                                                                        <i class="fab fa-whatsapp mr-1 text-success"></i>
-                                                                        {{ $proposal->numero_whatsapp }}
+                                                                        <i
+                                                                            class="fab fa-whatsapp mr-1 text-success"></i>
+                                                                        Whatsapp - {{ $proposal->numero_whatsapp }}
                                                                     </small>
                                                                 @elseif($proposal?->plateforme_enligne === 'appel_direct')
                                                                     <small>
                                                                         <i class="fas fa-phone mr-1 text-info"></i>
-                                                                        {{ $proposal->numero_appel }}
+                                                                        Appel - {{ $proposal->numero_appel }}
                                                                     </small>
                                                                 @elseif($proposal?->plateforme_enligne === 'google_meet' && $appointment->meeting_link)
-                                                                    <a href="{{ $appointment->meeting_link }}" target="_blank"
+                                                                    <a href="{{ $appointment->meeting_link }}"
+                                                                        target="_blank"
                                                                         class="btn btn-sm btn-outline-danger">
-                                                                        <i class="fas fa-video mr-1"></i> Rejoindre Meet
+                                                                        <i class="fas fa-video mr-1"></i> Rejoindre
+                                                                        Meet
                                                                     </a>
                                                                 @endif
                                                             @else
@@ -263,6 +282,10 @@
                                                             @endif
                                                         </td>
                                                         <td>
+                                                            <a href="{{ route('coach.interviews.start', $appointment) }}"
+                                                                class="btn btn-sm btn-success">
+                                                                <i class="fas fa-play mr-1"></i> Commencer l'entretien
+                                                            </a>
                                                             {{-- Reporter --}}
                                                             <a href="{{ route('coach.appointments.report', $appointment) }}"
                                                                 class="btn btn-sm btn-warning mr-1" title="Reporter">
@@ -320,4 +343,5 @@
     </script>
     @include('section.foot')
 </body>
+
 </html>

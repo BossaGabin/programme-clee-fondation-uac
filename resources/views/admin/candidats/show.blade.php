@@ -29,8 +29,7 @@
 
                     </div>
                     <div class=" col-md-7 text-right">
-                        <a href="{{ route('admin.candidats.index') }}"
-                            class="btn btn-sm btn-outline-secondary mr-2">
+                        <a href="{{ route('admin.candidats.index') }}" class="btn btn-sm btn-outline-secondary mr-2">
                             <i class="fas fa-arrow-left mr-1"></i> Retour
                         </a>
 
@@ -353,7 +352,7 @@
                         @endif
 
                         {{-- Résultats de l'entretien --}}
-                        @if ($interview)
+                        {{-- @if ($interview)
                             <div class="card">
                                 <div class="card-header d-flex justify-content-between align-items-center">
                                     <h6 class="mb-0 font-weight-bold">
@@ -428,6 +427,213 @@
                                     @endif
                                 </div>
                             </div>
+                        @endif --}}
+                        {{-- Progression des compétences --}}
+                        @if ($interview && $candidat->candidatAssignment)
+                            @php
+                                $assignment = $candidat->candidatAssignment;
+                                $assignment->load('progressionUpdates');
+                                $scores = $assignment->currentScores();
+
+                                $blocColors = [
+                                    1 => '#006b08',
+                                    2 => '#4e73df',
+                                    3 => '#1cc88a',
+                                    4 => '#f6c23e',
+                                    5 => '#e74a3b',
+                                ];
+                                $blocsIcons = [
+                                    1 => 'fa-bullseye',
+                                    2 => 'fa-fire',
+                                    3 => 'fa-tools',
+                                    4 => 'fa-user-tie',
+                                    5 => 'fa-rocket',
+                                ];
+                                $noteFinale = round($interview->total_score / 5);
+                                $scoreColor =
+                                    $noteFinale <= 9
+                                        ? '#e74a3b'
+                                        : ($noteFinale <= 14
+                                            ? '#f6c23e'
+                                            : ($noteFinale <= 17
+                                                ? '#17a2b8'
+                                                : '#1cc88a'));
+                                $blocKeys = [1 => 'bloc_a', 2 => 'bloc_b', 3 => 'bloc_c', 4 => 'bloc_d', 5 => 'bloc_e'];
+                            @endphp
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <h6 class="mb-0 font-weight-bold">
+                                        <i class="fas fa-chart-line mr-2 text-info"></i> Progression des compétences
+                                    </h6>
+                                </div>
+                                <div class="card-body col-md-12">
+
+                                    {{-- En-têtes --}}
+                                    <div class="row mb-2">
+                                        <div class="col-md-6">
+                                            <h6 class="font-weight-bold text-secondary mb-0">
+                                                <i class="fas fa-clipboard-check mr-1"></i> Scores initiaux
+                                            </h6>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h6 class="font-weight-bold text-success mb-0">
+                                                <i class="fas fa-chart-line mr-1"></i> Progression actuelle
+                                            </h6>
+                                        </div>
+                                    </div>
+                                    <hr class="mt-0 mb-3">
+
+                                    {{-- Lignes par bloc --}}
+                                    @foreach ($interview->scores->sortBy('competence.order') as $score)
+                                        @php
+                                            $order = $score->competence->order;
+                                            $color = $blocColors[$order] ?? '#006b08';
+                                            $icon = $blocsIcons[$order] ?? 'fa-star';
+                                            $pctInitial = ($score->note / 20) * 100;
+                                            $blocKey = $blocKeys[$order] ?? null;
+                                            $current = $blocKey ? $scores['current'][$blocKey] : $score->note;
+                                            $diff = $blocKey ? $scores['progression'][$blocKey] : 0;
+                                            $pctCurrent = ($current / 20) * 100;
+                                            $valide = $current === 20;
+                                        @endphp
+
+                                        <div class="row align-items-center mb-4">
+
+                                            {{-- GAUCHE : score initial --}}
+                                            <div class="col-md-6"
+                                                style="border-right:1px dashed #dee2e6; padding-right:20px;">
+                                                <div class="d-flex justify-content-between mb-1">
+                                                    <small
+                                                        class="font-weight-bold">{{ $score->competence->name }}</small>
+                                                    <small class="font-weight-bold">{{ $score->note }}/20</small>
+                                                </div>
+                                                <div class="progress" style="height:16px; border-radius:8px;">
+                                                    <div class="progress-bar" role="progressbar"
+                                                        style="width:{{ $pctInitial }}%; background:{{ $color }}; border-radius:8px;">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {{-- DROITE : progression --}}
+                                            <div class="col-md-6" style="padding-left:20px;">
+                                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                                    <small class="font-weight-bold">
+                                                        <i class="fas {{ $icon }} mr-1"
+                                                            style="color:{{ $color }}"></i>
+                                                        {{ $score->competence->name }}
+                                                        @if ($valide)
+                                                            <span class="badge badge-success ml-1">
+                                                                <i class="fas fa-check"></i> Validé
+                                                            </span>
+                                                        @endif
+                                                    </small>
+                                                    @if ($diff > 0)
+                                                        <span class="badge badge-success">+{{ $diff }}
+                                                            pts</span>
+                                                    @else
+                                                        <span class="badge badge-secondary">Inchangé</span>
+                                                    @endif
+                                                </div>
+
+                                                {{-- Barre superposée --}}
+                                                <div
+                                                    style="position:relative; height:16px; background:#e9ecef;
+                            border-radius:8px; overflow:hidden;">
+                                                    {{-- Gris = initial --}}
+                                                    <div
+                                                        style="position:absolute; top:0; left:0; height:100%;
+                                width:{{ $pctInitial }}%; background:#ced4da;
+                                border-radius:8px 0 0 8px; z-index:1;">
+                                                    </div>
+                                                    {{-- Couleur = actuel --}}
+                                                    <div class="bar-show-{{ $blocKey }}"
+                                                        style="position:absolute; top:0; left:0; height:100%;
+                                width:0%; background:{{ $color }};
+                                border-radius:8px; z-index:2;
+                                transition:width 1.2s ease; opacity:0.9;">
+                                                    </div>
+                                                    {{-- Label --}}
+                                                    <div
+                                                        style="position:absolute; top:0; left:0; width:100%; height:100%;
+                                display:flex; align-items:center; justify-content:center; z-index:3;">
+                                                        <small
+                                                            style="font-size:11px; font-weight:bold; color:#fff;
+                                    text-shadow:0 0 3px rgba(0,0,0,0.5);">
+                                                            {{ $current }}/20
+                                                        </small>
+                                                    </div>
+                                                </div>
+
+                                                <div class="d-flex justify-content-between mt-1">
+                                                    <small class="text-muted" style="font-size:11px;">
+                                                        Départ : {{ $score->note }}/20
+                                                    </small>
+                                                    <small
+                                                        style="font-size:11px; color:{{ $color }}; font-weight:bold;">
+                                                        Actuel : {{ $current }}/20
+                                                    </small>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    @endforeach
+
+                                    <hr>
+
+                                    {{-- Totaux --}}
+                                    <div class="row">
+                                        <div class="col-md-6"
+                                            style="border-right:1px dashed #dee2e6; padding-right:20px;">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <strong>Total général</strong>
+                                                <strong
+                                                    style="font-size:16px;">{{ $interview->total_score }}/100</strong>
+                                            </div>
+                                            <div class="d-flex justify-content-between align-items-center mt-1">
+                                                <strong>Note finale</strong>
+                                                <strong style="font-size:20px; color:{{ $scoreColor }};">
+                                                    {{ $noteFinale }}/20
+                                                </strong>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6" style="padding-left:20px;">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <strong>Total actuel</strong>
+                                                <strong style="font-size:16px; color:#006b08;">
+                                                    {{ $scores['total_current'] }}/100
+                                                </strong>
+                                            </div>
+                                            <div class="d-flex justify-content-between align-items-center mt-1">
+                                                <strong>Progression globale</strong>
+                                                @php $prog = $scores['total_progression']; @endphp
+                                                <strong style="font-size:16px;"
+                                                    class="{{ $prog > 0 ? 'text-success' : 'text-muted' }}">
+                                                    {{ $prog > 0 ? '+' : '' }}{{ $prog }} pts
+                                                </strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @if ($interview->strengths)
+                                        <p class="mb-1 mt-3"><strong class="text-success"><i
+                                                    class="fas fa-plus-circle mr-1"></i> Points forts</strong></p>
+                                        <p class="mb-3">{{ $interview->strengths }}</p>
+                                    @endif
+                                    @if ($interview->weaknesses)
+                                        <p class="mb-1"><strong class="text-danger"><i
+                                                    class="fas fa-minus-circle mr-1"></i> Points faibles</strong></p>
+                                        <p class="mb-3">{{ $interview->weaknesses }}</p>
+                                    @endif
+                                    @if ($interview->coach_summary)
+                                        <p class="mb-1"><strong class="text-info"><i
+                                                    class="fas fa-comment mr-1"></i> Synthèse du coach</strong></p>
+                                        <p>{{ $interview->coach_summary }}</p>
+                                    @endif
+
+                                </div>
+                            </div>
+
+
                         @endif
 
                         {{-- Timeline suivi --}}
@@ -501,6 +707,47 @@
             </div>
         </div>
     </div>
+    {{-- Script animation barres --}}
+    {{-- <script>
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                @foreach ($interview->scores->sortBy('competence.order') as $score)
+                    @php
+                        $order = $score->competence->order;
+                        $blocKey = $blocKeys[$order] ?? null;
+                        $pct = $blocKey ? ($scores['current'][$blocKey] / 20) * 100 : 0;
+                    @endphp
+                    @if ($blocKey)
+                        const bar{{ $order }} = document.querySelector(
+                            '.bar-show-{{ $blocKey }}');
+                        if (bar{{ $order }}) bar{{ $order }}.style.width =
+                            '{{ $pct }}%';
+                    @endif
+                @endforeach
+            }, 300);
+        });
+    </script> --}}
+    <script>
+    window.addEventListener('load', function() {
+        setTimeout(() => {
+            @if(isset($interview) && $interview && isset($scores) && $scores && isset($blocKeys))
+                @foreach ($interview->scores->sortBy('competence.order') as $score)
+                    @php
+                        $order = $score->competence->order;
+                        $blocKey = $blocKeys[$order] ?? null;
+                        $pct = $blocKey ? ($scores['current'][$blocKey] / 20) * 100 : 0;
+                    @endphp
+                    @if ($blocKey)
+                        (function() {
+                            const bar = document.querySelector('.bar-show-{{ $blocKey }}');
+                            if (bar) bar.style.width = '{{ $pct }}%';
+                        })();
+                    @endif
+                @endforeach
+            @endif
+        }, 300);
+    });
+</script>
     @include('section.foot')
 </body>
 

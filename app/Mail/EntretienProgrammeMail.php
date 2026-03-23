@@ -15,6 +15,9 @@ class EntretienProgrammeMail extends Mailable
         public string  $heure,
         public string  $mode,
         public ?string $location,
+        public ?string $plateforme,
+        public ?string $numeroWhatsapp,
+        public ?string $numeroAppel,
         public ?string $meetingLink
     ) {}
 

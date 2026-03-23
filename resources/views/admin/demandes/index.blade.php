@@ -22,7 +22,7 @@
                 <div class="row page-titles">
                     <div class="col-md-5 align-self-center">
                         <h4 class="text-themecolor">
-                            <i class="fas fa-clipboard-list mr-2"></i> Demandes de diagnostic
+                            <i class="fas fa-clipboard-list mr-2"></i> Demandes d'appui
                         </h4>
                     </div>
                 </div>

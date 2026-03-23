@@ -375,7 +375,7 @@
                                                         </small>
                                                     </td>
 
-                                                    <td>
+                                                    {{-- <td>
                                                         @if ($assignment && !in_array($assignment->id, $assignmentsAvecEntretien))
                                                             <a href="{{ route('coach.appointments.create', $assignment) }}"
                                                                 class="btn btn-sm btn-outline-primary mr-1"
@@ -396,6 +396,45 @@
                                                             <i class="fas fa-chart-bar"></i>
                                                         </a>
 
+                                                        <a href="{{ route('coach.candidats.pdf', $candidat) }}"
+                                                            class="btn btn-sm btn-outline-danger"
+                                                            title="Télécharger la fiche candidat" target="_blank">
+                                                            <i class="fas fa-file-pdf"></i>
+                                                        </a>
+                                                    </td> --}}
+                                                    <td>
+                                                        {{-- Programmer entretien — uniquement si pas encore passé --}}
+                                                        @if ($assignment && !in_array($assignment->id, $assignmentsAvecEntretien))
+                                                            <a href="{{ route('coach.appointments.create', $assignment) }}"
+                                                                class="btn btn-sm btn-outline-primary mr-1"
+                                                                title="Programmer un entretien">
+                                                                <i class="fas fa-calendar-plus"></i>
+                                                            </a>
+                                                        @endif
+
+                                                        {{-- Voir la fiche — toujours visible --}}
+                                                        <a href="{{ route('coach.candidats.show', $candidat) }}"
+                                                            class="btn btn-sm btn-outline-primary"
+                                                            title="Voir la fiche">
+                                                            <i class="fas fa-eye"></i>
+                                                        </a>
+
+                                                        {{-- Rapport + Progression — uniquement si entretien passé --}}
+                                                        @if (in_array($assignment->id, $assignmentsAvecEntretien))
+                                                            <a href="{{ route('coach.interviews.report.candidat', $candidat) }}"
+                                                                class="btn btn-sm btn-outline-success"
+                                                                title="Rapport entretien">
+                                                                <i class="fas fa-chart-bar"></i>
+                                                            </a>
+
+                                                            <a href="{{ route('coach.progression.show', $assignment) }}"
+                                                                class="btn btn-sm btn-outline-info"
+                                                                title="Voir la progression">
+                                                                <i class="fas fa-chart-line"></i>
+                                                            </a>
+                                                        @endif
+
+                                                        {{-- PDF — toujours visible --}}
                                                         <a href="{{ route('coach.candidats.pdf', $candidat) }}"
                                                             class="btn btn-sm btn-outline-danger"
                                                             title="Télécharger la fiche candidat" target="_blank">
@@ -579,6 +618,12 @@
                                                                     class="btn btn-sm btn-outline-success"
                                                                     title="Rapport entretien">
                                                                     <i class="fas fa-chart-bar"></i>
+
+                                                                </a>
+                                                                <a href="{{ route('coach.progression.show', $assignment) }}"
+                                                                    class="btn btn-sm btn-outline-info"
+                                                                    title="Voir la progression">
+                                                                    <i class="fas fa-chart-line"></i>
                                                                 </a>
                                                                 <a href="{{ route('coach.candidats.pdf', $candidat) }}"
                                                                     class="btn btn-sm btn-outline-danger"

@@ -24,7 +24,7 @@
                         <h4 class="text-themecolor">
                             <i class="fas fa-user-clock mr-2"></i> Affectations en attente
                         </h4>
-                        <small class="text-muted">Vous avez 8h pour accepter ou rejeter chaque affectation</small>
+                        <small class="text-muted">Vous avez 24h pour accepter ou rejeter chaque affectation</small>
                     </div>
                 </div>
 

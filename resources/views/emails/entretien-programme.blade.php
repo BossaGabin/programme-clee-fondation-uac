@@ -72,13 +72,24 @@
                         <span class="info-value">{{ $location }}</span>
                     </div>
                 @endif
-                @if($mode === 'en_ligne' && $meetingLink)
-                    <div class="info-row">
-                        <span class="info-label">🔗 Lien</span>
-                        <span class="info-value">
-                            <a href="{{ $meetingLink }}" style="color:#006b08;">Rejoindre la réunion</a>
-                        </span>
-                    </div>
+                @if($mode === 'en_ligne')
+                    @if($plateforme === 'whatsapp')
+                        <div class="info-row">
+                            <span class="info-label">📱 WhatsApp</span>
+                            <span class="info-value">{{ $numeroWhatsapp }}</span>
+                        </div>
+                    @elseif($plateforme === 'appel_direct')
+                        <div class="info-row">
+                            <span class="info-label">📞 Appel direct – Le coach vous contactera par appel sur votre numéro <strong>{{ $numeroAppel }}</strong></span>
+                        </div>
+                    @elseif($plateforme === 'google_meet' && $meetingLink)
+                        <div class="info-row">
+                            <span class="info-label">🎥 Google Meet</span>
+                            <span class="info-value">
+                                <a href="{{ $meetingLink }}" style="color:#006b08;">Rejoindre la réunion</a>
+                            </span>
+                        </div>
+                    @endif
                 @endif
             </div>
 
@@ -93,7 +104,7 @@
 
             <div class="warning">
                 ⚠️ Merci d'être disponible à l'heure indiquée. En cas d'empêchement,
-                contactez votre coach au plus vite.
+                contactez votre coach et l'administration au plus vite au 0162470707.
             </div>
 
             <p style="color:#999; font-size:13px; margin-top:20px;">

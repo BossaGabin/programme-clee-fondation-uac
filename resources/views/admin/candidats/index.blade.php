@@ -139,7 +139,7 @@
                                                         <span class="badge badge-secondary">—</span>
                                                     @endif
                                                 </td>
-                                                <td>
+                                                {{-- <td>
                                                     <a href="{{ route('admin.candidats.show', $candidat) }}"
                                                         class="btn btn-sm btn-outline-primary mr-1"
                                                         title="Voir la fiche">
@@ -150,6 +150,35 @@
                                                         title="Rapport entretien">
                                                         <i class="fas fa-chart-bar"></i>
                                                     </a>
+                                                    
+                                                    <a href="{{ route('admin.candidats.pdf', $candidat) }}"
+                                                        class="btn btn-sm btn-outline-danger" title="Exporter PDF"
+                                                        target="_blank">
+                                                        <i class="fas fa-file-pdf"></i>
+                                                    </a>
+                                                </td> --}}
+                                                <td>
+                                                    <a href="{{ route('admin.candidats.show', $candidat) }}"
+                                                        class="btn btn-sm btn-outline-primary mr-1"
+                                                        title="Voir la fiche">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
+
+
+                                                    {{-- Rapport et Progression — uniquement si entretien passé et coach assigné --}}
+                                                    @if ($candidat->candidatAssignment && $candidat->needAssignment)
+                                                        <a href="{{ route('admin.candidats.rapport', $candidat) }}"
+                                                            class="btn btn-sm btn-outline-warning"
+                                                            title="Rapport entretien">
+                                                            <i class="fas fa-chart-bar"></i>
+                                                        </a>
+                                                        <a href="{{ route('admin.candidats.progression', $candidat) }}"
+                                                            class="btn btn-sm btn-outline-info"
+                                                            title="Voir la progression">
+                                                            <i class="fas fa-chart-line"></i>
+                                                        </a>
+                                                    @endif
+
                                                     <a href="{{ route('admin.candidats.pdf', $candidat) }}"
                                                         class="btn btn-sm btn-outline-danger" title="Exporter PDF"
                                                         target="_blank">

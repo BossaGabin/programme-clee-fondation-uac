@@ -11,7 +11,7 @@ class CandidatController extends Controller
 {
     public function index(Request $request)
     {
-        $query = User::where('role', 'candidat')->orderBy('created_at','desc')
+        $query = User::where('role', 'candidat')->orderBy('created_at', 'desc')
             ->with(['candidatProfile', 'candidatAssignment.coach', 'needAssignment']);
 
         if ($request->filled('search')) {
@@ -70,22 +70,6 @@ class CandidatController extends Controller
         return view('admin.candidats.show', compact('candidat', 'interview'));
     }
 
-    // public function exportPdf(User $candidat)
-    // {
-    //     $candidat->load([
-    //         'candidatProfile',
-    //         'candidatAssignment.coach.coachProfile',
-    //         'needAssignment',
-    //         'followUpSteps',
-    //         'diagnosticRequests',
-    //         'professionalProject',
-    //         'interviews.scores.competence',
-    //     ]);
-
-    //     $pdf = Pdf::loadView('admin.candidats.pdf', compact('candidat'));
-
-    //     return $pdf->download('fiche-candidat-' . str($candidat->name)->slug() . '.pdf');
-    // }
 
     public function exportPdf(User $candidat)
     {
@@ -96,6 +80,7 @@ class CandidatController extends Controller
             'followUpSteps',
             'diagnosticRequests',
             'professionalProject',
+            'candidatAssignment.progressionUpdates'
         ]);
 
         // Récupérer l'entretien manuellement
@@ -108,5 +93,22 @@ class CandidatController extends Controller
         $pdf = Pdf::loadView('admin.candidats.pdf', compact('candidat', 'interview'));
 
         return $pdf->download('fiche-candidat-' . str($candidat->name)->slug() . '.pdf');
+    }
+
+    public function progression(User $candidat)
+    {
+        $assignment = $candidat->candidatAssignment;
+
+        if (!$assignment) {
+            return redirect()->route('admin.candidats.index')
+                ->with('error', 'Ce candidat n\'a pas de coach assigné.');
+        }
+
+        $assignment->load('progressionUpdates');
+        $scores  = $assignment->currentScores();
+        $updates = $assignment->progressionUpdates;
+
+        // On réutilise la même vue que le coach — le bouton "Nouvelle mise à jour" est masqué pour l'admin
+        return view('coach.progression.show', compact('assignment', 'scores', 'updates'));
     }
 }

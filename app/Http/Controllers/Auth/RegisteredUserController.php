@@ -39,13 +39,13 @@ class RegisteredUserController extends Controller
 
         // Vérification âge maximum 50 ans
         $age = \Carbon\Carbon::parse($request->date_of_birth)->age;
-        if ($age > 50) {
+        if ($age >= 50) {
             return back()
                 ->withInput()
                 ->withErrors([
                     'date_of_birth' => 'Ce programme ne prend pas en charge les personnes de plus de 50 ans. Veuillez contacter le secrétariat au 0162470707 pour être redirigé vers le programme adapté à votre âge.'
                 ]);
-        }        
+        }
 
         // -----------------------------------------------
         // Détermination du rôle
@@ -63,7 +63,11 @@ class RegisteredUserController extends Controller
         }
 
         // Upload avatar
-        $avatarPath = $request->file('avatar')->store('avatars', 'public');
+        // $avatarPath = $request->file('avatar')->store('avatars', 'public');
+        $avatarPath = null;
+        if ($request->hasFile('avatar')) {
+            $avatarPath = $request->file('avatar')->store('avatars', 'public');
+        }
 
         // Pour les comptes créés par l'admin (coach/admin),
         // l'email est directement vérifié, pas besoin d'OTP
@@ -114,6 +118,4 @@ class RegisteredUserController extends Controller
         return redirect()->route('admin.coachs.index')
             ->with('success', ucfirst($role) . ' créé avec succès.');
     }
-
-
 }

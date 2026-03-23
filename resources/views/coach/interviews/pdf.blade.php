@@ -174,9 +174,9 @@
         $profile    = $candidat->candidatProfile;
         $noteFinale = round($interview->total_score / 5);
         $orientation = match(true) {
-            $noteFinale <= 7  => 'Renforcement compétences (formation de base)',
-            $noteFinale <= 11 => 'Stage / immersion professionnelle',
-            $noteFinale <= 15 => 'Insertion emploi accompagnée(Insertion à l\'emploi)',
+            $noteFinale <= 9  => 'Renforcement compétences (formation de base)',
+            $noteFinale <= 14 => 'Stage / immersion professionnelle',
+            $noteFinale <= 17 => 'Insertion emploi accompagnée(Insertion à l\'emploi)',
             default           => 'Insertion rapide / autonomie (Auto emploi)',
         };
         $scoreColor = $noteFinale >= 16 ? '#1cc88a' : ($noteFinale >= 12 ? '#36b9cc' : ($noteFinale >= 8 ? '#f6c23e' : '#e74a3b'));

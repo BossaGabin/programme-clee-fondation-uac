@@ -94,10 +94,10 @@
                                                    Le candidat souhaite un entretien via WhatsApp — {{ $demande->numero_whatsapp }}
                                                 @elseif($demande->plateforme_enligne === 'appel_direct')
                                                     <i class="fas fa-phone mr-1"></i>
-                                                    Appel — {{ $demande->numero_appel }}
+                                                     Le candidat souhaite un entretien via Appel direct — {{ $demande->numero_appel }}
                                                 @elseif($demande->plateforme_enligne === 'google_meet')
                                                     <i class="fas fa-video mr-1"></i>
-                                                    Google Meet
+                                                      Le candidat souhaite un entretien via Google Meet
                                                 @endif
                                             </span>
                                         @endif

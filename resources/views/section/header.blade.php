@@ -6,20 +6,20 @@
                 <span class="brand-title">
                     <strong style="
                         color:#006b08;
-                        font-size:17px;
+                        font-size:20px;
                         letter-spacing:2px;
                         text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
                         font-family: 'Segoe UI', sans-serif;
-                    ">CLEE UAC</strong>
+                    ">CLEE FUAC</strong>
                     <strong style="
-                        color:#f4a900;
+                        color:#baa505;
                         font-size:20px;
                         letter-spacing:4px;
                         text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
                         font-family: 'Segoe UI', sans-serif;
                         display:block;
                         margin-top:-4px;
-                    ">STARTUP VALLEY</strong>
+                    ">JVDU</strong>
                 </span>
             </a>
         </div>

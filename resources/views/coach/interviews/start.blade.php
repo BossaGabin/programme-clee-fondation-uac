@@ -301,7 +301,7 @@
                     {{-- BLOC C --}}
                     {{-- ============================= --}}
                     <div class="card" id="bloc-C">
-                        <div class="card-header" style="background:#1cc88a;">
+                        <div class="card-header" style="background:#39b085;">
                             <h5 class="mb-0 text-white">
                                 <i class="fas fa-tools mr-2"></i>
                                 Bloc C — Compétences & savoir-faire
@@ -630,7 +630,7 @@
             box.className = 'alert alert-info';
             txt.textContent = 'Insertion emploi accompagnée(Insertion à l\'emploi)';
         } else {
-            box.className = 'alert alert-success';
+            box.className = 'alert alert-success'; 
             txt.textContent = 'Insertion rapide / autonomie (Auto emploi)';
         }
     }
